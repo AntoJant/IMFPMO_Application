@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MobileApp_Praktikum</string>
+    <string name="app_name">Mobilitätsapp</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -13,4 +13,8 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+    <string name="menu_tracking">Tracking</string>
+    <string name="menu_dark_theme">Dark Theme</string>
+    <string name="menu_einstellungen">Einstellungen</string>
+    <string name="menu_abmelden">Abmelden</string>
 </resources>
