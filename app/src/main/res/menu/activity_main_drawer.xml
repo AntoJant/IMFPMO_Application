@@ -2,16 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="navigation_view">
+    tools:showIn="navigation_view"
+    android:id="@+id/navigation"
+    android:layout_alignParentTop="true">
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/app_bar_switch2"
+            android:id="@+id/app_bar_switch_dark_theme"
             android:title="@string/menu_dark_theme"
             app:actionLayout="@layout/switch_item"
             app:showAsAction="always" />
         <item
-            android:id="@+id/app_bar_switch"
+            android:id="@+id/app_bar_switch_tracking"
             android:title="@string/menu_tracking"
             app:actionLayout="@layout/switch_item"
             app:showAsAction="always" />
@@ -20,12 +22,12 @@
     <item android:title="Weiteres">
         <menu>
             <item
-                android:id="@+id/nav_logout"
+                android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_menu_manage"
                 android:title="@string/menu_einstellungen" />
             <item
-                android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_menu_manage"
+                android:id="@+id/nav_logout"
+                android:icon="@android:drawable/ic_lock_power_off"
                 android:title="@string/menu_abmelden" />
         </menu>
     </item>
