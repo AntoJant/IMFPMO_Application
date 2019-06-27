@@ -8,12 +8,12 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/app_bar_switch_dark_theme"
+            android:id="@+id/nav_switch_dark_theme"
             android:title="@string/menu_dark_theme"
             app:actionLayout="@layout/switch_item"
             app:showAsAction="always" />
         <item
-            android:id="@+id/app_bar_switch_tracking"
+            android:id="@+id/nav_switch_tracking"
             android:title="@string/menu_tracking"
             app:actionLayout="@layout/switch_item"
             app:showAsAction="always" />
@@ -24,11 +24,11 @@
             <item
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_menu_manage"
-                android:title="@string/menu_einstellungen" />
+                android:title="@string/menu_settings" />
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@android:drawable/ic_lock_power_off"
-                android:title="@string/menu_abmelden" />
+                android:title="@string/menu_logout" />
         </menu>
     </item>
 </menu>
