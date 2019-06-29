@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
@@ -12,18 +13,26 @@
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_home"
             android:title="@string/menu_home" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_menu_settings"
+            android:title="@string/menu_settings" />
+        <item
+            android:id="@+id/nav_logoff"
+            android:icon="@drawable/ic_menu_logoff"
+            android:title="@string/menu_logoff" />
     </group>
 
     <item android:title="Weiteres">
         <menu>
             <item
-                android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_menu_settings"
-                android:title="@string/menu_settings" />
+                android:id="@+id/nav_dark_theme"
+                android:title="@string/menu_dark_theme"
+                app:actionLayout="@layout/layout_switch" />
             <item
-                android:id="@+id/nav_logoff"
-                android:icon="@drawable/ic_menu_logoff"
-                android:title="@string/menu_logoff" />
+                android:id="@+id/nav_tracking"
+                android:title="@string/menu_tracking"
+                app:actionLayout="@layout/layout_switch" />
         </menu>
     </item>
 
