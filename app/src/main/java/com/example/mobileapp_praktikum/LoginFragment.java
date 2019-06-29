@@ -27,7 +27,7 @@ public class LoginFragment extends Fragment {
 
         getActivity().setTitle("Anmelden");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mainmenu, container, false);
+        return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
 }

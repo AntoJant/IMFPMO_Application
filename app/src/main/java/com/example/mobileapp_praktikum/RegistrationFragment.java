@@ -13,10 +13,10 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainMenuFragment extends Fragment {
+public class RegistrationFragment extends Fragment {
 
 
-    public MainMenuFragment() {
+    public RegistrationFragment() {
         // Required empty public constructor
     }
 
@@ -25,9 +25,9 @@ public class MainMenuFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        getActivity().setTitle("Hauptmenü");
+        getActivity().setTitle("Registrieren");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mainmenu, container, false);
+        return inflater.inflate(R.layout.fragment_registration, container, false);
     }
 
 }
