@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         //should be on LoggedInActivity or onPhoneBoot
-        startService(new Intent(this, LocationUpdatesService.class));
+        //startService(new Intent(this, LocationUpdatesService.class));
 
     }
 
@@ -304,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         Log.w(TAG, "onDestroy");
         //stopping here only for testing. in reality only on changeslider or location permissions revoked
-        stopService(new Intent(this, LocationUpdatesService.class));
+        //stopService(new Intent(this, LocationUpdatesService.class));
         super.onDestroy();
     }
 

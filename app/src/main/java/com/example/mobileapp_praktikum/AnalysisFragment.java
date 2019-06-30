@@ -1,6 +1,8 @@
 package com.example.mobileapp_praktikum;
 
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -34,6 +36,10 @@ public class AnalysisFragment extends Fragment {
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         Spinner spinner = (Spinner) view.findViewById(R.id.analysis_spinner);
         ((MainActivity)getActivity()).FragmentListener(bottomNav, spinner);
+
+        //must happen only once. maybe check if service already running
+        Context context = ((MainActivity)getActivity());
+        context.startService(new Intent(context, LocationUpdatesService.class));
 
         return view;
     }
