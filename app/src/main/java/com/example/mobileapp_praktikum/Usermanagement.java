@@ -87,8 +87,8 @@ public class Usermanagement {
         if(this.userID.equals("")) {
             if(isLoggedIn(context)) {
                 Future<Response<JsonObject>> future = Ion.with(context)
-                        .load(API_URI+"/token")
-                        .setHeader(KEY_AUTHORIZATION, securityToken)
+                        .load(API_URI+"/users/me")
+                        .setHeader(KEY_AUTHORIZATION, getSecurityToken(context))
                         .asJsonObject()
                         .withResponse()
                         .setCallback(new FutureCallback<Response<JsonObject>>() {
@@ -111,7 +111,7 @@ public class Usermanagement {
      * @param password Password of the user that should be logged in.
      * @return true - if the login was successful.
      */
-    boolean login(String email, String password, Context context) {
+    public boolean login(String email, String password, Context context) {
         JsonObject body = new JsonObject();
         body.addProperty(KEY_EMAIL, email);
         body.addProperty(KEY_PASSWORD, password);
@@ -139,7 +139,7 @@ public class Usermanagement {
     /**
      *
      */
-    boolean register(String email, String password, Context context) {
+    public boolean register(String email, String password, Context context) {
         JsonObject body = new JsonObject();
         body.addProperty(KEY_EMAIL, email);
         body.addProperty(KEY_PASSWORD, password);
@@ -167,7 +167,7 @@ public class Usermanagement {
      * @param email
      * @return true if successful
      */
-    boolean resetPassword(String email, Context context) {
+    public boolean resetPassword(String email, Context context) {
         JsonObject body = new JsonObject();
         body.addProperty(KEY_EMAIL, email);
         Future<Response<JsonObject>> future = Ion.with(context)
@@ -193,7 +193,7 @@ public class Usermanagement {
      * Deletes the saved security token.
      * @return true if successful
      */
-    boolean logout( Context context) {
+    public boolean logout( Context context) {
         setSecurityToken( "", context);
         return true;
     }
