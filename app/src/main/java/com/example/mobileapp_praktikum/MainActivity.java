@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -169,9 +170,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void changeFragment(int id) {
-        RegistrationFragment fragment;
+        Fragment fragment;
         if (id == 1) {
             fragment = new RegistrationFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, fragment);
+            ft.commit();
+        }
+        if (id == 2) {
+            fragment = new ResetPasswordFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, fragment);
+            ft.commit();
+        }
+        if (id == 3) {
+            fragment = new AnalysisFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, fragment);
+            ft.commit();
+        }
+        if (id == 4) {
+            fragment = new AnalysisFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, fragment);
+            ft.commit();
+        }
+        if (id == 5) {
+            fragment = new LoginFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.framelayout, fragment);
             ft.commit();

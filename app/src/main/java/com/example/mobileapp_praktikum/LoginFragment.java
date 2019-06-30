@@ -30,12 +30,35 @@ public class LoginFragment extends Fragment {
 
         getActivity().setTitle("Anmelden");
         Button registerButton = (Button) view.findViewById(R.id.login_register_button);
+        Button forgotPasswordButton  = (Button) view.findViewById(R.id.login_forgot_password_button);
+        Button loginButton  = (Button) view.findViewById(R.id.login_login_button);
         registerButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
-            //    mListener.changeFragment(1);
+                mListener.changeFragment(1);
             }
         });
+        forgotPasswordButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                mListener.changeFragment(2);
+            }
+        });
+        loginButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                mListener.changeFragment(3);
+            }
+        });
+        mListener = new OnFragmentInteractionListener() {
+            @Override
+            public void changeFragment(int id) {
+                ((MainActivity)getActivity()).changeFragment(id);
+            }
+        };
         // Inflate the layout for this fragment
         return view;
     }
