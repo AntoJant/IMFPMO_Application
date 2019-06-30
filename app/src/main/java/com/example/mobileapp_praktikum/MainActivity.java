@@ -56,13 +56,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+
+        //Set Dark Theme Switch to "Off" by default:
+        navigationView.getMenu().findItem(R.id.nav_dark_theme).setActionView(new Switch(this));
+        ((Switch) navigationView.getMenu().findItem(R.id.nav_dark_theme).getActionView()).setChecked(false);
+        ((Switch) navigationView.getMenu().findItem(R.id.nav_dark_theme).getActionView()).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton button, boolean state) {
+                //If Dark Theme Switch has state "On"
+                if (state) {
+
+                    //If Dark Theme Switch has state "Off"
+                } else {
+
+                }
+            }
+        });
         //Set Tracking Switch to "On" by default:
         navigationView.getMenu().findItem(R.id.nav_tracking).setActionView(new Switch(this));
         ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(true);
+        ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
-        // Set Dark Theme Switch to "Off" by default:
-        navigationView.getMenu().findItem(R.id.nav_dark_theme).setActionView(new Switch(this));
-        ((Switch) navigationView.getMenu().findItem(R.id.nav_dark_theme).getActionView()).setChecked(false);
+            @Override
+            public void onCheckedChanged(CompoundButton button, boolean state) {
+                //If Tracking Switch has state "On"
+                if (state) {
+
+                    //If Tracking Switch has state "Off"
+                } else {
+
+                }
+            }
+        });
 
         if (!checkPermissions()) {
             requestPermissions();
@@ -75,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void FragmentListener(BottomNavigationView bottomNav, Spinner spinner) {
         bottomNav.setOnNavigationItemSelectedListener(navListener);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.planets_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.months, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -119,12 +145,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
@@ -147,15 +169,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragment = new SettingsFragment();
         } else if (id == R.id.nav_logoff) {
             fragment = new LogOffFragment();
-
-            //Behavior for Tracking Switch when "On"
-        } else if (id == R.id.nav_tracking) {
-            ((Switch) item.getActionView()).toggle();
-            fragment = new LogOffFragment();
-
-            //Behavior for Dark Theme Switch when "On"
-        } else if (id == R.id.nav_dark_theme) {
-            ((Switch) item.getActionView()).toggle();
         }
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -193,12 +206,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragment = new AnalysisFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.framelayout, fragment);
+            Toast.makeText(getApplicationContext(), "Registrierung erfolgreich", Toast.LENGTH_SHORT).show();
             ft.commit();
         }
         if (id == 5) {
             fragment = new LoginFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.framelayout, fragment);
+            Toast.makeText(getApplicationContext(), "E-Mail versendet", Toast.LENGTH_SHORT).show();
             ft.commit();
         }
     }

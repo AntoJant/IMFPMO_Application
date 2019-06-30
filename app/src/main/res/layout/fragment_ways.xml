@@ -41,7 +41,8 @@
 
     <Spinner
         android:id="@+id/ways_spinner"
-        android:entries="@array/planets_array"
+        android:textColor="#000000"
+        android:entries="@array/months"
         android:layout_width="245dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ways_textview"
