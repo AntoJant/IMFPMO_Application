@@ -7,26 +7,18 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.gson.JsonObject;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.Response;
 
 public class LocationUpdatesService extends Service {
 
@@ -37,12 +29,14 @@ public class LocationUpdatesService extends Service {
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest mLocationRequest;
-    private LocationCallback locationCallback;
     private Handler mServiceHandler;
     private NotificationManager mNotificationManager;
 
 
-    //maybe not needed bcause these are passed in intent (cant be passed by context)
+
+    static final String EXTRA_STRING_USERID = "com.example.mobileapp_praktikum.string" + ".userId";
+    static final String EXTRA_STRING_USERTOKEN = "com.example.mobileapp_praktikum.string" + ".userToken";
+    //passed through intent. not globally needed but helpful for testing
     private static String userToken = "1";
     private static String userId = "1";
     //trackingtester@rwth.de and trackingtester2@rwth.de
@@ -94,6 +88,7 @@ public class LocationUpdatesService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = getString(R.string.app_name);
             // Create the channel for the notification
+            // only do once. check through static var or through a get method
             NotificationChannel mChannel =
                     new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
 
@@ -117,12 +112,17 @@ public class LocationUpdatesService extends Service {
     public void onDestroy() {
         //is not necessary?
         Log.w(TAG, "onDestroy service terminated by os/ ended by itself");
+
+        //stopSendingLocUpdates():
+        fusedLocationClient.flushLocations();
+        fusedLocationClient.removeLocationUpdates(pendingIntentCreator());
+
         super.onDestroy();
         mServiceHandler.removeCallbacksAndMessages(null);
 
         //global onKillIntent if it came from button or from system nu neaparat onBind. poate chiar direct stopService in main
         //checkif an intent came from onBind or from system kill if onBind dontsend restart else do next:
-        sendBroadcast(new Intent(this, RestartServiceBroadcast.class));
+        //sendBroadcast(new Intent(this, RestartServiceBroadcast.class));
     }
 
     @Override
@@ -142,7 +142,9 @@ public class LocationUpdatesService extends Service {
 
         final long FASTEST_UPDATE_INTERVAL = UPDATE_INTERVAL / 2;
 
-        final long MAX_WAIT_TIME = UPDATE_INTERVAL * 1;
+        final long MAX_WAIT_TIME = UPDATE_INTERVAL ;
+
+        //real values are 30k 28k 5h
 
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(UPDATE_INTERVAL);
@@ -160,22 +162,21 @@ public class LocationUpdatesService extends Service {
     //furt
     public void requestLocationUpdates() {
         Log.i(TAG, "requestLocationUpdates");
-        Helpers.setRequestingLocationUpdates(this, true);
+        //Helpers.setRequestingLocationUpdates(this, true);
         //startService(new Intent(getApplicationContext(), LocationUpdatesService.class));
         try {
             fusedLocationClient.requestLocationUpdates(mLocationRequest,
                     pendingIntentCreator());
         } catch (SecurityException unlikely) {
-            Helpers.setRequestingLocationUpdates(this, false);
+            //Helpers.setRequestingLocationUpdates(this, false);
             Log.e(TAG, "Lost location permission. Could not request updates. " + unlikely);
         }
     }
 
     //furt
     private Notification getNotification() {
-        Intent intent = new Intent(this, LocationUpdatesService.class);
 
-        CharSequence text = "service active";
+        CharSequence text = "Currently tracking location";
 
         // Extra to help us figure out if we arrived in onStartCommand via the notification or not.
 
@@ -195,15 +196,20 @@ public class LocationUpdatesService extends Service {
 
         return builder.build();
     }
-    @TargetApi(29)
+
     private PendingIntent pendingIntentCreator() {
         Log.w(TAG, "pendingIntentCreator");
         Intent intent = new Intent(this, LocationDeliveryBroadcastReciever.class);
         intent.setAction(LocationDeliveryBroadcastReciever.ACTION_LOCATION_DELIVERY);
-        //fucks shit up cuz of handleintent in bdcast rec
-        //intent.putExtra("userId", userId);
-        //intent.putExtra("userToken", userToken);
-        //startService
+        //this is just a bcast rec start intent and doesnt coincide with the intent delivered to the bcast rec.
+        //intent.putExtra(EXTRA_STRING_USERID, userId);
+        //intent.putExtra(EXTRA_STRING_USERTOKEN, userToken);
+
+        //solution:
+        //Location Client request location updates with parcelable extras in PendingIntent bookm
+        //use bundle instead of extra
+
+
         return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 

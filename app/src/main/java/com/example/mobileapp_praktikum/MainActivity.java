@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
+
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         //Set Tracking Switch to "On" by default:
         navigationView.getMenu().findItem(R.id.nav_tracking).setActionView(new Switch(this));
+        final Intent intent = new Intent(this, LocationUpdatesService.class);
         ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(true);
         ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -82,10 +83,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             public void onCheckedChanged(CompoundButton button, boolean state) {
                 //If Tracking Switch has state "On"
                 if (state) {
-
+                    Log.w(TAG, "TRACKING STARTED FROM SWITCH");
+                    startService(intent);
                     //If Tracking Switch has state "Off"
                 } else {
-
+                    Log.w(TAG, "TRACKING STOPPED FROM SWITCH");
+                    stopService(intent);
                 }
             }
         });
@@ -94,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             requestPermissions();
         }
 
-        //should be on LoggedInActivity
+        //should be on LoggedInActivity or onPhoneBoot
         startService(new Intent(this, LocationUpdatesService.class));
 
     }
@@ -220,16 +223,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private boolean checkPermissions() {
-        int permissionState = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        return permissionState == PackageManager.PERMISSION_GRANTED;
+        boolean permissionStateFine = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+
+        if (Build.VERSION.SDK_INT >= 29) {
+            boolean permissionStateBackground = ActivityCompat.checkSelfPermission(
+                    this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED;
+            return permissionStateFine && permissionStateBackground;
+        }
+        return permissionStateFine;
     }
 
 
     //implement onRequestPermissionsResult for clean handling of denied permissions
+    //app works only with all the time permissions granted.
     @TargetApi(29)
     private void requestPermissions() {
 
+        if (Build.VERSION.SDK_INT >= 29)
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        else
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSIONS_REQUEST_CODE);
+        /*
         boolean permissionAccessFineLocationApproved =
                 ActivityCompat.checkSelfPermission(
                         this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -274,11 +295,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
+        */
     }
+
+
 
     @Override
     protected void onDestroy() {
         Log.w(TAG, "onDestroy");
+        //stopping here only for testing. in reality only on changeslider or location permissions revoked
         stopService(new Intent(this, LocationUpdatesService.class));
         super.onDestroy();
     }
@@ -286,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onStop() {
         Log.w(TAG, "onStop");
-        stopService(new Intent(this, LocationUpdatesService.class));
+        //stopService(new Intent(this, LocationUpdatesService.class));
         super.onStop();
     }
 

@@ -54,9 +54,11 @@ public class LocationDeliveryBroadcastReciever extends BroadcastReceiver {
             datapoints.add("data_points", locationsJson);
 
             Log.w(TAG, datapoints.toString());
+            Log.w(TAG, "will send to user: ");
+            Log.w(TAG, "will send with token: ");
             //add user and token from context protected field or from Intent
-            Ion.with(context).load("http://fjobilabs.de:8383/api/users/" + "1" + "/tracking-data")//intent.getStringExtra("userID") + "/tracking-data")
-                    .setHeader("Authorization: ", "1") //intent.getStringExtra("userToken"))
+            Ion.with(context).load("http://fjobilabs.de:8383/api/users/" + "1" + "/tracking-data")
+                    .setHeader("Authorization: ", "1")
                     .setJsonObjectBody(datapoints)
                     .asString()
                     .withResponse()
