@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -15,8 +16,10 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -30,7 +33,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener {
 
     public static String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
@@ -52,13 +55,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Set Tracking Switch to "On" by default:
+        navigationView.getMenu().findItem(R.id.nav_tracking).setActionView(new Switch(this));
+        ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(true);
+
+        // Set Dark Theme Switch to "Off" by default:
+        navigationView.getMenu().findItem(R.id.nav_dark_theme).setActionView(new Switch(this));
+        ((Switch) navigationView.getMenu().findItem(R.id.nav_dark_theme).getActionView()).setChecked(false);
 
         if (!checkPermissions()) {
             requestPermissions();
         }
 
         //should be on LoggedInActivity
-        startService(new Intent(this,LocationUpdatesService.class));
+        startService(new Intent(this, LocationUpdatesService.class));
 
     }
 
@@ -71,8 +81,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         spinner.setAdapter(adapter);
 
     }
-
-    private TextView mTextMessage;
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -136,12 +144,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragment = new LoginFragment();
         } else if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
-
         } else if (id == R.id.nav_logoff) {
             fragment = new LogOffFragment();
 
-        }
+            //Behavior for Tracking Switch when "On"
+        } else if (id == R.id.nav_tracking) {
+            ((Switch) item.getActionView()).toggle();
+            fragment = new LogOffFragment();
 
+            //Behavior for Dark Theme Switch when "On"
+        } else if (id == R.id.nav_dark_theme) {
+            ((Switch) item.getActionView()).toggle();
+        }
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.framelayout, fragment);
@@ -202,9 +216,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         public void onClick(View view) {
                             // Request permission
                             ActivityCompat.requestPermissions(MainActivity.this,
-                                    new String[] {
+                                    new String[]{
                                             Manifest.permission.ACCESS_FINE_LOCATION,
-                                            Manifest.permission.ACCESS_BACKGROUND_LOCATION },
+                                            Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                                     REQUEST_PERMISSIONS_REQUEST_CODE);
                         }
                     })
@@ -215,9 +229,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             // sets the permission in a given state or the user denied the permission
             // previously and checked "Never ask again".
             ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[] {
+                    new String[]{
                             Manifest.permission.ACCESS_FINE_LOCATION,
-                            Manifest.permission.ACCESS_BACKGROUND_LOCATION },
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION},
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
