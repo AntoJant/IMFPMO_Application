@@ -8,6 +8,9 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 /**
@@ -25,8 +28,13 @@ public class WaysFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getActivity().setTitle("Fahrten");
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ways, container, false);
+        View view = inflater.inflate(R.layout.fragment_ways, container, false);
+        BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
+        bottomNav.setSelectedItemId(R.id.nav_ways);
+        Spinner spinner = (Spinner) view.findViewById(R.id.ways_spinner);
+        ((MainActivity)getActivity()).FragmentListener(bottomNav, spinner);
+
+        return view;
     }
 
 }
