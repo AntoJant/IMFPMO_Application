@@ -4,7 +4,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainMenuFragment">
+    tools:context=".AnalysisFragment">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/register_mail_textlayout"

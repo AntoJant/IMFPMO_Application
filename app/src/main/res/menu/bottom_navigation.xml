@@ -2,13 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navbottom_analyse"
-        android:icon="@drawable/ic_logoff"
+        android:id="@+id/nav_analysis"
+        android:icon="@drawable/ic_bottom_navigation_analysis"
         android:title="Analyseergebnisse" />
 
     <item
-        android:id="@+id/navbottom_fahrten"
-        android:icon="@drawable/ic_logoff"
+        android:id="@+id/nav_ways"
+        android:icon="@drawable/ic_bottom_navigation_ways"
         android:title="Fahrten anzeigen/ändern" />
-
 </menu>

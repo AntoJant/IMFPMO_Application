@@ -13,10 +13,10 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MainMenuFragment extends Fragment {
+public class WaysFragment extends Fragment {
 
 
-    public MainMenuFragment() {
+    public WaysFragment() {
         // Required empty public constructor
     }
 
@@ -24,10 +24,9 @@ public class MainMenuFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        getActivity().setTitle("Hauptmenü");
+        getActivity().setTitle("Fahrten");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_mainmenu, container, false);
+        return inflater.inflate(R.layout.fragment_ways, container, false);
     }
 
 }

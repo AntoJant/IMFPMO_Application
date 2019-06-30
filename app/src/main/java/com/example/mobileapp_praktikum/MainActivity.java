@@ -7,6 +7,8 @@ import androidx.core.view.GravityCompat;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -20,31 +22,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-
-    private TextView mTextMessage;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
-            = new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.navbottom_analyse:
-                    mTextMessage.setText("Analyse");
-                    return true;
-                case R.id.navbottom_fahrten:
-                    mTextMessage.setText("Fahrten");
-                    return true;
-            }
-            return false;
-        }
-    };
+        implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -55,6 +39,42 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    public void FragmentListener(BottomNavigationView bottomNav, Spinner spinner) {
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.planets_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+    }
+
+    private TextView mTextMessage;
+
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            Fragment fragment = null;
+            switch (item.getItemId()) {
+                case R.id.nav_analysis:
+                    fragment = new AnalysisFragment();
+                    break;
+                case R.id.nav_ways:
+                    fragment = new WaysFragment();
+                    break;
+            }
+            if (fragment != null) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.framelayout, fragment);
+                ft.commit();
+            }
+            return true;
+        }
+
+    };
 
     @Override
     public void onBackPressed() {
@@ -89,7 +109,7 @@ public class MainActivity extends AppCompatActivity
 
         Fragment fragment = null;
         if (id == R.id.nav_home) {
-            fragment = new MainMenuFragment();
+            fragment = new AnalysisFragment();
         } else if (id == R.id.nav_login) {
             fragment = new LoginFragment();
         } else if (id == R.id.nav_settings) {
@@ -109,5 +129,16 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void changeFragment(int id) {
+        RegistrationFragment fragment;
+        if (id == 1) {
+            fragment = new RegistrationFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, fragment);
+            ft.commit();
+        }
     }
 }
