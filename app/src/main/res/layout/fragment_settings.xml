@@ -7,53 +7,72 @@
     android:layout_height="match_parent"
     tools:context=".SettingsFragment">
 
-
-    <Button
+    <TextView
         android:id="@+id/settings_mobile_data"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/my_button_bg"
-        android:gravity="left|center_vertical"
-        android:text="Mobile Daten nutzen"
-        app:layout_constraintBottom_toTopOf="@+id/settings_change_password"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-    <Button
-        android:id="@+id/settings_change_password"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Passwort ändern"
-        app:layout_constraintTop_toBottomOf="@+id/settings_mobile_data"
-        android:gravity="left|center_vertical"
-        android:background="@drawable/my_button_bg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/settings_change_mail"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="E-Mail ändern"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        android:gravity="left|center_vertical"
-        android:background="@drawable/my_button_bg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings_change_password" />
-
-    <ToggleButton
-        android:id="@+id/toggleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="700dp"
-        android:text="An "
-        android:textOff="AUS"
-        android:textOn="AN"
-        app:layout_constraintBottom_toTopOf="@+id/settings_change_password"
-        app:layout_constraintEnd_toStartOf="@+id/settings_change_password"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="50dp"
+        android:clickable="false"
+        android:contextClickable="false"
+        android:text="Mobile Daten benutzen"
+        android:textColor="#000000"
+        android:textSize="26sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/settings_change_mail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="125dp"
+        android:text="E-Mail ändern"
+        android:clickable="false"
+        android:contextClickable="false"
+        android:textSize="26sp"
+        android:textColor="#000000"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/settings_change_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="200dp"
+        android:clickable="false"
+        android:contextClickable="false"
+        android:text="Passwort ändern"
+        android:textSize="26sp"
+        android:textColor="#000000"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/settings_mail_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="115dp"
+        android:text="Ändern"
+        app:layout_constraintStart_toEndOf="@+id/settings_change_mail"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/settings_password_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="82dp"
+        android:layout_marginTop="190dp"
+        android:text="Ändern"
+        app:layout_constraintStart_toEndOf="@+id/settings_change_password"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/settings_mobile_data_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="55dp"
+        app:layout_constraintStart_toEndOf="@+id/settings_mobile_data"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

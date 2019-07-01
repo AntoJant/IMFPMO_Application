@@ -36,7 +36,6 @@ public class LoginFragment extends Fragment {
 
         ((DrawerLocker) getActivity()).setDrawerLocked(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-
         registerButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
