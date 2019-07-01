@@ -226,6 +226,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(getApplicationContext(), "E-Mail versendet", Toast.LENGTH_SHORT).show();
             ft.commit();
         }
+        if (id == 6) {
+            fragment = new ResetPasswordFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, fragment);
+            ft.commit();
+        }
+        if (id == 7) {
+            fragment = new ResetPasswordFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, fragment);
+            ft.commit();
+        }
     }
 
 
