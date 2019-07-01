@@ -37,28 +37,36 @@ public class AnalysisFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_analysis, container, false);
         BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.nav_analysis);
-        ((MainActivity)getActivity()).FragmentListener(bottomNav);
+        ((MainActivity) getActivity()).FragmentListener(bottomNav);
 
-        Spinner spinner = (Spinner) view.findViewById(R.id.analysis_spinner);
+     /*   Spinner spinner = (Spinner) view.findViewById(R.id.analysis_spinner);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+       spinner.setAdapter(adapter);
+   */
+        Spinner spinner;
+        spinner = (Spinner) view.findViewById(R.id.analysis_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.months, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setNotifyOnChange(true);
         spinner.setAdapter(adapter);
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getItemAtPosition(position).toString();
-                Toast.makeText(getActivity(), "Selected " + item, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),item + " ausgewählt ", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(getActivity(), "Selected " , Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), " ausgewählt ", Toast.LENGTH_LONG).show();
 
             }
         });
 
         //must happen only once. maybe check if service already running
-        Context context = ((MainActivity)getActivity());
+        Context context = ((MainActivity) getActivity());
         context.startService(new Intent(context, LocationUpdatesService.class));
 
         return view;
