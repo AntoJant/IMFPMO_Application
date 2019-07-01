@@ -1,0 +1,16 @@
+<PreferenceScreen
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreferenceCompat
+        app:key="mobile_data"
+        app:title="Mobile Daten nutzen"
+        app:summary="Mobile Daten für die Übertragung der GPS-Daten nutzen"/>
+
+    <Preference
+        app:key="change_mail"
+        app:title="E-Mail-Adresse ändern" />
+
+    <Preference
+        app:key="change_password"
+        app:title="Passwort ändern" />
+</PreferenceScreen>
