@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/monatLabel"
+        android:layout_width="201dp"
+        android:layout_height="wrap_content"
+        android:text="Monat"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/okoBewertungLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/monatLabel"
+        android:layout_marginTop="299dp"
+        android:text="Öko Bewertung:"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/okoBewertungTextView"
+        android:layout_width="64dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/monatLabel"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="299dp"
+        android:layout_toEndOf="@+id/okoBewertungLabel"
+        android:layout_toRightOf="@+id/okoBewertungLabel"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="181dp"
+        android:layout_height="38dp"
+        android:layout_alignTop="@+id/okoBewertungTextView"
+        android:layout_marginStart="36dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginTop="-2dp"
+        android:layout_toEndOf="@+id/okoBewertungTextView"
+        android:layout_toRightOf="@+id/okoBewertungTextView"
+        android:text="Fahrten anzeigen" />
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="297dp"
+        android:layout_below="@+id/monatLabel"
+        android:layout_marginTop="0dp" />
+
+</RelativeLayout>
