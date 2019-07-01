@@ -29,6 +29,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         getActivity().setTitle("Einstellungen");
         Preference changeMail = (Preference) findPreference("change_mail");
         Preference changePassword = (Preference) findPreference("change_password");
+
+        ((DrawerLocker) getActivity()).setDrawerLocked(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+
         changeMail.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 mListener.changeFragment(6);

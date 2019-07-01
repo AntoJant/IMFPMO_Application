@@ -110,11 +110,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void setDrawerLocked(boolean enabled){
+    public void setDrawerLocked(boolean enabled) {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if(enabled){
+        if (enabled) {
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        }else{
+        } else {
             drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         }
 
@@ -194,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void changeFragment(int id) {
         Fragment fragment;
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (id == 1) {
             fragment = new RegistrationFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -227,15 +228,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ft.commit();
         }
         if (id == 6) {
-            fragment = new ResetPasswordFragment();
+            fragment = new ChangeMailFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.framelayout, fragment);
             ft.commit();
         }
         if (id == 7) {
-            fragment = new ResetPasswordFragment();
+            fragment = new ChangePasswordFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            setDrawerLocked(false);
+            getSupportActionBar().show();
+            ft.replace(R.id.framelayout, fragment);
+            ft.commit();
+        }
+        if (id == 8) {
+            fragment = new LoginFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.framelayout, fragment);
+            Toast.makeText(getApplicationContext(), "Bitte loggen Sie sich erneut ein", Toast.LENGTH_SHORT).show();
             ft.commit();
         }
     }

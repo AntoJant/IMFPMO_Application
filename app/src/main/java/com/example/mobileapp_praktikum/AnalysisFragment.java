@@ -40,11 +40,6 @@ public class AnalysisFragment extends Fragment {
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
 
-     /*   Spinner spinner = (Spinner) view.findViewById(R.id.analysis_spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this.getActivity(), android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-       spinner.setAdapter(adapter);
-   */
         Spinner spinner;
         spinner = (Spinner) view.findViewById(R.id.analysis_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.months, android.R.layout.simple_spinner_item);
