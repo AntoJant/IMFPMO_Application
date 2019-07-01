@@ -102,13 +102,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void FragmentListener(BottomNavigationView bottomNav, Spinner spinner) {
+    public void FragmentListener(BottomNavigationView bottomNav) {
         bottomNav.setOnNavigationItemSelectedListener(navListener);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.months, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
 
     }
 

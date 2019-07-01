@@ -34,8 +34,7 @@ public class AnalysisFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_analysis, container, false);
         BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.nav_analysis);
-        Spinner spinner = (Spinner) view.findViewById(R.id.analysis_spinner);
-        ((MainActivity)getActivity()).FragmentListener(bottomNav, spinner);
+        ((MainActivity)getActivity()).FragmentListener(bottomNav);
 
         //must happen only once. maybe check if service already running
         Context context = ((MainActivity)getActivity());

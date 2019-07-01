@@ -32,7 +32,7 @@ public class WaysFragment extends Fragment {
         BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.nav_ways);
         Spinner spinner = (Spinner) view.findViewById(R.id.ways_spinner);
-        ((MainActivity)getActivity()).FragmentListener(bottomNav, spinner);
+        ((MainActivity)getActivity()).FragmentListener(bottomNav);
 
         return view;
     }
