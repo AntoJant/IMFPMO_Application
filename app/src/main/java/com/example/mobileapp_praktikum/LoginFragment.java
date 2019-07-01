@@ -29,6 +29,7 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         getActivity().setTitle("Anmelden");
+        ((DrawerLocker)getActivity()).setDrawerLocked(true);
         Button registerButton = (Button) view.findViewById(R.id.login_register_button);
         Button forgotPasswordButton  = (Button) view.findViewById(R.id.login_forgot_password_button);
         Button loginButton  = (Button) view.findViewById(R.id.login_login_button);
