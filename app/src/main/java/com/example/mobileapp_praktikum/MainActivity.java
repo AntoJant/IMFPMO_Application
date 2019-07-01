@@ -57,9 +57,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.framelayout, new LoginFragment())
-                .commit();
+        fragmentManager.beginTransaction().replace(R.id.framelayout, new LoginFragment()).commit();
 
 
         //Set Dark Theme Switch to "Off" by default:
@@ -111,13 +109,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
     }
-    public void setDrawerLocked(boolean enabled){
-        if(enabled){
-      //      drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        }else{
-    //        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        }
 
+    public void setDrawerLocked(boolean enabled) {
+        //     DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        //int lockMode = enabled ? DrawerLayout.LOCK_MODE_UNLOCKED :
+         //       DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
+        //drawer.setDrawerLockMode(lockMode);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener
@@ -305,7 +302,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         */
     }
-
 
 
     @Override
