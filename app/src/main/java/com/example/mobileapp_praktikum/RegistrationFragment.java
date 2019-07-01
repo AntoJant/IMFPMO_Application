@@ -1,6 +1,7 @@
 package com.example.mobileapp_praktikum;
 
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 
 
 /**
@@ -32,6 +34,7 @@ public class RegistrationFragment extends Fragment {
 
         getActivity().setTitle("Registrieren");
         Button registerButton = (Button) view.findViewById(R.id.register_register_button);
+        final CheckBox registercheckbox = (CheckBox) view.findViewById(R.id.register_checkbox);
 
         ((DrawerLocker) getActivity()).setDrawerLocked(true);
         ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
@@ -40,7 +43,12 @@ public class RegistrationFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                mListener.changeFragment(4);
+                if (registercheckbox.isChecked()) {
+                    mListener.changeFragment(4);
+                } else {
+                    registercheckbox.setError("");
+                    registercheckbox.setTextColor(Color.RED);
+                }
             }
         });
         mListener = new OnFragmentInteractionListener() {
