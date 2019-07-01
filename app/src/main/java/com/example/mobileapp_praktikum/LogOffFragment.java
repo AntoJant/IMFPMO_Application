@@ -3,6 +3,7 @@ package com.example.mobileapp_praktikum;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -26,6 +27,10 @@ public class LogOffFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         getActivity().setTitle("Abmelden");
+
+        ((DrawerLocker) getActivity()).setDrawerLocked(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_log_off, container, false);
     }

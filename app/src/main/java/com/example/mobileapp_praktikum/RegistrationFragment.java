@@ -3,6 +3,7 @@ package com.example.mobileapp_praktikum;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -31,6 +32,10 @@ public class RegistrationFragment extends Fragment {
 
         getActivity().setTitle("Registrieren");
         Button registerButton = (Button) view.findViewById(R.id.register_register_button);
+
+        ((DrawerLocker) getActivity()).setDrawerLocked(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+
         registerButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -41,7 +46,7 @@ public class RegistrationFragment extends Fragment {
         mListener = new OnFragmentInteractionListener() {
             @Override
             public void changeFragment(int id) {
-                ((MainActivity)getActivity()).changeFragment(id);
+                ((MainActivity) getActivity()).changeFragment(id);
             }
         };
         // Inflate the layout for this fragment

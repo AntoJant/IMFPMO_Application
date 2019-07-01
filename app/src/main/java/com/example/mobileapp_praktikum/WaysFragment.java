@@ -3,6 +3,7 @@ package com.example.mobileapp_praktikum;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -42,21 +43,22 @@ public class WaysFragment extends Fragment {
         adapter.setNotifyOnChange(true);
         spinner.setAdapter(adapter);
 
+        ((DrawerLocker) getActivity()).setDrawerLocked(false);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String item = parent.getItemAtPosition(position).toString();
-                Toast.makeText(getActivity(),item + " ausgewählt ", Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), item + " ausgewählt ", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(getActivity(), " ausgewählt ", Toast.LENGTH_LONG).show();
-
             }
         });
 
-        ((MainActivity)getActivity()).FragmentListener(bottomNav);
+        ((MainActivity) getActivity()).FragmentListener(bottomNav);
 
         return view;
     }

@@ -3,6 +3,7 @@ package com.example.mobileapp_praktikum;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -28,6 +29,9 @@ public class ResetPasswordFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_reset_password, container, false);
 
+        ((DrawerLocker) getActivity()).setDrawerLocked(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+
         getActivity().setTitle("Passwort zurücksetzen");
         Button sendmail = (Button) view.findViewById(R.id.reset_password_sendmail_button);
         sendmail.setOnClickListener(new View.OnClickListener() {
@@ -40,7 +44,7 @@ public class ResetPasswordFragment extends Fragment {
         mListener = new OnFragmentInteractionListener() {
             @Override
             public void changeFragment(int id) {
-                ((MainActivity)getActivity()).changeFragment(id);
+                ((MainActivity) getActivity()).changeFragment(id);
             }
         };
         // Inflate the layout for this fragment

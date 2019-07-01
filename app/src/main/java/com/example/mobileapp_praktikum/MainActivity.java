@@ -110,11 +110,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void setDrawerLocked(boolean enabled) {
-        //     DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        //int lockMode = enabled ? DrawerLayout.LOCK_MODE_UNLOCKED :
-         //       DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
-        //drawer.setDrawerLockMode(lockMode);
+    public void setDrawerLocked(boolean enabled){
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if(enabled){
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        }else{
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        }
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener
@@ -171,12 +174,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Fragment fragment = null;
         if (id == R.id.nav_home) {
             fragment = new AnalysisFragment();
-        } else if (id == R.id.nav_login) {
-            fragment = new LoginFragment();
         } else if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
         } else if (id == R.id.nav_logoff) {
-            fragment = new LogOffFragment();
+            Toast.makeText(getApplicationContext(), "Erfolgreich abgemeldet", Toast.LENGTH_SHORT).show();
+            fragment = new LoginFragment();
         }
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
