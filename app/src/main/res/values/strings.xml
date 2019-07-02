@@ -22,4 +22,8 @@
         functionality.</string>
     <string name="settings">Settings</string>
     <string name="ok">OK</string>
+    <string name="changepassword_currentpassword">Aktuelles Passwort</string>
+    <string name="changepassword_confirmnewpassword">Neues Passwort bestätigen</string>
+    <string name="changepassword_button">Passwort ändern</string>
+    <string name="changepassword_newpassword">Neues Passwort</string>
 </resources>
