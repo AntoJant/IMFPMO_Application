@@ -5,10 +5,10 @@
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ResetPasswordFragment">
+    tools:context=".ChangeMailFragment">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/reset_password_mail_textlayout"
+        android:id="@+id/change_mail_mail_textlayout"
         android:layout_width="395dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
@@ -18,21 +18,20 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/reset_password_mail_textfield"
+            android:id="@+id/change_mail_mail_textfield"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:maxLines="1"
-            android:hint="@string/resetpassword_mail" />
+            android:hint="@string/changemail_newmail" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/reset_password_sendmail_button"
+        android:id="@+id/change_mail_changemail_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:text="@string/resetpassword_resetbutton"
+        android:text="@string/changemail_changebutton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/reset_password_mail_textlayout" />
+        app:layout_constraintTop_toBottomOf="@+id/change_mail_mail_textlayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

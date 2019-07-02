@@ -6,37 +6,30 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.core.app.ActivityCompat;
-import androidx.core.view.GravityCompat;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.Spinner;
-import android.view.View;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationView;
-
-
-import androidx.drawerlayout.widget.DrawerLayout;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener, DrawerLocker {
 
@@ -65,17 +58,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Set Dark Theme Switch to "Off" by default:
         navigationView.getMenu().findItem(R.id.nav_dark_theme).setActionView(new Switch(this));
+
         ((Switch) navigationView.getMenu().findItem(R.id.nav_dark_theme).getActionView()).setChecked(false);
         ((Switch) navigationView.getMenu().findItem(R.id.nav_dark_theme).getActionView()).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton button, boolean state) {
-                //If Dark Theme Switch has state "On"
+                DrawerLayout drawer = findViewById(R.id.drawer_layout);
                 if (state) {
-
-                    //If Dark Theme Switch has state "Off"
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    getDelegate().applyDayNight();
+                    drawer.closeDrawer(GravityCompat.START);
                 } else {
-
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    getDelegate().applyDayNight();
+                    drawer.closeDrawer(GravityCompat.START);
                 }
             }
         });
@@ -115,10 +112,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void setDrawerLocked(boolean enabled) {
-        //     DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        //int lockMode = enabled ? DrawerLayout.LOCK_MODE_UNLOCKED :
-         //       DrawerLayout.LOCK_MODE_LOCKED_CLOSED;
-        //drawer.setDrawerLockMode(lockMode);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (enabled) {
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        } else {
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        }
+
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
@@ -166,21 +166,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         Fragment fragment = null;
         if (id == R.id.nav_home) {
             fragment = new AnalysisFragment();
-        } else if (id == R.id.nav_login) {
-            fragment = new LoginFragment();
         } else if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
         } else if (id == R.id.nav_logoff) {
-            fragment = new LogOffFragment();
+            Toast.makeText(getApplicationContext(), "Erfolgreich abgemeldet", Toast.LENGTH_SHORT).show();
+            fragment = new LoginFragment();
         }
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -196,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void changeFragment(int id) {
         Fragment fragment;
+        findViewById(R.id.drawer_layout);
         if (id == 1) {
             fragment = new RegistrationFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -215,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ft.commit();
         }
         if (id == 4) {
-            fragment = new AnalysisFragment();
+            fragment = new LoginFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.framelayout, fragment);
             Toast.makeText(getApplicationContext(), "Registrierung erfolgreich", Toast.LENGTH_SHORT).show();
@@ -226,6 +225,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.framelayout, fragment);
             Toast.makeText(getApplicationContext(), "E-Mail versendet", Toast.LENGTH_SHORT).show();
+            ft.commit();
+        }
+        if (id == 6) {
+            fragment = new ChangeMailFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, fragment);
+            ft.commit();
+        }
+        if (id == 7) {
+            fragment = new ChangePasswordFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            setDrawerLocked(false);
+            Objects.requireNonNull(getSupportActionBar()).show();
+            ft.replace(R.id.framelayout, fragment);
+            ft.commit();
+        }
+        if (id == 8) {
+            fragment = new LoginFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, fragment);
+            Toast.makeText(getApplicationContext(), "Bitte loggen Sie sich erneut ein", Toast.LENGTH_SHORT).show();
             ft.commit();
         }
     }

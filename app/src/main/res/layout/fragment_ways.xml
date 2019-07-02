@@ -11,25 +11,14 @@
         android:id="@+id/fragment_container_analyse"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigation"></FrameLayout>
+        android:layout_above="@id/bottom_navigation" />
 
     <TextView
         android:id="@+id/ways_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fahrten im:"
+        android:text="@string/ways_spinnertext"
         android:textSize="24sp" />
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="0dp"
-        android:layout_marginTop="100dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -47,5 +36,6 @@
         android:layout_marginStart="260dp"
         android:layout_marginTop="5dp"
         android:clickable="true"
-        android:entries="@array/months" />
+        android:entries="@array/months"
+        android:focusable="true" />
 </RelativeLayout>
