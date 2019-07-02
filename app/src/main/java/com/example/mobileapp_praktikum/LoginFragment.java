@@ -2,17 +2,17 @@ package com.example.mobileapp_praktikum;
 
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import java.util.Objects;
 
@@ -72,7 +72,14 @@ public class LoginFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (isValidEmail(mailfield.getText().toString()) && passwordLength(passwordfield.getText().toString())) {
-                    mListener.changeFragment(3);
+                    if(Usermanagement.getInstance().login(mailfield.getText().toString(),passwordfield.getText().toString(),getContext())) {
+                        mListener.changeFragment(3);
+                    }
+                    else {
+                        Toast.makeText(getContext(),"E-Mail oder Passwort sind falsch", Toast.LENGTH_LONG).show();
+                        mailfield.setText("");
+                        passwordfield.setText("");
+                    }
                 }
                 if (!isValidEmail(mailfield.getText().toString())) {
                     mailfield.setError("Geben Sie eine valide E-Mail-Adresse an");
