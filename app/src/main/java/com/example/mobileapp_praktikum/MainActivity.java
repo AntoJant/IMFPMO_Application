@@ -35,11 +35,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener, DrawerLocker {
 
     public static String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-
+    private ArrayList<AnalyseergebnisMonat> analyseErgebnisse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +105,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //should be on LoggedInActivity or onPhoneBoot
         //startService(new Intent(this, LocationUpdatesService.class));
-
+        //Sachen für die AnalyseDarstellung
+        setAnalyseErgebnisse(12);
     }
 
     public void FragmentListener(BottomNavigationView bottomNav) {
@@ -241,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     //implement onRequestPermissionsResult for clean handling of denied permissions
     //app works only with all the time permissions granted.
     @TargetApi(29)
@@ -330,4 +335,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.w(TAG, "onPause");
         super.onPause();
     }
+    //Methoden für die Darstellung von AnalyseErgebnissen
+    //Diese methode laedt die AnalyseErgbinsse des Monats
+    private void setAnalyseErgebnisse(int monat){
+        analyseErgebnisse = AnalyseRandomErgebnisMaker.getYear();
+    }
+
+    public void changeToAnalyseMonatFragment(Calendar monat){
+        int i = -1;
+        for(int j = 0; j < analyseErgebnisse.size(); j++ ){
+            if(analyseErgebnisse.get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && analyseErgebnisse.get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)){
+                i = j;
+            }
+        }
+        if(i != -1){
+            AnalysisMonatFragment temp = new AnalysisMonatFragment(analyseErgebnisse.get(i));
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, temp);
+            ft.addToBackStack(null);
+            ft.commit();
+        }
+    }
+
+    public void changeToAnalyseTagFragment(Calendar monat){
+        int i = -1;
+        int r = -1;
+        for(int j = 0; j < analyseErgebnisse.size(); j++ ){
+            if(analyseErgebnisse.get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && analyseErgebnisse.get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)){
+                i = j;
+                for(int l = 0; l < analyseErgebnisse.get(i).getTage().size(); l++){
+                    int tag = analyseErgebnisse.get(i).getTage().get(l).getTag().get(Calendar.DAY_OF_MONTH);
+                    if(tag == monat.get(Calendar.DAY_OF_MONTH)){
+                        r = l;
+                    }
+                }
+            }
+        }
+        if(i != -1){
+            AnalysisTagFragment temp = new AnalysisTagFragment(analyseErgebnisse.get(i).getTage().get(r));
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, temp);
+            ft.addToBackStack(null);
+            ft.commit();
+        }
+    }
+
+    public void changeToAnalyseFahrtFragment(AnalyseergebnisWeg weg){
+        AnalysisFahrtFragment temp = new AnalysisFahrtFragment(weg);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.framelayout, temp);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+    public ArrayList<AnalyseergebnisMonat> getErgebnisse(){
+        return analyseErgebnisse;
+    }
+
 }

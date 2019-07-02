@@ -40,7 +40,7 @@ public class AnalysisFragment extends Fragment {
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
 
-        AnalyseMonatListAdapter adapter = new AnalyseMonatListAdapter(getActivity(), AnalyseRandomErgebnisMaker.getYear(), getActivity().getSupportFragmentManager());
+        AnalyseMonatListAdapter adapter = new AnalyseMonatListAdapter(getActivity(),((MainActivity)getActivity()).getErgebnisse(), getActivity().getSupportFragmentManager());
         ListView monatAnalyseergebnistListView  =(ListView) view.findViewById(R.id.monatAnalyseergebnistListView);
 
         monatAnalyseergebnistListView.setAdapter(adapter);

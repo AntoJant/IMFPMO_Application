@@ -29,12 +29,15 @@ public class AnalyseMonatListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return ergebnisse.size();
+        return ergebnisse.size()+1;
     }
 
     @Override
     public Object getItem(int i) {
-        return ergebnisse.get(i);
+        if(i == 0){
+            return null;
+        }
+        return ergebnisse.get(i-1);
     }
 
     @Override
@@ -44,43 +47,52 @@ public class AnalyseMonatListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, final ViewGroup viewGroup) {
-        if (view == null) {
+        if(i == 0){
+                view = LayoutInflater.from(context).inflate(R.layout.analyse_monat_viewpage_item_layout, viewGroup,false);
+
+            TextView textView = view.findViewById(R.id.ergebnisType);
+            textView.setText("Gesamtergebnisse");
+            ViewPager vp = view.findViewById(R.id.viewPage);
+            AnalyseMonatGesamtErgebnisPagerAdapter adapter = new AnalyseMonatGesamtErgebnisPagerAdapter(context, ergebnisse);
+            vp.setAdapter(adapter);
+            return view;
+        }else{
             view = LayoutInflater.from(context).inflate(R.layout.analyse_monat_item_layout, viewGroup,false);
-        }
-        final AnalyseergebnisMonat ergebnis = (AnalyseergebnisMonat) getItem(i);
-        TextView monat = (TextView) view.findViewById(R.id.monatLabel);
-        switch(ergebnis.getDate().get(Calendar.MONTH)){
-            case 0:monat.setText("Januar" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-            case 1:monat.setText("Februar" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-            case 2:monat.setText("März" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-            case 3:monat.setText("April" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-            case 4:monat.setText("Mai" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-            case 5:monat.setText("Juni" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-            case 6:monat.setText("Juli" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-            case 7:monat.setText("August" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-            case 8:monat.setText("September" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-            case 9:monat.setText("Oktober" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-            case 10:monat.setText("November" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-            case 11:monat.setText("Dezember" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-        }
-
-        final TextView okoBewertung = (TextView) view.findViewById(R.id.okoBewertungTextView);
-        okoBewertung.setText("3");
-
-        Button button = view.findViewById(R.id.button);
-        ViewPager vp = view.findViewById(R.id.viewPager);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AppCompatActivity activity = (AppCompatActivity) view.getContext();
-                activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container_analyse, new AnalysisMonatFragment()).addToBackStack(null).commit();
-
+            final AnalyseergebnisMonat ergebnis = (AnalyseergebnisMonat) getItem(i);
+            TextView monat = (TextView) view.findViewById(R.id.monatLabel);
+            switch(ergebnis.getDate().get(Calendar.MONTH)){
+                case 0:monat.setText("Januar" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
+                case 1:monat.setText("Februar" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
+                case 2:monat.setText("März" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
+                case 3:monat.setText("April" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
+                case 4:monat.setText("Mai" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
+                case 5:monat.setText("Juni" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
+                case 6:monat.setText("Juli" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
+                case 7:monat.setText("August" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
+                case 8:monat.setText("September" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
+                case 9:monat.setText("Oktober" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
+                case 10:monat.setText("November" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
+                case 11:monat.setText("Dezember" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
             }
-        });
 
-        AnalyseMonatDiagramPagerAdapter mp = new AnalyseMonatDiagramPagerAdapter(context, ergebnis);
-        vp.setAdapter(mp);
-        return  view;
+            final TextView okoBewertung = (TextView) view.findViewById(R.id.okoBewertungTextView);
+            okoBewertung.setText("3");
+
+            Button button = view.findViewById(R.id.button);
+            ViewPager vp = view.findViewById(R.id.viewPager);
+
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MainActivity activity =(MainActivity) viewGroup.getContext();
+                    activity.changeToAnalyseMonatFragment(ergebnis.getDate());
+                }
+            });
+
+            AnalyseMonatDiagramPagerAdapter mp = new AnalyseMonatDiagramPagerAdapter(context, ergebnis);
+            vp.setAdapter(mp);
+            return  view;
+        }
     }
 
 
