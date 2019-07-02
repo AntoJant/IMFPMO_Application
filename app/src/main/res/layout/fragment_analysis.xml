@@ -11,26 +11,14 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottom_navigation">
+        android:layout_above="@id/bottom_navigation" />
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="100dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-        </ScrollView>
-    </FrameLayout>
     <TextView
         android:id="@+id/mainmenu_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Analyseergebnisse für:"
-        android:textSize="24sp"/>
+        android:text="@string/analysis_spinnertext"
+        android:textSize="24sp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -48,5 +36,6 @@
         android:layout_marginStart="260dp"
         android:layout_marginTop="5dp"
         android:clickable="true"
-        android:entries="@array/months" />
+        android:entries="@array/months"
+        android:focusable="true" />
 </RelativeLayout>

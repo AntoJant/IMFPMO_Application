@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.Objects;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,12 +28,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.settings);
-        getActivity().setTitle("Einstellungen");
-        Preference changeMail = (Preference) findPreference("change_mail");
-        Preference changePassword = (Preference) findPreference("change_password");
+        Objects.requireNonNull(getActivity()).setTitle("Einstellungen");
+        Preference changeMail = findPreference("change_mail");
+        Preference changePassword = findPreference("change_password");
 
         ((DrawerLocker) getActivity()).setDrawerLocked(false);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+        Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).show();
 
         changeMail.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
@@ -48,7 +50,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         mListener = new OnFragmentInteractionListener() {
             @Override
             public void changeFragment(int id) {
-                ((MainActivity) getActivity()).changeFragment(id);
+                ((MainActivity) Objects.requireNonNull(getActivity())).changeFragment(id);
             }
         };
     }

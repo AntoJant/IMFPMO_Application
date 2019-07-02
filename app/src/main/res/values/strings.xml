@@ -26,4 +26,6 @@
     <string name="changepassword_confirmnewpassword">Neues Passwort bestätigen</string>
     <string name="changepassword_button">Passwort ändern</string>
     <string name="changepassword_newpassword">Neues Passwort</string>
+    <string name="ways_spinnertext">Fahrten im:</string>
+    <string name="analysis_spinnertext">Analyseergebnisse für:</string>
 </resources>

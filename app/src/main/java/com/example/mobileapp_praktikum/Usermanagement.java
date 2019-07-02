@@ -42,7 +42,7 @@ public class Usermanagement {
      * @param context Context of the current activity.
      * @return true - if a user is logged in.
      */
-    public boolean isLoggedIn (Context context) {
+    private boolean isLoggedIn(Context context) {
         return !getSecurityToken(context).equals("");
     }
 
@@ -62,7 +62,7 @@ public class Usermanagement {
      * @param context Context of the current activity.
      * @return Security token used to make secured API requests.
      */
-    public String getSecurityToken(Context context) {
+    private String getSecurityToken(Context context) {
         if(securityToken.equals("")) {
             SharedPreferences pref = context.getSharedPreferences(KEY_SHAREDPREFERENCE, 0);
             pref.getString(KEY_SHAREDPREFERENCE_SECURITYTOKEN, "");
@@ -154,12 +154,7 @@ public class Usermanagement {
                         Log.w(TAG,String.valueOf(result.getHeaders().code()));
                     }
                 });
-        if(future.tryGet().getHeaders().code() == 201) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return future.tryGet().getHeaders().code() == 201;
     }
 
     /**
@@ -181,12 +176,7 @@ public class Usermanagement {
                         Log.w(TAG,String.valueOf(result.getHeaders().code()));
                     }
                 });
-        if(future.tryGet().getHeaders().code() == 200) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return future.tryGet().getHeaders().code() == 200;
     }
 
     /**
