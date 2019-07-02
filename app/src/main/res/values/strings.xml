@@ -26,6 +26,27 @@
     <string name="changepassword_confirmnewpassword">Neues Passwort bestätigen</string>
     <string name="changepassword_button">Passwort ändern</string>
     <string name="changepassword_newpassword">Neues Passwort</string>
+    <string name="changepassword_newpassword2">Neues Passwort</string>
     <string name="ways_spinnertext">Fahrten im:</string>
     <string name="analysis_spinnertext">Analyseergebnisse für:</string>
+    <string name="navigationdrawermenu">Weiteres</string>
+    <string name="bottomnavigation_analysis">Analyseergebnisse</string>
+    <string name="bottomnavigation_ways">Fahrten</string>
+    <string name="changemail_newmail">Neue E-Mail-Adresse</string>
+    <string name="changemail_changebutton">E-Mail-Adresse ändern</string>
+    <string name="changepassword_oldpassword">Altes Passwort</string>
+    <string name="changepassword_newpasswordconfirm">Bestätigen</string>
+    <string name="logoff_success">Erfolgreich abgemeldet!</string>
+    <string name="login_mail">E-Mail</string>
+    <string name="login_password">Passwort</string>
+    <string name="login_loginbutton">Anmelden</string>
+    <string name="login_forgotpasswordbutton">Passwort vergessen</string>
+    <string name="login_registerbutton">Registrieren</string>
+    <string name="registration_mail">E-Mail</string>
+    <string name="registration_password">Passwort</string>
+    <string name="registration_confirmpassword">Passwort bestätigen</string>
+    <string name="registration_registerbutton">Registrieren</string>
+    <string name="registration_termscheckbox">Datennutzungsrechte akzeptieren</string>
+    <string name="resetpassword_mail">E-Mail</string>
+    <string name="resetpassword_resetbutton">Passwort zurücksetzen</string>
 </resources>

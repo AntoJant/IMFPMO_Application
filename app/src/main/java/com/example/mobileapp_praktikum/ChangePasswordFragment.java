@@ -60,7 +60,7 @@ public class ChangePasswordFragment extends Fragment {
             public void onClick(View view) {
                 if (passwordsMatch(newpassword.getText().toString(), confirmnewpassword.getText().toString()) &&
                         passwordLength(newpassword.getText().toString()) && passwordNotEmpty(newpassword.getText().toString(), confirmnewpassword.getText().toString(), oldpassword.getText().toString())) {
-                    mListener.changeFragment(4);
+                    mListener.changeFragment(8);
                 }
                 if (!passwordLength(newpassword.getText().toString())) {
                     newpassword.setError("Das Passwort muss mindestens 6 Zeichen lang sein");

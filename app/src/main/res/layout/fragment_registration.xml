@@ -20,7 +20,8 @@
             android:id="@+id/register_mail_textfield"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="E-Mail" />
+            android:maxLines="1"
+            android:hint="@string/registration_mail" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -39,7 +40,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Passwort"
+            android:maxLines="1"
+            android:hint="@string/registration_password"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -59,7 +61,8 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="Passwort bestätigen"
+            android:maxLines="1"
+            android:hint="@string/registration_confirmpassword"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -68,7 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="75dp"
-        android:text="Registrieren"
+        android:text="@string/registration_registerbutton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -79,7 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="Datennutzungsrechte akzeptieren"
+        android:text="@string/registration_termscheckbox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/register_passwordconfirm_textlayout" />

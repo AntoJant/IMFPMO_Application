@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.google.android.gms.location.LocationResult;
@@ -14,7 +13,6 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class LocationDeliveryBroadcastReciever extends BroadcastReceiver {

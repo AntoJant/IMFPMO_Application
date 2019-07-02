@@ -19,7 +19,7 @@
             android:title="@string/menu_logoff" />
     </group>
 
-    <item android:title="Weiteres">
+    <item android:title="@string/navigationdrawermenu">
         <menu>
             <item
                 android:id="@+id/nav_dark_theme"

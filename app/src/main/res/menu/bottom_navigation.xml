@@ -4,10 +4,10 @@
     <item
         android:id="@+id/nav_analysis"
         android:icon="@drawable/ic_bottom_navigation_analysis"
-        android:title="Analyseergebnisse" />
+        android:title="@string/bottomnavigation_analysis" />
 
     <item
         android:id="@+id/nav_ways"
         android:icon="@drawable/ic_bottom_navigation_ways"
-        android:title="Fahrten" />
+        android:title="@string/bottomnavigation_ways" />
 </menu>

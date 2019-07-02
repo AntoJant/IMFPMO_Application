@@ -159,7 +159,7 @@ public class Usermanagement {
 
     /**
      * Sends a request to the server to reset the password.
-     * @param email
+     * @param email user email
      * @return true if successful
      */
     public boolean resetPassword(String email, Context context) {
