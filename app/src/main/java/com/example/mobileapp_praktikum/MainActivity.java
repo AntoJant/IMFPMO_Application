@@ -24,6 +24,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-
+    private ArrayList<AnalyseergebnisMonat> analyseErgebnisse;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,19 +58,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Set Dark Theme Switch to "Off" by default:
         navigationView.getMenu().findItem(R.id.nav_dark_theme).setActionView(new Switch(this));
+
         ((Switch) navigationView.getMenu().findItem(R.id.nav_dark_theme).getActionView()).setChecked(false);
         ((Switch) navigationView.getMenu().findItem(R.id.nav_dark_theme).getActionView()).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton button, boolean state) {
-                //If Dark Theme Switch has state "On"
+                DrawerLayout drawer = findViewById(R.id.drawer_layout);
                 if (state) {
-                    //If Dark Theme Switch has state "Off"
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     getDelegate().applyDayNight();
+                    drawer.closeDrawer(GravityCompat.START);
                 } else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     getDelegate().applyDayNight();
+                    drawer.closeDrawer(GravityCompat.START);
                 }
             }
         });
@@ -98,7 +102,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //should be on LoggedInActivity or onPhoneBoot
         //startService(new Intent(this, LocationUpdatesService.class));
-
+        //Sachen für die AnalyseDarstellung
+        setAnalyseErgebnisse(12);
     }
 
     public void FragmentListener(BottomNavigationView bottomNav) {
@@ -260,6 +265,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     //implement onRequestPermissionsResult for clean handling of denied permissions
     //app works only with all the time permissions granted.
     @TargetApi(29)
@@ -349,4 +355,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.w(TAG, "onPause");
         super.onPause();
     }
+    //Methoden für die Darstellung von AnalyseErgebnissen
+    //Diese methode laedt die AnalyseErgbinsse des Monats
+    private void setAnalyseErgebnisse(int monat){
+        analyseErgebnisse = AnalyseRandomErgebnisMaker.getYear();
+    }
+
+    public void changeToAnalyseMonatFragment(Calendar monat){
+        int i = -1;
+        for(int j = 0; j < analyseErgebnisse.size(); j++ ){
+            if(analyseErgebnisse.get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && analyseErgebnisse.get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)){
+                i = j;
+            }
+        }
+        if(i != -1){
+            AnalysisMonatFragment temp = new AnalysisMonatFragment(analyseErgebnisse.get(i));
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, temp);
+            ft.addToBackStack(null);
+            ft.commit();
+        }
+    }
+
+    public void changeToAnalyseTagFragment(Calendar monat){
+        int i = -1;
+        int r = -1;
+        for(int j = 0; j < analyseErgebnisse.size(); j++ ){
+            if(analyseErgebnisse.get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && analyseErgebnisse.get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)){
+                i = j;
+                for(int l = 0; l < analyseErgebnisse.get(i).getTage().size(); l++){
+                    int tag = analyseErgebnisse.get(i).getTage().get(l).getTag().get(Calendar.DAY_OF_MONTH);
+                    if(tag == monat.get(Calendar.DAY_OF_MONTH)){
+                        r = l;
+                    }
+                }
+            }
+        }
+        if(i != -1){
+            AnalysisTagFragment temp = new AnalysisTagFragment(analyseErgebnisse.get(i).getTage().get(r));
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, temp);
+            ft.addToBackStack(null);
+            ft.commit();
+        }
+    }
+
+    public void changeToAnalyseFahrtFragment(AnalyseergebnisWeg weg){
+        AnalysisFahrtFragment temp = new AnalysisFahrtFragment(weg);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.framelayout, temp);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+    public ArrayList<AnalyseergebnisMonat> getErgebnisse(){
+        return analyseErgebnisse;
+    }
+
 }

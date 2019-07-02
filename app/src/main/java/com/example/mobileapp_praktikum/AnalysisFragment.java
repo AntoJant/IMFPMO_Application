@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -43,33 +44,14 @@ public class AnalysisFragment extends Fragment {
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
 
-        Spinner spinner;
-        spinner = view.findViewById(R.id.analysis_spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.months, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapter.setNotifyOnChange(true);
-        spinner.setAdapter(adapter);
+        AnalyseMonatListAdapter adapter = new AnalyseMonatListAdapter(getActivity(),((MainActivity)getActivity()).getErgebnisse(), getActivity().getSupportFragmentManager());
+        ListView monatAnalyseergebnistListView  =(ListView) view.findViewById(R.id.monatAnalyseergebnistListView);
 
-        ((DrawerLocker) getActivity()).setDrawerLocked(false);
-        Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).show();
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String item = parent.getItemAtPosition(position).toString();
-                Toast.makeText(getActivity(), item + " ausgewählt ", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
+        monatAnalyseergebnistListView.setAdapter(adapter);
         //must happen only once. maybe check if service already running
         Context context = getActivity();
         context.startService(new Intent(context, LocationUpdatesService.class));
-
         return view;
+
     }
 }
