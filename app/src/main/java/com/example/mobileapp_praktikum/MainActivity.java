@@ -56,19 +56,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //Set Dark Theme Switch to "Off" by default:
         navigationView.getMenu().findItem(R.id.nav_dark_theme).setActionView(new Switch(this));
+
         ((Switch) navigationView.getMenu().findItem(R.id.nav_dark_theme).getActionView()).setChecked(false);
         ((Switch) navigationView.getMenu().findItem(R.id.nav_dark_theme).getActionView()).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton button, boolean state) {
-                //If Dark Theme Switch has state "On"
+                DrawerLayout drawer = findViewById(R.id.drawer_layout);
                 if (state) {
-                    //If Dark Theme Switch has state "Off"
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     getDelegate().applyDayNight();
+                    drawer.closeDrawer(GravityCompat.START);
                 } else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     getDelegate().applyDayNight();
+                    drawer.closeDrawer(GravityCompat.START);
                 }
             }
         });
