@@ -45,7 +45,7 @@ public class AnalysisFragment extends Fragment {
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
 
         AnalyseMonatListAdapter adapter = new AnalyseMonatListAdapter(getActivity(),((MainActivity)getActivity()).getErgebnisse(), getActivity().getSupportFragmentManager());
-        ListView monatAnalyseergebnistListView  =(ListView) view.findViewById(R.id.monatAnalyseergebnistListView);
+        ListView monatAnalyseergebnistListView  =(ListView) view.findViewById(R.id.listview);
 
         monatAnalyseergebnistListView.setAdapter(adapter);
         //must happen only once. maybe check if service already running
