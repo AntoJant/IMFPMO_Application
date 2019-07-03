@@ -24,11 +24,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener, DrawerLocker {
@@ -177,6 +177,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
         } else if (id == R.id.nav_logoff) {
+            Usermanagement.getInstance().logout(getApplicationContext());
+            Log.w("Token after logout", "Token = " + Usermanagement.getInstance().getSecurityToken());
             Toast.makeText(getApplicationContext(), "Erfolgreich abgemeldet", Toast.LENGTH_SHORT).show();
             fragment = new LoginFragment();
         }

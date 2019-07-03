@@ -69,20 +69,6 @@ public class RegistrationFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
-                if (registercheckbox.isChecked() && isValidEmail(mailfield.getText().toString()) && passwordsMatch(passwordfield.getText().toString(), confirmpasswordfield.getText().toString()) &&
-                        passwordLength(passwordfield.getText().toString()) && passwordNotEmpty(passwordfield.getText().toString(), confirmpasswordfield.getText().toString())) {
-                    if(Usermanagement.getInstance().register(mailfield.getText().toString(), passwordfield.getText().toString(),getContext())) {
-                        Toast.makeText(getContext(),"Registrierung erfolgreich", Toast.LENGTH_LONG).show();
-                        mListener.changeFragment(4);
-                    }
-                    else {
-                        Toast.makeText(getContext(),"Account mit dieser E-Mail Adresse existiert bereits", Toast.LENGTH_LONG).show();
-                        mailfield.setText("");
-                        passwordfield.setText("");
-                    }
-
-
-                }
                 if (!isValidEmail(mailfield.getText().toString())) {
                     mailfield.setError("Geben Sie eine valide E-Mail-Adresse an");
                 }
@@ -101,6 +87,32 @@ public class RegistrationFragment extends Fragment {
                 }
                 if (!registercheckbox.isChecked()) {
                     registercheckbox.setTextColor(Color.RED);
+                }
+                if (registercheckbox.isChecked() && isValidEmail(mailfield.getText().toString()) && passwordsMatch(passwordfield.getText().toString(), confirmpasswordfield.getText().toString()) &&
+                        passwordLength(passwordfield.getText().toString()) && passwordNotEmpty(passwordfield.getText().toString(), confirmpasswordfield.getText().toString())) {
+                    int result = Usermanagement.getInstance().register(mailfield.getText().toString(), passwordfield.getText().toString(),getContext());
+
+                    if(result == Usermanagement.OPERATION_SUCCESSFUL) {
+                        Toast.makeText(getContext(),"Registrierung erfolgreich!", Toast.LENGTH_LONG).show();
+                        mListener.changeFragment(4);
+                    }
+                    else if(result == Usermanagement.OPERATION_FAILED){
+                        Toast.makeText(getContext(),"Account mit dieser E-Mail Adresse existiert bereits!", Toast.LENGTH_LONG).show();
+                        mailfield.setText("");
+                        passwordfield.setText("");
+                    }
+                    else if(result == Usermanagement.NO_INTERNET_CONNECTION){
+                        Toast.makeText(getContext(),"Keine Verbindung zum Internet möglich!", Toast.LENGTH_LONG).show();
+                        mailfield.setText("");
+                        passwordfield.setText("");
+                    }
+                    else if(result == Usermanagement.COULDNT_REACH_SERVER){
+                        Toast.makeText(getContext(),"Server konnte nicht erreicht werden!", Toast.LENGTH_LONG).show();
+                        mailfield.setText("");
+                        passwordfield.setText("");
+                    }
+
+
                 }
             }
         });

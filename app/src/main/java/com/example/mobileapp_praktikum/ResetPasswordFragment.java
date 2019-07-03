@@ -2,17 +2,17 @@ package com.example.mobileapp_praktikum;
 
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import java.util.Objects;
 
@@ -49,9 +49,26 @@ public class ResetPasswordFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (isValidEmail(mailfield.getText().toString())) {
-                    mListener.changeFragment(5);
+                    int result = Usermanagement.getInstance().resetPassword(mailfield.getText().toString(),getContext());
+
+                    if(result == Usermanagement.OPERATION_SUCCESSFUL) {
+                        Toast.makeText(getContext(),"E-Mail wurde an Adresse gesendet!", Toast.LENGTH_LONG).show();
+                        mListener.changeFragment(5);
+                    }
+                    else if(result == Usermanagement.OPERATION_FAILED){
+                        Toast.makeText(getContext(),"Something went wrong!", Toast.LENGTH_LONG).show();
+                        mailfield.setText("");
+                    }
+                    else if(result == Usermanagement.NO_INTERNET_CONNECTION){
+                        Toast.makeText(getContext(),"Keine Verbindung zum Internet möglich!", Toast.LENGTH_LONG).show();
+                        mailfield.setText("");
+                    }
+                    else if(result == Usermanagement.COULDNT_REACH_SERVER){
+                        Toast.makeText(getContext(),"Server konnte nicht erreicht werden!", Toast.LENGTH_LONG).show();
+                        mailfield.setText("");
+                    }
                 }
-                if (!isValidEmail(mailfield.getText().toString())) {
+                else if (!isValidEmail(mailfield.getText().toString())) {
                     mailfield.setError("Geben Sie eine valide E-Mail-Adresse an");
                 }
             }

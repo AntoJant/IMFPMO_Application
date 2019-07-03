@@ -71,21 +71,34 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
+                if (!isValidEmail(mailfield.getText().toString())) {
+                    mailfield.setError("Geben Sie eine valide E-Mail-Adresse an");
+                }
+                if (!passwordLength(passwordfield.getText().toString())) {
+                    passwordfield.setError("Das Passwort muss mindestens 6 Zeichen lang sein");
+                }
                 if (isValidEmail(mailfield.getText().toString()) && passwordLength(passwordfield.getText().toString())) {
-                    if(Usermanagement.getInstance().login(mailfield.getText().toString(),passwordfield.getText().toString(),getContext())) {
+                    int result = Usermanagement.getInstance().login(mailfield.getText().toString(),passwordfield.getText().toString(),getContext());
+                    if(result == Usermanagement.OPERATION_SUCCESSFUL) {
                         mListener.changeFragment(3);
                     }
-                    else {
-                        Toast.makeText(getContext(),"E-Mail oder Passwort sind falsch", Toast.LENGTH_LONG).show();
+                    else if(result == Usermanagement.OPERATION_FAILED){
+                        Toast.makeText(getContext(),"E-Mail oder Passwort sind falsch!", Toast.LENGTH_LONG).show();
+                        mailfield.setText("");
+                        passwordfield.setText("");
+                    }
+                    else if(result == Usermanagement.NO_INTERNET_CONNECTION){
+                        Toast.makeText(getContext(),"Keine Verbindung zum Internet möglich!", Toast.LENGTH_LONG).show();
+                        mailfield.setText("");
+                        passwordfield.setText("");
+                    }
+                    else if(result == Usermanagement.COULDNT_REACH_SERVER){
+                        Toast.makeText(getContext(),"Server konnte nicht erreicht werden!", Toast.LENGTH_LONG).show();
                         mailfield.setText("");
                         passwordfield.setText("");
                     }
                 }
-                if (!isValidEmail(mailfield.getText().toString())) {
-                    mailfield.setError("Geben Sie eine valide E-Mail-Adresse an");
-                }
-                if (!passwordLength(passwordfield.getText().toString()))
-                    passwordfield.setError("Das Passwort muss mindestens 6 Zeichen lang sein");
+
             }
         });
         mListener = new OnFragmentInteractionListener() {

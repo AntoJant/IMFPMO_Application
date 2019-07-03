@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
-import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
@@ -33,6 +32,11 @@ class Usermanagement {
     private final String KEY_SHAREDPREFERENCE = "securityTokenPreference";
     private final String KEY_SHAREDPREFERENCE_SECURITYTOKEN = "securityToken";
 
+    //--
+    static final int OPERATION_SUCCESSFUL = 0;
+    static final int OPERATION_FAILED = 1;
+    static final int NO_INTERNET_CONNECTION = 2;
+    static final int COULDNT_REACH_SERVER = 3;
 
     private Usermanagement() {
 
@@ -43,8 +47,8 @@ class Usermanagement {
      * @param context Context of the current activity.
      * @return true - if a user is logged in.
      */
-    private boolean isLoggedIn(Context context) {
-        return !getSecurityToken(context).equals("");
+    boolean isLoggedIn(Context context) {
+        return !getSecurityToken().equals("");
     }
 
     /**
@@ -60,10 +64,9 @@ class Usermanagement {
 
     /**
      * Returns the security token of the logged in user.
-     * @param context Context of the current activity.
      * @return Security token used to make secured API requests.
      */
-    private String getSecurityToken(Context context) {
+    String getSecurityToken() {
         /*if(securityToken.equals("")) {
             SharedPreferences pref = context.getSharedPreferences(KEY_SHAREDPREFERENCE, 0);
             pref.getString(KEY_SHAREDPREFERENCE_SECURITYTOKEN, "");
@@ -79,15 +82,24 @@ class Usermanagement {
         editor.apply();*/
     }
 
+    private void setUserID( String id, Context context) {
+        userID = id;
+        /*SharedPreferences pref = context.getSharedPreferences(KEY_SHAREDPREFERENCE, 0);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(KEY_SHAREDPREFERENCE_SECURITYTOKEN, token);
+        editor.apply();*/
+    }
+
 
     /**
      *
      * @return ID of the currently logged in user.
+     *         String.valueOf(OPERATION_FAILED) if sth went wrong
      */
     String getUserID( Context context) {
         if(this.userID.equals("")) {
             if(isLoggedIn(context)) {
-                Future<Response<JsonObject>> future = Ion.with(context)
+                /*Future<Response<JsonObject>> future = Ion.with(context)
                         .load(API_URI+"/users/me")
                         .setHeader(KEY_AUTHORIZATION, getSecurityToken(context))
                         .asJsonObject()
@@ -100,6 +112,41 @@ class Usermanagement {
                         });
                 if(future.tryGet().getHeaders().code() == 200) {
                     this.userID = future.tryGet().getResult().get(KEY_USER_ID).getAsString();
+                }*/
+
+
+
+                Response<JsonObject> response = null;
+                try {
+                    response = Ion.with(context)
+                            .load(API_URI + "/users/me")
+                            .setLogging("LoginLog", Log.VERBOSE)
+                            .setHeader(KEY_AUTHORIZATION, getSecurityToken())
+                            .asJsonObject()
+                            .withResponse()
+                            .setCallback(new FutureCallback<Response<JsonObject>>() {
+                                @Override
+                                public void onCompleted(Exception e, Response<JsonObject> result) {
+                                    if(e != null) {
+                                        Log.e(TAG,"Error = " + e.toString());
+                                    }
+                                    if(result != null) {
+                                        Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                                    }
+                                }
+                            }).get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if((response != null) && (response.getHeaders().code() == 200 && (response.getResult() != null))) {
+                    Log.w(TAG,"UserID = " + response.getResult().get(KEY_USER_ID).getAsString());
+                    setUserID(response.getResult().get(KEY_USER_ID).getAsString(),context);
+                }
+                else {
+                    return String.valueOf(OPERATION_FAILED);
                 }
             }
         }
@@ -112,7 +159,7 @@ class Usermanagement {
      * @param password Password of the user that should be logged in.
      * @return true - if the login was successful.
      */
-    boolean login(String email, String password, Context context) {
+    int login(String email, String password, Context context) {
         JsonObject body = new JsonObject();
         body.addProperty(KEY_EMAIL, email);
         body.addProperty(KEY_PASSWORD, password);
@@ -152,7 +199,12 @@ class Usermanagement {
                     .setCallback(new FutureCallback<Response<JsonObject>>() {
                         @Override
                         public void onCompleted(Exception e, Response<JsonObject> result) {
-                            Log.w(TAG, String.valueOf(result.getHeaders().code()));
+                            if(e != null) {
+                                Log.e(TAG,"Error = " + e.toString());
+                            }
+                            if(result != null) {
+                                Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                            }
                         }
                     }).get();
         } catch (ExecutionException e) {
@@ -161,20 +213,33 @@ class Usermanagement {
             e.printStackTrace();
         }
 
-        if(response.getHeaders().code() == 200) {
+        if(response==null){
+            Log.w(TAG, "Response == null");
+            return NO_INTERNET_CONNECTION;
+        }
+        else if(response.getResult()==null) {
+            Log.w(TAG,"json = null");
+            return COULDNT_REACH_SERVER;
+        }
+        else if(response.getHeaders().code() == 404) {
+            Log.w(TAG, "COULNDT_REACH_SERVER");
+            return COULDNT_REACH_SERVER;
+        }
+        else if((response != null) && (response.getHeaders().code() == 200)) {
             Log.w(TAG,"Token = " + response.getResult().get(KEY_TOKEN).getAsString());
             setSecurityToken(response.getResult().get(KEY_TOKEN).getAsString(),context);
-            return true;
+            return OPERATION_SUCCESSFUL;
         }
         else {
-            return false;
+            Log.w(TAG, "OPERATION_FAILED");
+            return OPERATION_FAILED;
         }
 
     }
         /**
      *
      */
-    boolean register(String email, String password, Context context) {
+    int register(String email, String password, Context context) {
         Log.w(TAG,"register started");
         JsonObject body = new JsonObject();
         body.addProperty(KEY_EMAIL, email);
@@ -195,19 +260,22 @@ class Usermanagement {
         while (future.tryGet()==null) {}
         return future.tryGet().getHeaders().code() == 201;*/
         Response<JsonObject> response = null;
-        JsonObject json = new JsonObject();
-        int code = 0;
         try {
             response = Ion.with(context)
                     .load(API_URI+"/users")
-                    .setLogging("LoginLog", Log.VERBOSE)
+                    .setLogging("RegisterLog", Log.VERBOSE)
                     .setJsonObjectBody(body)
                     .asJsonObject()
                     .withResponse()
                     .setCallback(new FutureCallback<Response<JsonObject>>() {
                         @Override
                         public void onCompleted(Exception e, Response<JsonObject> result) {
-                            Log.w(TAG,String.valueOf(result.getHeaders().code()));
+                            if(e != null) {
+                                Log.e(TAG,"Error = " + e.toString());
+                            }
+                            if(result != null) {
+                                Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                            }
                         }
                     }).get();
         } catch (ExecutionException e) {
@@ -215,12 +283,26 @@ class Usermanagement {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        code = response.getHeaders().code();
-        if(code == 201) {
-            return true;
+
+        if(response==null){
+            Log.w(TAG, "Response == null");
+            return NO_INTERNET_CONNECTION;
+        }
+        else if(response.getResult()==null) {
+            Log.w(TAG,"json = null");
+            return COULDNT_REACH_SERVER;
+        }
+        else if(response.getHeaders().code() == 404) {
+            Log.w(TAG, "COULNDT_REACH_SERVER");
+            return COULDNT_REACH_SERVER;
+        }
+        else if((response != null) && (response.getHeaders().code() == 201)) {
+            Log.w(TAG,"OPERATION_SUCCESSFUL" );
+            return OPERATION_SUCCESSFUL;
         }
         else {
-            return false;
+            Log.w(TAG, "OPERATION_FAILED");
+            return OPERATION_FAILED;
         }
     }
 
@@ -229,10 +311,11 @@ class Usermanagement {
      * @param email user email
      * @return true if successful
      */
-    boolean resetPassword(String email, Context context) {
+    int resetPassword(String email, Context context) {
+        Log.w(TAG,"Reset Password started");
         JsonObject body = new JsonObject();
         body.addProperty(KEY_EMAIL, email);
-        Future<Response<JsonObject>> future = Ion.with(context)
+        /*Future<Response<JsonObject>> future = Ion.with(context)
                 .load(API_URI+"/password-reset")
                 .setJsonObjectBody(body)
                 .asJsonObject()
@@ -243,7 +326,48 @@ class Usermanagement {
                         Log.w(TAG,String.valueOf(result.getHeaders().code()));
                     }
                 });
-        return future.tryGet().getHeaders().code() == 200;
+        return future.tryGet().getHeaders().code() == 200;*/
+        Response<JsonObject> response = null;
+        try {
+            response = Ion.with(context)
+                    .load(API_URI+"/password-reset")
+                    .setLogging("ResetPwLog", Log.VERBOSE)
+                    .setJsonObjectBody(body)
+                    .asJsonObject()
+                    .withResponse()
+                    .setCallback(new FutureCallback<Response<JsonObject>>() {
+                        @Override
+                        public void onCompleted(Exception e, Response<JsonObject> result) {
+                            if(e != null) {
+                                Log.e(TAG,"Error = " + e.toString());
+                            }
+                            if(result != null) {
+                                Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                            }
+                        }
+                    }).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if(response==null){
+            Log.w(TAG, "Response == null");
+            return NO_INTERNET_CONNECTION;
+        }
+        else if(response.getHeaders().code() == 404) {
+            Log.w(TAG, "COULNDT_REACH_SERVER");
+            return COULDNT_REACH_SERVER;
+        }
+        else if((response != null) && (response.getHeaders().code() == 200)) {
+            Log.w(TAG,"OPERATION_SUCCESSFUL" );
+            return OPERATION_SUCCESSFUL;
+        }
+        else {
+            Log.w(TAG, "OPERATION_FAILED");
+            return OPERATION_FAILED;
+        }
     }
 
     /**
