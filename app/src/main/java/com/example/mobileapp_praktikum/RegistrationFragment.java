@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -70,7 +71,17 @@ public class RegistrationFragment extends Fragment {
             public void onClick(View view) {
                 if (registercheckbox.isChecked() && isValidEmail(mailfield.getText().toString()) && passwordsMatch(passwordfield.getText().toString(), confirmpasswordfield.getText().toString()) &&
                         passwordLength(passwordfield.getText().toString()) && passwordNotEmpty(passwordfield.getText().toString(), confirmpasswordfield.getText().toString())) {
-                    mListener.changeFragment(4);
+                    if(Usermanagement.getInstance().register(mailfield.getText().toString(), passwordfield.getText().toString(),getContext())) {
+                        Toast.makeText(getContext(),"Registrierung erfolgreich", Toast.LENGTH_LONG).show();
+                        mListener.changeFragment(4);
+                    }
+                    else {
+                        Toast.makeText(getContext(),"Account mit dieser E-Mail Adresse existiert bereits", Toast.LENGTH_LONG).show();
+                        mailfield.setText("");
+                        passwordfield.setText("");
+                    }
+
+
                 }
                 if (!isValidEmail(mailfield.getText().toString())) {
                     mailfield.setError("Geben Sie eine valide E-Mail-Adresse an");
