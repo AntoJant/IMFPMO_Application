@@ -55,7 +55,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.framelayout, new LoginFragment()).commit();
 
-
+        //create instance of Usermanagement and check if user is already logged in
+        Usermanagement.createInstance(getApplicationContext());
+        if(Usermanagement.getInstance().isLoggedIn()) {
+            Log.w(TAG, "User is already logged in");
+            changeFragment(3);
+        }
         //Set Dark Theme Switch to "Off" by default:
         navigationView.getMenu().findItem(R.id.nav_dark_theme).setActionView(new Switch(this));
 

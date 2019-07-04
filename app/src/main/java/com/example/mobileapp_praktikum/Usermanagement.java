@@ -1,6 +1,7 @@
 package com.example.mobileapp_praktikum;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.google.gson.JsonObject;
@@ -14,7 +15,7 @@ import java.util.concurrent.ExecutionException;
 class Usermanagement {
     private static final String TAG = Usermanagement.class.getSimpleName();
     private static Usermanagement instance;
-
+    private final Context APPLICATION_CONTEXT;
 
     private String securityToken = "";
     private String userID = "";
@@ -24,13 +25,14 @@ class Usermanagement {
 
     private final String KEY_EMAIL = "email";
     private final String KEY_PASSWORD = "password";
-    private final String KEY_AUTHORIZATION = "Authorization:";
+    private final String KEY_AUTHORIZATION = "Authorization";
 
     //--
     private final String KEY_TOKEN = "token";
     private final String KEY_USER_ID = "id";
     private final String KEY_SHAREDPREFERENCE = "securityTokenPreference";
     private final String KEY_SHAREDPREFERENCE_SECURITYTOKEN = "securityToken";
+    private final String KEY_SHAREDPREFERENCE_USER_ID = "userID";
 
     //--
     static final int OPERATION_SUCCESSFUL = 0;
@@ -38,17 +40,27 @@ class Usermanagement {
     static final int NO_INTERNET_CONNECTION = 2;
     static final int COULDNT_REACH_SERVER = 3;
 
-    private Usermanagement() {
-
+    private Usermanagement(Context context) {
+        APPLICATION_CONTEXT = context;
+        SharedPreferences pref = APPLICATION_CONTEXT.getSharedPreferences(KEY_SHAREDPREFERENCE, 0);
+        setSecurityToken(pref.getString(KEY_SHAREDPREFERENCE_SECURITYTOKEN, ""));
+        Log.w(TAG, "Loaded Securitytoken = " + securityToken);
+        setUserID(pref.getString(KEY_SHAREDPREFERENCE_USER_ID, ""));
+        Log.w(TAG, "Loaded UserID = " + userID);
     }
 
     /**
      * Checks if there currently is a logged in user.
-     * @param context Context of the current activity.
      * @return true - if a user is logged in.
      */
-    boolean isLoggedIn(Context context) {
+    boolean isLoggedIn() {
         return !getSecurityToken().equals("");
+    }
+
+    static void createInstance(Context context) {
+        if(instance == null) {
+            instance = new Usermanagement(context);
+        }
     }
 
     /**
@@ -56,9 +68,7 @@ class Usermanagement {
      * @return Singleton instance of the Usermanagement
      */
     static Usermanagement getInstance() {
-        if(instance == null) {
-            instance = new Usermanagement();
-        }
+        if(instance == null) Log.w(TAG, "Instance is null");
         return instance;
     }
 
@@ -67,61 +77,41 @@ class Usermanagement {
      * @return Security token used to make secured API requests.
      */
     String getSecurityToken() {
-        /*if(securityToken.equals("")) {
-            SharedPreferences pref = context.getSharedPreferences(KEY_SHAREDPREFERENCE, 0);
-            pref.getString(KEY_SHAREDPREFERENCE_SECURITYTOKEN, "");
-        }*/
         return this.securityToken;
     }
 
-    private void setSecurityToken( String token, Context context) {
+    private void setSecurityToken( String token) {
         securityToken = token;
-        /*SharedPreferences pref = context.getSharedPreferences(KEY_SHAREDPREFERENCE, 0);
+        SharedPreferences pref = APPLICATION_CONTEXT.getSharedPreferences(KEY_SHAREDPREFERENCE, 0);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString(KEY_SHAREDPREFERENCE_SECURITYTOKEN, token);
-        editor.apply();*/
+        editor.apply();
+        Log.w(TAG,"Set Securitytoken to " + token);
     }
 
-    private void setUserID( String id, Context context) {
+    private void setUserID( String id) {
         userID = id;
-        /*SharedPreferences pref = context.getSharedPreferences(KEY_SHAREDPREFERENCE, 0);
+        SharedPreferences pref = APPLICATION_CONTEXT.getSharedPreferences(KEY_SHAREDPREFERENCE, 0);
         SharedPreferences.Editor editor = pref.edit();
-        editor.putString(KEY_SHAREDPREFERENCE_SECURITYTOKEN, token);
-        editor.apply();*/
+        editor.putString(KEY_SHAREDPREFERENCE_USER_ID, id);
+        editor.apply();
+        Log.w(TAG, "Set UserID to " + id);
     }
 
 
     /**
      *
-     * @return ID of the currently logged in user.
-     *         String.valueOf(OPERATION_FAILED) if sth went wrong
+     * Fetches the UserID of the currently logged in User and saves it
+     * @return OPERATION_SUCCESSFUL if successful else 1-3
      */
-    String getUserID( Context context) {
-        if(this.userID.equals("")) {
-            if(isLoggedIn(context)) {
-                /*Future<Response<JsonObject>> future = Ion.with(context)
-                        .load(API_URI+"/users/me")
-                        .setHeader(KEY_AUTHORIZATION, getSecurityToken(context))
-                        .asJsonObject()
-                        .withResponse()
-                        .setCallback(new FutureCallback<Response<JsonObject>>() {
-                            @Override
-                            public void onCompleted(Exception e, Response<JsonObject> result) {
-                                Log.w(TAG,String.valueOf(result.getHeaders().code()));
-                            }
-                        });
-                if(future.tryGet().getHeaders().code() == 200) {
-                    this.userID = future.tryGet().getResult().get(KEY_USER_ID).getAsString();
-                }*/
-
-
-
+    private int fetchUserID( Context context) {
+            if(isLoggedIn()) {
                 Response<JsonObject> response = null;
                 try {
                     response = Ion.with(context)
                             .load(API_URI + "/users/me")
                             .setLogging("LoginLog", Log.VERBOSE)
-                            .setHeader(KEY_AUTHORIZATION, getSecurityToken())
+                            .setHeader(KEY_AUTHORIZATION, "Bearer " + getSecurityToken())
                             .asJsonObject()
                             .withResponse()
                             .setCallback(new FutureCallback<Response<JsonObject>>() {
@@ -141,15 +131,39 @@ class Usermanagement {
                     e.printStackTrace();
                 }
 
+                if(response==null){
+                    Log.w(TAG, "Response == null");
+                    return NO_INTERNET_CONNECTION;
+                }
+                else if(response.getResult()==null) {
+                    Log.w(TAG,"json = null");
+                    return COULDNT_REACH_SERVER;
+                }
+                else if(response.getHeaders().code() == 404) {
+                    Log.w(TAG, "COULNDT_REACH_SERVER");
+                    return COULDNT_REACH_SERVER;
+                }
                 if((response != null) && (response.getHeaders().code() == 200 && (response.getResult() != null))) {
                     Log.w(TAG,"UserID = " + response.getResult().get(KEY_USER_ID).getAsString());
-                    setUserID(response.getResult().get(KEY_USER_ID).getAsString(),context);
+                    setUserID(response.getResult().get(KEY_USER_ID).getAsString());
+                    return OPERATION_SUCCESSFUL;
                 }
                 else {
-                    return String.valueOf(OPERATION_FAILED);
+                    Log.w(TAG, "OPERATION_FAILED");
+                    return OPERATION_FAILED;
                 }
             }
-        }
+            else {
+                Log.w(TAG, "User isn't logged in");
+                return OPERATION_FAILED;
+            }
+    }
+
+    /**
+     * @return ID of the currently logged in user.
+     *         String.valueOf(OPERATION_FAILED) if sth went wrong
+     */
+    String getUserID () {
         return this.userID;
     }
 
@@ -163,31 +177,7 @@ class Usermanagement {
         JsonObject body = new JsonObject();
         body.addProperty(KEY_EMAIL, email);
         body.addProperty(KEY_PASSWORD, password);
-        /*Future<Response<JsonObject>> future = Ion.with(context)
-                .load(API_URI+"/token")
-                .setLogging("LoginLog", Log.VERBOSE)
-                .setJsonObjectBody(body)
-                .asJsonObject()
-                .withResponse()
-                .setCallback(new FutureCallback<Response<JsonObject>>() {
-                    @Override
-                    public void onCompleted(Exception e, Response<JsonObject> result) {
-                        Log.w(TAG,String.valueOf(result.getHeaders().code()));
-                        Log.w(TAG, result.getResult().get(KEY_TOKEN).getAsString());
-                    }
-                });
-        while (future.tryGet() == null) {
 
-        }
-        if(future.tryGet().getHeaders().code() == 200) {
-            Log.w(TAG,"future ist nicht null");
-            String token = future.tryGet().getResult().get(KEY_TOKEN).getAsString();
-            this.setSecurityToken(token, context);
-            return true;
-        }
-        else {
-            return false;
-        }*/
         Response<JsonObject> response = null;
         try {
             response = Ion.with(context)
@@ -226,9 +216,16 @@ class Usermanagement {
             return COULDNT_REACH_SERVER;
         }
         else if((response != null) && (response.getHeaders().code() == 200)) {
-            Log.w(TAG,"Token = " + response.getResult().get(KEY_TOKEN).getAsString());
-            setSecurityToken(response.getResult().get(KEY_TOKEN).getAsString(),context);
-            return OPERATION_SUCCESSFUL;
+            Log.w(TAG, "Token = " + response.getResult().get(KEY_TOKEN).getAsString());
+            setSecurityToken(response.getResult().get(KEY_TOKEN).getAsString());
+            int gotUserID = fetchUserID(context);
+            if (gotUserID == OPERATION_SUCCESSFUL) {
+                return OPERATION_SUCCESSFUL;
+            }
+            else {
+                setSecurityToken("");
+                return gotUserID;
+            }
         }
         else {
             Log.w(TAG, "OPERATION_FAILED");
@@ -370,12 +367,15 @@ class Usermanagement {
         }
     }
 
+
+
     /**
      * Deletes the saved security token.
      * @return true if successful
      */
     boolean logout( Context context) {
-        setSecurityToken( "", context);
+        setSecurityToken( "");
+        setUserID("");
         return true;
     }
 }
