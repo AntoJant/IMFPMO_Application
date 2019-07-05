@@ -1,11 +1,13 @@
 package com.example.mobileapp_praktikum;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -75,8 +77,13 @@ public class AnalyseMonatListAdapter extends BaseAdapter {
                 case 11:monat.setText("Dezember" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
             }
 
-            final TextView okoBewertung = (TextView) view.findViewById(R.id.okoBewertungTextView);
-            okoBewertung.setText("3");
+            ImageView okoBewertung = view.findViewById(R.id.okoImageView);
+            switch (ergebnis.getOkoBewertung()){
+                case 1: okoBewertung.setImageResource(R.drawable.red_dot_24dp);break;
+                case 2: okoBewertung.setImageResource(R.drawable.yellow_dot_24dp);break;
+                case 3: okoBewertung.setImageResource(R.drawable.ic_lens_black_24dp);break;
+            }
+
 
             Button button = view.findViewById(R.id.button);
             ViewPager vp = view.findViewById(R.id.viewPager);

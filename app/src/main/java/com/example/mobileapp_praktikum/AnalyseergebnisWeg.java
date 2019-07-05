@@ -7,12 +7,14 @@ public class AnalyseergebnisWeg {
     private ArrayList<AnalyseergebnisFahrt> fahrten;
     private int wegID;
     private Calendar startzeit, endzeit;
-
-    public AnalyseergebnisWeg(ArrayList<AnalyseergebnisFahrt> fahrten, int wegID, Calendar startzeit, Calendar endzeit) {
+    private String startAdresse, endAdresse;
+    public AnalyseergebnisWeg(ArrayList<AnalyseergebnisFahrt> fahrten, int wegID, Calendar startzeit, Calendar endzeit, String startAdresse, String endAdresse) {
         this.fahrten = fahrten;
         this.wegID = wegID;
         this.startzeit = startzeit;
         this.endzeit = endzeit;
+        this.startAdresse = startAdresse;
+        this.endAdresse = endAdresse;
     }
 
     public ArrayList<AnalyseergebnisFahrt> getFahrten() {
@@ -150,5 +152,13 @@ public class AnalyseergebnisWeg {
             bewertung += fahrt.getOkoBewertung();
         }
         return bewertung / fahrten.size();
+    }
+
+    public String getStartAdresse(){
+        return startAdresse;
+    }
+
+    public String getEndAdresse(){
+        return endAdresse;
     }
 }

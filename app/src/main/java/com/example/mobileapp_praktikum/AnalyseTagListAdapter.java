@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.viewpager.widget.ViewPager;
@@ -53,8 +54,12 @@ public class AnalyseTagListAdapter extends BaseAdapter {
             int tag = i;
             int month =  monatAnalyse.getDate().get(Calendar.MONTH) +1 ;
             datum.setText( tag +"."+ month + "." + monatAnalyse.getDate().get(Calendar.YEAR));
-            final TextView okoBewertung = (TextView) view.findViewById(R.id.okoBewertungTextView);
-            okoBewertung.setText("3");
+            ImageView okoBewertung = view.findViewById(R.id.okoImageView);
+            switch ((int) ergebnis.getOkobewertung()){
+                case 1: okoBewertung.setImageResource(R.drawable.red_dot_24dp);break;
+                case 2: okoBewertung.setImageResource(R.drawable.yellow_dot_24dp);break;
+                case 3: okoBewertung.setImageResource(R.drawable.ic_lens_black_24dp);break;
+            }
             ViewPager vp = view.findViewById(R.id.viewPager);
             AnalyseTagDiagramPagerAdapter mp = new AnalyseTagDiagramPagerAdapter(viewGroup.getContext(), ergebnis);
             vp.setAdapter(mp);

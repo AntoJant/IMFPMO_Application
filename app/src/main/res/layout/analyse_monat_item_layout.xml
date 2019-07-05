@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <TextView
@@ -18,29 +20,17 @@
         android:text="Öko Bewertung:"
         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/okoBewertungTextView"
-        android:layout_width="64dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/monatLabel"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="299dp"
-        android:layout_toEndOf="@+id/okoBewertungLabel"
-        android:layout_toRightOf="@+id/okoBewertungLabel"
-        android:textSize="18sp" />
-
     <Button
         android:id="@+id/button"
         android:layout_width="181dp"
         android:layout_height="38dp"
-        android:layout_alignTop="@+id/okoBewertungTextView"
-        android:layout_marginStart="36dp"
+        android:layout_alignTop="@+id/okoBewertungLabel"
+        android:layout_marginStart="108dp"
         android:layout_marginLeft="36dp"
-        android:layout_marginTop="-2dp"
-        android:layout_toEndOf="@+id/okoBewertungTextView"
+        android:layout_marginTop="-1dp"
+        android:layout_toEndOf="@+id/okoBewertungLabel"
         android:layout_toRightOf="@+id/okoBewertungTextView"
-        android:text="Fahrten anzeigen" />
+        android:text="Tage anzeigen" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
@@ -48,5 +38,15 @@
         android:layout_height="297dp"
         android:layout_below="@+id/monatLabel"
         android:layout_marginTop="0dp" />
+
+    <ImageView
+        android:id="@+id/okoImageView"
+        android:layout_width="29dp"
+        android:layout_height="23dp"
+        android:layout_alignTop="@+id/okoBewertungLabel"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="0dp"
+        android:layout_toEndOf="@+id/okoBewertungLabel"
+        tools:srcCompat="@tools:sample/avatars" />
 
 </RelativeLayout>

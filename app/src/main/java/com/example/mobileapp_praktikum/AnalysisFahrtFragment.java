@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
@@ -14,7 +15,8 @@ import java.util.Calendar;
 
 public class AnalysisFahrtFragment extends Fragment {
     private  AnalyseergebnisWeg weg;
-
+    private AnalyseFahrtListAdapter listAdapter;
+    private ListView lv;
     public AnalysisFahrtFragment(AnalyseergebnisWeg weg) {
         this.weg = weg;
     }
@@ -29,10 +31,20 @@ public class AnalysisFahrtFragment extends Fragment {
         BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
-        ListView l = (ListView) view.findViewById(R.id.listview);
-
-        AnalyseFahrtListAdapter listAdapter = new AnalyseFahrtListAdapter(weg);
-        l.setAdapter(listAdapter);
+        lv = (ListView) view.findViewById(R.id.listview);
+        listAdapter = new AnalyseFahrtListAdapter(weg);
+        lv.setAdapter(listAdapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                   klappAus(i);
+            }
+        });
         return view;
+    }
+
+    private void klappAus(int i){
+        listAdapter.setAusgeklappteItems(i);
+        lv.invalidateViews();
     }
 }

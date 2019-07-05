@@ -1,29 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/mainLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:alpha="100"
-    android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/monatLabel"
+    <LinearLayout
+        android:id="@+id/linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Monat"
-        android:textSize="24sp" />
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginRight="15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/startLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Start:"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/endLabel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ende:"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/startZeitTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/endZeitTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textSize="24sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/startAdresseTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/endAdresseTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:textSize="24sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/okoBewertungLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/viewPager"
+        android:layout_marginTop="7dp"
+        android:text="Öko Bewertung:"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/okoImageView"
+        android:layout_width="29dp"
+        android:layout_height="23dp"
+        android:layout_alignTop="@+id/okoBewertungLabel"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="0dp"
+        android:layout_toEndOf="@+id/okoBewertungLabel" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="181dp"
+        android:layout_height="38dp"
+        android:layout_alignTop="@+id/okoBewertungLabel"
+        android:layout_marginStart="105dp"
+        android:layout_marginLeft="33dp"
+        android:layout_marginTop="0dp"
+        android:layout_toEndOf="@+id/okoBewertungLabel"
+        android:layout_toRightOf="@+id/okoBewertungTextView"
+        android:text="Fahrten anzeigen" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="297dp"
-        android:layout_below="@+id/monatLabel"
+        android:layout_below="@+id/linear"
         android:layout_marginTop="0dp" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Fahrten einblenden" />
-
-</LinearLayout>
+</RelativeLayout>

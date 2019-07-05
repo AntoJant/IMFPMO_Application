@@ -37,7 +37,7 @@ public class AnalyseRandomErgebnisMaker {
         }
         int fahrtID = random.nextInt(1001);
         int wegID = random.nextInt(1001);
-        int okoBewertung = random.nextInt(2) + 1;
+        int okoBewertung = random.nextInt(3)+1;
         int cO2 = random.nextInt(100000);
         Calendar startZeit = new GregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         startZeit.set(Calendar.HOUR, random.nextInt(23) + 1);
@@ -71,7 +71,7 @@ public class AnalyseRandomErgebnisMaker {
 
         Calendar endZeit = new GregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH),c.get(Calendar.DAY_OF_MONTH));
         endZeit.add(Calendar.HOUR, 1);
-        return new AnalyseergebnisWeg(fahrten,new Random().nextInt(1000),startZeit,endZeit);
+        return new AnalyseergebnisWeg(fahrten,new Random().nextInt(1000),startZeit,endZeit, randomString() ,randomString());
     }
 
     public static AnalyseergebnisTag makeTag(Calendar date){

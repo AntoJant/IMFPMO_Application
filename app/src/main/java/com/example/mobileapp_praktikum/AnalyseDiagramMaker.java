@@ -5,14 +5,12 @@ import android.view.View;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -25,8 +23,10 @@ import java.util.List;
 public class AnalyseDiagramMaker {
     public static PieChart makeGesamtCO2Diagramm(int autoCO2, int opnvCO2, PieChart pieChart){
         List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(autoCO2, "Auto"));
-        entries.add(new PieEntry(opnvCO2, "ÖPNV"));
+        if(autoCO2 != 0)
+            entries.add(new PieEntry(autoCO2, "Auto"));
+        if (opnvCO2 != 0)
+            entries.add(new PieEntry(opnvCO2, "ÖPNV"));
 
         PieDataSet set = new PieDataSet(entries, "CO2-Ausstoss");
         set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200)}, 70);
@@ -46,10 +46,12 @@ public class AnalyseDiagramMaker {
 
     public static PieChart makeGesamtDistanzDiagramm(int autoDistanz, int opnvDistanz, int fahrradDistanz, PieChart pieChart){
         List<PieEntry> entries = new ArrayList<>();
-
-        entries.add(new PieEntry(autoDistanz, "Auto"));
-        entries.add(new PieEntry(opnvDistanz, "ÖPNV"));
-        entries.add(new PieEntry(fahrradDistanz, "Fahrrad"));
+        if(autoDistanz != 0)
+            entries.add(new PieEntry(autoDistanz, "Auto"));
+        if(opnvDistanz != 0)
+            entries.add(new PieEntry(opnvDistanz, "ÖPNV"));
+        if(fahrradDistanz != 0)
+            entries.add(new PieEntry(fahrradDistanz, "Fahrrad"));
 
 
         PieDataSet set = new PieDataSet(entries, "Distanz");
@@ -70,10 +72,14 @@ public class AnalyseDiagramMaker {
 
     public static PieChart makeGesamtZeitDiagramm(int autoZeit, int opnvZeit, int fahrradZeit, PieChart pieChart){
         List<PieEntry> entries = new ArrayList<>();
+        if(autoZeit != 0)
+            entries.add(new PieEntry(autoZeit, "Auto"));
 
-        entries.add(new PieEntry(autoZeit, "Auto"));
-        entries.add(new PieEntry(opnvZeit, "ÖPNV"));
-        entries.add(new PieEntry(fahrradZeit, "Fahrrad"));
+        if(opnvZeit != 0)
+            entries.add(new PieEntry(opnvZeit, "ÖPNV"));
+
+        if(fahrradZeit != 0)
+            entries.add(new PieEntry(fahrradZeit, "Fahrrad"));
 
 
         PieDataSet set = new PieDataSet(entries, "Zeit");
@@ -218,10 +224,14 @@ public class AnalyseDiagramMaker {
 
     public static PieChart makeTagGesamtZeitPieChart(final AnalyseergebnisTag tag, PieChart pieChart){
         List<PieEntry> entries = new ArrayList<>();
+        if(tag.getAutoDauer() != 0)
+            entries.add(new PieEntry(tag.getAutoDauer(), "Auto"));
 
-        entries.add(new PieEntry(tag.getAutoDauer(), "Auto"));
-        entries.add(new PieEntry(tag.getOpnvDauer(), "ÖPNV"));
-        entries.add(new PieEntry(tag.getFahrradDauer(), "Fahrrad"));
+        if(tag.getOpnvDauer() != 0)
+            entries.add(new PieEntry(tag.getOpnvDauer(), "ÖPNV"));
+
+        if(tag.getFahrradDauer() != 0)
+            entries.add(new PieEntry(tag.getFahrradDauer(), "Fahrrad"));
 
 
         PieDataSet set = new PieDataSet(entries, "Zeit");
@@ -242,9 +252,14 @@ public class AnalyseDiagramMaker {
     public static PieChart makeTagGesamtCO2PieChart(final AnalyseergebnisTag tag, PieChart pieChart){
         List<PieEntry> entries = new ArrayList<>();
 
-        entries.add(new PieEntry(tag.getAutoCO2Austoss(), "Auto"));
-        entries.add(new PieEntry(tag.getOpnvCO2Austoss(), "ÖPNV"));
-        entries.add(new PieEntry(tag.getFahrradCO2Austoss(), "Fahrrad"));
+        if(tag.getAutoCO2Austoss() != 0)
+            entries.add(new PieEntry(tag.getAutoCO2Austoss(), "Auto"));
+
+        if(tag.getOpnvCO2Austoss() != 0)
+            entries.add(new PieEntry(tag.getOpnvCO2Austoss(), "ÖPNV"));
+
+        if(tag.getFahrradCO2Austoss() != 0)
+            entries.add(new PieEntry(tag.getFahrradCO2Austoss(), "Fahrrad"));
 
 
         PieDataSet set = new PieDataSet(entries, "CO2");
@@ -265,9 +280,14 @@ public class AnalyseDiagramMaker {
     public static PieChart makeTagGesamtDistanzPieChart(final AnalyseergebnisTag tag, PieChart pieChart){
         List<PieEntry> entries = new ArrayList<>();
 
-        entries.add(new PieEntry(tag.getAutoDistanz(), "Auto"));
-        entries.add(new PieEntry(tag.getOpnvDistanz(), "ÖPNV"));
-        entries.add(new PieEntry(tag.getFahrradDistanz(), "Fahrrad"));
+        if(tag.getAutoDistanz() != 0)
+            entries.add(new PieEntry(tag.getAutoDistanz(), "Auto"));
+
+        if(tag.getOpnvDistanz() != 0)
+            entries.add(new PieEntry(tag.getOpnvDistanz(), "ÖPNV"));
+
+        if(tag.getFahrradDistanz() != 0)
+            entries.add(new PieEntry(tag.getFahrradDistanz(), "Fahrrad"));
 
 
         PieDataSet set = new PieDataSet(entries, "Distanz");

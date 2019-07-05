@@ -48,8 +48,11 @@ public class AnalyseWegListAdapter extends BaseAdapter {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_weg_item_layout, viewGroup,false);
         }
         final AnalyseergebnisWeg ergebnis = (AnalyseergebnisWeg) getItem(i);
-        TextView datum = view.findViewById(R.id.monatLabel);
-        Button b = view.findViewById(R.id.button);
+        TextView startZeit = (TextView) view.findViewById(R.id.startZeitTextView);
+        TextView endZeit = (TextView)view.findViewById(R.id.endZeitTextView);
+        TextView startPunkt = (TextView)view.findViewById(R.id.startAdresseTextView);
+        TextView endPunkt = (TextView)view.findViewById(R.id.endAdresseTextView);
+        Button b = (Button) view.findViewById(R.id.button);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -57,6 +60,17 @@ public class AnalyseWegListAdapter extends BaseAdapter {
                 activity.changeToAnalyseFahrtFragment(ergebnis);
             }
         });
+        startZeit.setText(ergebnis.getStartzeit().get(Calendar.HOUR_OF_DAY) + "." + ergebnis.getStartzeit().get(Calendar.MINUTE) );
+        endZeit.setText(ergebnis.getEndzeit().get(Calendar.HOUR_OF_DAY) + "." +ergebnis.getEndzeit().get(Calendar.MINUTE));
+        startPunkt.setText(ergebnis.getStartAdresse());
+        endPunkt.setText(ergebnis.getEndAdresse());
+        ImageView okoBewertung = view.findViewById(R.id.okoImageView);
+        switch ((int) ergebnis.getOkobewertung()){
+            case 1: okoBewertung.setImageResource(R.drawable.red_dot_24dp);break;
+            case 2: okoBewertung.setImageResource(R.drawable.yellow_dot_24dp);break;
+            case 3: okoBewertung.setImageResource(R.drawable.ic_lens_black_24dp);break;
+        }
+
         ViewPager vp = view.findViewById(R.id.viewPager);
         AnalyseWegDiagramPagerAdapter mp = new AnalyseWegDiagramPagerAdapter(viewGroup.getContext(), ergebnis);
         vp.setAdapter(mp);
