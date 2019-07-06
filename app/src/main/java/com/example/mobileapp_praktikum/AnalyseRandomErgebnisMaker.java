@@ -11,7 +11,7 @@ public class AnalyseRandomErgebnisMaker {
     public static AnalyseergebnisFahrt makeFahrt(Calendar c){
         Random random =new Random();
         FahrtModi modi = FahrtModi.OPNV;
-        switch (random.nextInt(3)) {
+        switch (random.nextInt(4)) {
             case 0:
                 modi = FahrtModi.AUTO;
                 break;
@@ -21,10 +21,12 @@ public class AnalyseRandomErgebnisMaker {
             case 2:
                 modi = FahrtModi.FAHRRAD;
                 break;
+            case 3:
+                modi = FahrtModi.WALK;
         }
 
         FahrtModi alternativModi = FahrtModi.OPNV;
-        switch (random.nextInt(3)) {
+        switch (random.nextInt(4)) {
             case 0:
                 alternativModi = FahrtModi.AUTO;
                 break;
@@ -33,6 +35,8 @@ public class AnalyseRandomErgebnisMaker {
                 break;
             case 2:
                 alternativModi = FahrtModi.FAHRRAD;
+                break;
+            case 3:alternativModi = FahrtModi.WALK;
                 break;
         }
         int fahrtID = random.nextInt(1001);
@@ -56,7 +60,7 @@ public class AnalyseRandomErgebnisMaker {
 
         int alternativerZeitAufwand = dauer - 1;
 
-        AnalyseergebnisFahrt fahrt = new AnalyseergebnisFahrt(fahrtID,wegID,modi,alternativModi, okoBewertung, cO2, dauer ,startZeit, endZeit, startadresse,endadresse, distanz ,alternativerZeitAufwand);
+        AnalyseergebnisFahrt fahrt = new AnalyseergebnisFahrt(wegID,modi,alternativModi, okoBewertung, cO2, dauer ,startZeit, endZeit, startadresse,endadresse, distanz ,alternativerZeitAufwand);
 
         return fahrt;
     }
@@ -91,7 +95,7 @@ public class AnalyseRandomErgebnisMaker {
         for(int i = 1; i <= a.getMaximum(Calendar.DAY_OF_MONTH); i++){
             tage.add(makeTag(new GregorianCalendar(a.get(Calendar.YEAR), a.get(Calendar.MONTH),i)));
         }
-        return  new AnalyseergebnisMonat(random.nextInt(1000), random.nextInt(1000), a, random.nextInt(1000),  random.nextInt(1000), random.nextInt(1000), random.nextInt(1000), random.nextInt(2)+1,tage);
+        return  new AnalyseergebnisMonat(random.nextInt(1000), random.nextInt(1000), a, random.nextInt(1000),  random.nextInt(1000), random.nextInt(1000), random.nextInt(1000), random.nextInt(1000),random.nextInt(2)+1,tage);
     }
 
     public static ArrayList<AnalyseergebnisMonat> getYear(){

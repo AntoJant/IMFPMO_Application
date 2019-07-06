@@ -26,10 +26,15 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Objects;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener, DrawerLocker {
 
@@ -108,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //should be on LoggedInActivity or onPhoneBoot
         //startService(new Intent(this, LocationUpdatesService.class));
         //Sachen für die AnalyseDarstellung
-        setAnalyseErgebnisse(12);
+        setAnalyseErgebnisse(3);
     }
 
     public void FragmentListener(BottomNavigationView bottomNav) {
@@ -367,6 +372,102 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setAnalyseErgebnisse(int monat){
         analyseErgebnisse = AnalyseRandomErgebnisMaker.getYear();
     }
+    public ArrayList<AnalyseergebnisMonat> getAnalyseMonate(int lastMonat){
+        Usermanagement usermanagement = Usermanagement.getInstance();
+        JsonObject ergebnisObject = usermanagement.getAnalyseErgebnisse(this);
+        ArrayList<AnalyseergebnisMonat> monate = new ArrayList<>();
+        JsonArray array = ergebnisObject.getAsJsonArray("results");
+        for(int i = 0; i < lastMonat; i++){
+            int id = array.get(i).getAsJsonObject().get("id").getAsInt();
+            Calendar monat = getCalendarDate(array.get(i).getAsJsonObject().get("timestamp").getAsString());
+            monate.add(getAnalyseMonat(monat, id));
+        }
+        return monate;
+    }
+
+    public AnalyseergebnisMonat getAnalyseMonat(Calendar monat, int analysisid){
+        Usermanagement usermanagement = Usermanagement.getInstance();
+        JsonObject analyseObject = usermanagement.getAnalyseErgebnis(this, analysisid);
+        ArrayList<AnalyseergebnisTag> analyseergebnisTags = new ArrayList<>();
+        int cMonat = monat.get(Calendar.MONTH);
+        int cYear = monat.get(Calendar.YEAR);
+        for(int i=1; i <= monat.getActualMaximum(Calendar.DAY_OF_MONTH); i++){
+            analyseergebnisTags.add(getAnaylseTag(new GregorianCalendar(cYear, cMonat, i)));
+        }
+        int car = analyseObject.get("car").getAsInt();
+        int bike = analyseObject.get("bike").getAsInt();
+        int opnv = analyseObject.get("opnv").getAsInt();
+        int fuss = analyseObject.get("foot").getAsInt();
+        String besteAlternative = analyseObject.get("bestAlternative").getAsString();
+        int emmisionen = analyseObject.get("emissions").getAsInt();
+        String ampel = analyseObject.get("ampel").getAsString();
+        int okoBewertung = 1;
+        switch (ampel){
+            case "red": okoBewertung = 1;
+            case "yellow": okoBewertung = 2;
+            case "green" : okoBewertung = 3;
+        }
+
+        return new AnalyseergebnisMonat(1, analysisid, monat, bike, opnv,car,fuss, emmisionen, okoBewertung, analyseergebnisTags);
+    }
+
+    public AnalyseergebnisTag getAnaylseTag(Calendar tag){
+        Usermanagement usermanagement = Usermanagement.getInstance();
+        JsonObject tagObject = usermanagement.getAnalyseErgebnisseTag(this,tag);
+        JsonArray wegArray = tagObject.get("paths").getAsJsonArray();
+        ArrayList<AnalyseergebnisWeg> wege = new ArrayList<>();
+        for(int i = 0; i < wegArray.size(); i++){
+            JsonObject wegObject = wegArray.get(i).getAsJsonObject();
+            int wegID = wegObject.get("id").getAsInt();
+            wege.add(getAnalyseWeg(wegID));
+        }
+        return  new AnalyseergebnisTag(wege,tag);
+    }
+
+    public AnalyseergebnisWeg getAnalyseWeg(int wegId){
+        Usermanagement usermanagement = Usermanagement.getInstance();
+        JsonObject weg = usermanagement.getAnalyseErgebnisWeg(this, Integer.toString(wegId));
+        JsonArray fahten = weg.getAsJsonArray("rides");
+        JsonObject wegStart = weg.get("start").getAsJsonObject();
+        JsonObject wegEnd = weg.get("end").getAsJsonObject();
+        ArrayList<AnalyseergebnisFahrt> fahrtenArray = new ArrayList<>();
+        for(int i = 0; i < fahten.size(); i++){
+
+            JsonObject fahrt = fahten.get(i).getAsJsonObject();
+            JsonObject start = fahrt.getAsJsonObject("start");
+            JsonObject ende = fahrt.getAsJsonObject("end");
+
+            //int distanz = fahrt.get("distance").getAsInt();
+            int distanz = new Random().nextInt(100);
+            String mode = fahrt.get("mode").getAsString();
+            int emissions = fahrt.get("emissions").getAsInt();
+            String ampel = fahrt.get("ampel").getAsString();
+            String startName = start.get("name").getAsString();
+            String endName = ende.get("name").getAsString();
+            Calendar startDate = getCalendarDate(start.get("timestamp").getAsString());
+            Calendar endDate =  getCalendarDate(ende.get("timestamp").getAsString());
+            FahrtModi modi;
+            switch (mode){
+                case "car": modi = FahrtModi.AUTO;break;
+                case "opnv": modi = FahrtModi.OPNV;break;
+                case "train": modi = FahrtModi.OPNV; break;
+                case "bus" : modi = FahrtModi.OPNV; break;
+                case "walk": modi = FahrtModi.WALK;break;
+                case "bike": modi = FahrtModi.FAHRRAD;break;
+                default: modi = FahrtModi.FAHRRAD;
+            }
+            int okoBewertung = 1;
+            switch (ampel){
+                case "red": okoBewertung = 1;
+                case "yellow": okoBewertung = 2;
+                case "green" : okoBewertung = 3;
+            }
+            int dauerStunde = startDate.get(Calendar.HOUR_OF_DAY)-endDate.get(Calendar.HOUR_OF_DAY);
+            int dauerMinute = Math.abs(startDate.get(Calendar.MINUTE)-endDate.get(Calendar.MINUTE));
+            fahrtenArray.add(new AnalyseergebnisFahrt(wegId, modi, FahrtModi.WALK, okoBewertung, emissions,dauerStunde *60+dauerMinute,startDate,endDate,startName,endName, distanz, 1));
+        }
+        return new AnalyseergebnisWeg(fahrtenArray, wegId, getCalendarDate(wegStart.get("timestamp").getAsString()), getCalendarDate(wegEnd.get("timestamp").getAsString()), wegStart.get("name").getAsString(), wegEnd.get("name").getAsString());
+    }
 
     public void changeToAnalyseMonatFragment(Calendar monat){
         int i = -1;
@@ -418,4 +519,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return analyseErgebnisse;
     }
 
+    public Calendar getCalendarDate(String date){
+        return new GregorianCalendar(Integer.parseInt(date.substring(0,4)),Integer.parseInt(date.substring(5,7))-1,Integer.parseInt(date.substring(8,10)),Integer.parseInt(date.substring(11,13)),Integer.parseInt(date.substring(14,16)));
+    }
 }

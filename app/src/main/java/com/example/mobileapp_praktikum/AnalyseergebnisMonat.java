@@ -6,17 +6,18 @@ import java.util.Calendar;
 public class AnalyseergebnisMonat {
     private int userID, analysID;
     private Calendar date;
-    private int zeitFahrrad, zeitOpnv, zeitAuto;
+    private int zeitFahrrad, zeitOpnv, zeitAuto, zeitFuss;
     private int gesamtCO2, okoBewertung;
     private ArrayList<AnalyseergebnisTag> tage;
 
-    public AnalyseergebnisMonat(int userID, int analysID, Calendar date, int zeitFahrrad, int zeitOpnv, int zeitAuto, int gesamtCO2, int okoBewertung, ArrayList<AnalyseergebnisTag> tage) {
+    public AnalyseergebnisMonat(int userID, int analysID, Calendar date, int zeitFahrrad, int zeitOpnv, int zeitAuto,int zeitFuss, int gesamtCO2, int okoBewertung, ArrayList<AnalyseergebnisTag> tage) {
         this.userID = userID;
         this.analysID = analysID;
         this.date = date;
         this.zeitFahrrad = zeitFahrrad;
         this.zeitOpnv = zeitOpnv;
         this.zeitAuto = zeitAuto;
+        this.zeitFuss = zeitFuss;
         this.gesamtCO2 = gesamtCO2;
         this.okoBewertung = okoBewertung;
         this.tage = tage;
@@ -45,6 +46,7 @@ public class AnalyseergebnisMonat {
     public int getZeitAuto() {
         return zeitAuto;
     }
+    public int getZeitFuss(){return zeitFuss;}
 
     public int getGesamtCO2() {
         return gesamtCO2;
@@ -113,6 +115,14 @@ public class AnalyseergebnisMonat {
         }
         return distanz;
     }
+    public int getFussDistanz(){
+        int distanz = 0;
+        for (AnalyseergebnisTag tag:tage){
+            distanz += tag.getFussDistanz();
+        }
+        return distanz;
+    }
+
 
 
 

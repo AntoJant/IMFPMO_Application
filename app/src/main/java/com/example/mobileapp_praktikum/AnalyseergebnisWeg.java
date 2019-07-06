@@ -70,6 +70,15 @@ public class AnalyseergebnisWeg {
         return cO2;
     }
 
+    public int getFussCO2Austoss(){
+        int cO2 = 0;
+        for (AnalyseergebnisFahrt fahrt : fahrten){
+            if(fahrt.getModi() == FahrtModi.WALK){
+                cO2 += fahrt.getcO2Austoss();
+            }
+        }
+        return cO2;
+    }
 
     public int getDistanz(){
         int distanz = 0;
@@ -109,6 +118,16 @@ public class AnalyseergebnisWeg {
         return distanz;
     }
 
+    public int getFussDistanz(){
+        int distanz = 0;
+        for (AnalyseergebnisFahrt fahrt : fahrten){
+            if(fahrt.getModi() == FahrtModi.WALK){
+                distanz += fahrt.getDistanz();
+            }
+        }
+        return distanz;
+    }
+
     public int getDauer(){
         int dauer = 0;
         for (AnalyseergebnisFahrt fahrt:fahrten)
@@ -126,6 +145,15 @@ public class AnalyseergebnisWeg {
         return dauer;
     }
 
+    public int getFussDauer(){
+        int dauer = 0;
+        for (AnalyseergebnisFahrt fahrt : fahrten){
+            if(fahrt.getModi() == FahrtModi.WALK){
+                dauer += fahrt.getDauer();
+            }
+        }
+        return dauer;
+    }
 
     public int getFahrradDauer(){
         int dauer = 0;
@@ -136,6 +164,7 @@ public class AnalyseergebnisWeg {
         }
         return dauer;
     }
+
     public int getOpnvDauer(){
         int dauer = 0;
         for (AnalyseergebnisFahrt fahrt : fahrten){

@@ -53,6 +53,13 @@ public class AnalyseergebnisTag {
         return cO2;
     }
 
+    public int getFussCO2Austoss(){
+        int cO2 = 0;
+        for (AnalyseergebnisWeg  weg: wege){
+            cO2 += weg.getFussCO2Austoss();
+        }
+        return cO2;
+    }
 
     public int getDistanz(){
         int distanz = 0;
@@ -86,6 +93,14 @@ public class AnalyseergebnisTag {
         return distanz;
     }
 
+    public int getFussDistanz(){
+        int distanz = 0;
+        for (AnalyseergebnisWeg weg : wege){
+            distanz += weg.getFussDistanz();
+        }
+        return distanz;
+    }
+
     public int getDauer(){
         int dauer = 0;
         for (AnalyseergebnisWeg weg:wege)
@@ -109,10 +124,19 @@ public class AnalyseergebnisTag {
         }
         return dauer;
     }
+
     public int getOpnvDauer(){
         int dauer = 0;
         for (AnalyseergebnisWeg weg: wege){
                 dauer += weg.getOpnvDauer();
+        }
+        return dauer;
+    }
+
+    public int getFussDauer(){
+        int dauer = 0;
+        for (AnalyseergebnisWeg weg: wege){
+            dauer += weg.getFussDauer();
         }
         return dauer;
     }

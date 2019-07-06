@@ -44,7 +44,7 @@ public class AnalyseDiagramMaker {
         return pieChart;
     }
 
-    public static PieChart makeGesamtDistanzDiagramm(int autoDistanz, int opnvDistanz, int fahrradDistanz, PieChart pieChart){
+    public static PieChart makeGesamtDistanzDiagramm(int autoDistanz, int opnvDistanz, int fahrradDistanz,int fussDistanz, PieChart pieChart){
         List<PieEntry> entries = new ArrayList<>();
         if(autoDistanz != 0)
             entries.add(new PieEntry(autoDistanz, "Auto"));
@@ -52,10 +52,13 @@ public class AnalyseDiagramMaker {
             entries.add(new PieEntry(opnvDistanz, "ÖPNV"));
         if(fahrradDistanz != 0)
             entries.add(new PieEntry(fahrradDistanz, "Fahrrad"));
+        if(fussDistanz != 0){
+            entries.add(new PieEntry(fussDistanz, "zu Fuß"));
+        }
 
 
         PieDataSet set = new PieDataSet(entries, "Distanz");
-        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200)}, 70);
+        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200),Color.rgb(0,200,200)}, 70);
         PieData data = new PieData(set);
 
         pieChart.setData(data);
@@ -70,8 +73,9 @@ public class AnalyseDiagramMaker {
         return pieChart;
     }
 
-    public static PieChart makeGesamtZeitDiagramm(int autoZeit, int opnvZeit, int fahrradZeit, PieChart pieChart){
+    public static PieChart makeGesamtZeitDiagramm(int autoZeit, int opnvZeit, int fahrradZeit,int fuss, PieChart pieChart){
         List<PieEntry> entries = new ArrayList<>();
+
         if(autoZeit != 0)
             entries.add(new PieEntry(autoZeit, "Auto"));
 
@@ -81,9 +85,12 @@ public class AnalyseDiagramMaker {
         if(fahrradZeit != 0)
             entries.add(new PieEntry(fahrradZeit, "Fahrrad"));
 
+        if(fuss != 0){
+            entries.add(new PieEntry(fuss, "zu Fuß"));
+        }
 
         PieDataSet set = new PieDataSet(entries, "Zeit");
-        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200)}, 70);
+        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200),Color.rgb(0,200,200)}, 70);
         PieData data = new PieData(set);
 
         pieChart.setData(data);
@@ -144,12 +151,12 @@ public class AnalyseDiagramMaker {
         int lastIndex = monate.size()-1;
 
         for (int i = 0; i < monate.size(); i++) {
-            entries.add(new BarEntry(i, new float[]{monate.get(lastIndex - i).getAutoDistanz(), monate.get(lastIndex - i).getOpnvDistanz(), monate.get(lastIndex - i).getFahrradDistanz()}));
+            entries.add(new BarEntry(i, new float[]{monate.get(lastIndex - i).getAutoDistanz(), monate.get(lastIndex - i).getOpnvDistanz(), monate.get(lastIndex - i).getFahrradDistanz(),monate.get(lastIndex-1).getFussDistanz()}));
         }
         BarDataSet set = new BarDataSet(entries, "Gesamt Distanz");
-        set.setStackLabels(new String[]{"Auto","ÖPNV","Fahrrad"});
+        set.setStackLabels(new String[]{"Auto","ÖPNV","Fahrrad","zu Fuß"});
         set.setDrawIcons(false);
-        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0), Color.rgb(0,0,200)}, 70);
+        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0), Color.rgb(0,0,200),Color.rgb(0,200,200)}, 70);
         set.setDrawValues(false);
         BarData barData = new BarData(set);
 
@@ -185,12 +192,12 @@ public class AnalyseDiagramMaker {
         int lastIndex = monate.size()-1;
 
         for (int i = 0; i < monate.size(); i++) {
-            entries.add(new BarEntry(i, new float[]{monate.get(lastIndex - i).getZeitAuto(), monate.get(lastIndex - i).getZeitOpnv(), monate.get(lastIndex - i).getZeitFahrrad()}));
+            entries.add(new BarEntry(i, new float[]{monate.get(lastIndex - i).getZeitAuto(), monate.get(lastIndex - i).getZeitOpnv(), monate.get(lastIndex - i).getZeitFahrrad(),monate.get(lastIndex - i).getZeitFuss()}));
         }
         BarDataSet set = new BarDataSet(entries, "Gesamt Zeit");
-        set.setStackLabels(new String[]{"Auto","ÖPNV","Fahrrad"});
+        set.setStackLabels(new String[]{"Auto","ÖPNV","Fahrrad", "zu Fuß"});
         set.setDrawIcons(false);
-        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0), Color.rgb(0,0,200)}, 70);
+        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0), Color.rgb(0,0,200),Color.rgb(0,200,200)}, 70);
         set.setDrawValues(false);
         BarData barData = new BarData(set);
 
@@ -233,9 +240,12 @@ public class AnalyseDiagramMaker {
         if(tag.getFahrradDauer() != 0)
             entries.add(new PieEntry(tag.getFahrradDauer(), "Fahrrad"));
 
+        if(tag.getFussDauer() != 0){
+            entries.add(new PieEntry(tag.getFussDauer(), "zu Fuß"));
+        }
 
         PieDataSet set = new PieDataSet(entries, "Zeit");
-        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200)}, 70);
+        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200),Color.rgb(0,200,200)}, 70);
         PieData data = new PieData(set);
 
         pieChart.setData(data);
@@ -261,9 +271,11 @@ public class AnalyseDiagramMaker {
         if(tag.getFahrradCO2Austoss() != 0)
             entries.add(new PieEntry(tag.getFahrradCO2Austoss(), "Fahrrad"));
 
-
+        if(tag.getFussCO2Austoss() != 0){
+            entries.add(new PieEntry(tag.getFussCO2Austoss(), "zu Fuß"));
+        }
         PieDataSet set = new PieDataSet(entries, "CO2");
-        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200)}, 70);
+        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200),Color.rgb(0,200,200)}, 70);
         PieData data = new PieData(set);
 
         pieChart.setData(data);
@@ -289,9 +301,11 @@ public class AnalyseDiagramMaker {
         if(tag.getFahrradDistanz() != 0)
             entries.add(new PieEntry(tag.getFahrradDistanz(), "Fahrrad"));
 
+        if(tag.getFussDistanz() != 0)
+            entries.add(new PieEntry(tag.getFahrradDistanz(), "zu Fuß"));
 
         PieDataSet set = new PieDataSet(entries, "Distanz");
-        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200)}, 70);
+        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200),Color.rgb(0,200,200)}, 70);
         PieData data = new PieData(set);
 
         pieChart.setData(data);
@@ -307,14 +321,20 @@ public class AnalyseDiagramMaker {
 
     public static PieChart makeWegGesamtZeitPieChart(final AnalyseergebnisWeg weg, PieChart pieChart){
         List<PieEntry> entries = new ArrayList<>();
+        if(weg.getAutoDauer() != 0){
+            entries.add(new PieEntry(weg.getAutoDauer(), "Auto"));
+        }
+        if(weg.getOpnvDauer() != 0)
+            entries.add(new PieEntry(weg.getOpnvDauer(), "ÖPNV"));
 
-        entries.add(new PieEntry(weg.getAutoDauer(), "Auto"));
-        entries.add(new PieEntry(weg.getOpnvDauer(), "ÖPNV"));
-        entries.add(new PieEntry(weg.getFahrradDauer(), "Fahrrad"));
+        if(weg.getFahrradDauer() != 0)
+            entries.add(new PieEntry(weg.getFahrradDauer(), "Fahrrad"));
 
+        if(weg.getFussDauer() != 0)
+            entries.add(new PieEntry(weg.getFussDauer(), "Fahrrad"));
 
         PieDataSet set = new PieDataSet(entries, "Zeit");
-        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200)}, 70);
+        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200),Color.rgb(0,200,200)}, 70);
         PieData data = new PieData(set);
 
         pieChart.setData(data);
@@ -331,13 +351,24 @@ public class AnalyseDiagramMaker {
     public static PieChart makeWegGesamtCO2PieChart(final AnalyseergebnisWeg weg, PieChart pieChart){
         List<PieEntry> entries = new ArrayList<>();
 
-        entries.add(new PieEntry(weg.getAutoCO2Austoss(), "Auto"));
-        entries.add(new PieEntry(weg.getOpnvCO2Austoss(), "ÖPNV"));
-        entries.add(new PieEntry(weg.getFahrradCO2Austoss(), "Fahrrad"));
+        if(weg.getAutoCO2Austoss() != 0){
+            entries.add(new PieEntry(weg.getAutoCO2Austoss(), "Auto"));
+        }
+        if(weg.getOpnvCO2Austoss() != 0) {
+            entries.add(new PieEntry(weg.getOpnvCO2Austoss(), "ÖPNV"));
+        }
+
+        if(weg.getFahrradCO2Austoss() != 0){
+            entries.add(new PieEntry(weg.getFahrradCO2Austoss(), "Fahrrad"));
+        }
+
+        if(weg.getFussCO2Austoss() != 0){
+            entries.add(new PieEntry(weg.getFussCO2Austoss(), "zu Fuss"));
+        }
 
 
         PieDataSet set = new PieDataSet(entries, "CO2");
-        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200)}, 70);
+        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200),Color.rgb(0,200,200)}, 70);
         PieData data = new PieData(set);
 
         pieChart.setData(data);
@@ -354,13 +385,23 @@ public class AnalyseDiagramMaker {
     public static PieChart makeWegGesamtDistanzPieChart(final AnalyseergebnisWeg weg, PieChart pieChart){
         List<PieEntry> entries = new ArrayList<>();
 
-        entries.add(new PieEntry(weg.getAutoDistanz(), "Auto"));
-        entries.add(new PieEntry(weg.getOpnvDistanz(), "ÖPNV"));
-        entries.add(new PieEntry(weg.getFahrradDistanz(), "Fahrrad"));
+        if(weg.getAutoDistanz() != 0){
+            entries.add(new PieEntry(weg.getAutoDistanz(), "Auto"));
+        }
+        if(weg.getOpnvDistanz() != 0){
+            entries.add(new PieEntry(weg.getOpnvDistanz(), "ÖPNV"));
+        }
+        if(weg.getFahrradDistanz() != 0){
+            entries.add(new PieEntry(weg.getFahrradDistanz(), "Fahrrad"));
+        }
+
+        if(weg.getFussDistanz() != 0){
+            entries.add(new PieEntry(weg.getFussDistanz(), "Fahrrad"));
+        }
 
 
         PieDataSet set = new PieDataSet(entries, "Distanz");
-        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200)}, 70);
+        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0),Color.rgb(0,0,200),Color.rgb(0,200,200)}, 70);
         PieData data = new PieData(set);
 
         pieChart.setData(data);
@@ -416,12 +457,12 @@ public class AnalyseDiagramMaker {
     public static BarChart makeTagGesamtDistanzBarChart(final ArrayList<AnalyseergebnisTag> tage, BarChart barChart) {
         List<BarEntry> entries = new ArrayList<>();
         for (int i = 0; i < tage.size(); i++) {
-            entries.add(new BarEntry(i, new float[]{tage.get(i).getAutoDistanz(), tage.get(i).getOpnvDistanz(),tage.get(i).getFahrradDistanz()}));
+            entries.add(new BarEntry(i, new float[]{tage.get(i).getAutoDistanz(), tage.get(i).getOpnvDistanz(),tage.get(i).getFahrradDistanz(),tage.get(i).getFussDistanz()}));
         }
         BarDataSet set = new BarDataSet(entries, "Gesamt Distanz");
-        set.setStackLabels(new String[]{"Auto","ÖPNV","Fahrrad"});
+        set.setStackLabels(new String[]{"Auto","ÖPNV","Fahrrad","zu Fuß"});
         set.setDrawIcons(false);
-        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0), Color.rgb(0,0,200)}, 70);
+        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0), Color.rgb(0,0,200),Color.rgb(0,200,200)}, 70);
 
         BarData barData = new BarData(set);
 
@@ -457,12 +498,12 @@ public class AnalyseDiagramMaker {
         List<BarEntry> entries = new ArrayList<>();
 
         for (int i = 0; i < tage.size(); i++) {
-            entries.add(new BarEntry(i, new float[]{tage.get(i).getAutoDauer(), tage.get(i).getOpnvDauer(), tage.get(i).getFahrradDauer()}));
+            entries.add(new BarEntry(i, new float[]{tage.get(i).getAutoDauer(), tage.get(i).getOpnvDauer(), tage.get(i).getFahrradDauer(),tage.get(i).getFussDauer()}));
         }
         BarDataSet set = new BarDataSet(entries, "Gesamt Zeit");
-        set.setStackLabels(new String[]{"Auto","ÖPNV","Fahrrad"});
+        set.setStackLabels(new String[]{"Auto","ÖPNV","Fahrrad","zu Fuß"});
         set.setDrawIcons(false);
-        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0), Color.rgb(0,0,200)}, 70);
+        set.setColors(new int[]{Color.rgb(200,0,0), Color.rgb(0,200,0), Color.rgb(0,0,200),Color.rgb(0,200,200)}, 70);
         BarData barData = new BarData(set);
         set.setDrawValues(false);
         barChart.setData(barData);

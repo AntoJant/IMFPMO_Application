@@ -1,5 +1,5 @@
 package com.example.mobileapp_praktikum;
 
 public enum FahrtModi {
-    AUTO, FAHRRAD, OPNV
+    AUTO, FAHRRAD, OPNV, WALK
 }

@@ -3,7 +3,7 @@ package com.example.mobileapp_praktikum;
 import java.util.Calendar;
 
 public class AnalyseergebnisFahrt {
-    private int fahrtID, wegID;
+    private int wegID;
     private FahrtModi modi, alternativModi;
     private int okoBewertung, cO2Austoss;
     private Calendar startzeit, endzeit;
@@ -11,8 +11,8 @@ public class AnalyseergebnisFahrt {
     private int distanz, dauer;
     private int alternativerZeitaufwand;
 
-    public AnalyseergebnisFahrt(int fahrtID, int wegID, FahrtModi modi, FahrtModi alternativModi, int okoBewertung, int cO2Austoss,int dauer,Calendar startzeit, Calendar endzeit, String startadresse, String zieladresse, int distanz, int alternativerZeitaufwand) {
-        this.fahrtID = fahrtID;
+    public AnalyseergebnisFahrt(int wegID, FahrtModi modi, FahrtModi alternativModi, int okoBewertung, int cO2Austoss,int dauer,Calendar startzeit, Calendar endzeit, String startadresse, String zieladresse, int distanz, int alternativerZeitaufwand) {
+
         this.wegID = wegID;
         this.modi = modi;
         this.alternativModi = alternativModi;
@@ -25,10 +25,6 @@ public class AnalyseergebnisFahrt {
         this.distanz = distanz;
         this.alternativerZeitaufwand = alternativerZeitaufwand;
         this.dauer = dauer;
-    }
-
-    public int getFahrtID() {
-        return fahrtID;
     }
 
     public int getWegID() {

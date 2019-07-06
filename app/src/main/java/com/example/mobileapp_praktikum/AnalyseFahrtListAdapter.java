@@ -64,6 +64,7 @@ public class AnalyseFahrtListAdapter extends BaseAdapter {
             case AUTO: imageView.setImageResource(R.drawable.ic_directions_car_black_24dp);break;
             case FAHRRAD: imageView.setImageResource(R.drawable.ic_directions_bike_black_24dp);break;
             case OPNV: imageView.setImageResource(R.drawable.ic_directions_bus_black_24dp);break;
+            case WALK:imageView.setImageResource(R.drawable.ic_directions_walk_black_24dp);
         }
         if(ausgeklappteItems[i]) {
             TextView distanzTextView = (TextView) view.findViewById(R.id.distanzTextView);
@@ -79,6 +80,7 @@ public class AnalyseFahrtListAdapter extends BaseAdapter {
                 case AUTO: altImageView.setImageResource(R.drawable.ic_directions_car_black_24dp);break;
                 case FAHRRAD: altImageView.setImageResource(R.drawable.ic_directions_bike_black_24dp);break;
                 case OPNV: altImageView.setImageResource(R.drawable.ic_directions_bus_black_24dp);break;
+                case WALK: altImageView.setImageResource(R.drawable.ic_directions_walk_black_24dp);break;
             }
         }
         zeitTextView.setText("Startzeit:" +ergebnis.getStartzeit().get(Calendar.HOUR)+":"+ergebnis.getStartzeit().get(Calendar.MINUTE));

@@ -27,8 +27,8 @@ public class AnalyseMonatDiagramPagerAdapter extends PagerAdapter {
         PieChart pieChart = (PieChart) view.findViewById(R.id.diagramm);
         switch (position){
             case 0: AnalyseDiagramMaker.makeGesamtCO2Diagramm(monat.getCO2Auto(), monat.getCO2Opnv(), pieChart); break;
-            case 1: AnalyseDiagramMaker.makeGesamtDistanzDiagramm(monat.getAutoDistanz(),monat.getOpnvDistanz(),monat.getFahrradDistanz(),pieChart); break;
-            case 2: AnalyseDiagramMaker.makeGesamtZeitDiagramm(monat.getZeitAuto(),monat.getZeitFahrrad(),monat.getZeitOpnv(),pieChart);break;
+            case 1: AnalyseDiagramMaker.makeGesamtDistanzDiagramm(monat.getAutoDistanz(),monat.getOpnvDistanz(),monat.getFahrradDistanz(),monat.getFussDistanz(),pieChart); break;
+            case 2: AnalyseDiagramMaker.makeGesamtZeitDiagramm(monat.getZeitAuto(),monat.getZeitFahrrad(),monat.getZeitOpnv(), monat.getZeitFuss(),pieChart);break;
         }
         container.addView(view);
         return view;
