@@ -5,7 +5,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -13,10 +15,14 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.room.Room;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+
+import java.io.File;
+import java.io.IOException;
 
 public class LocationUpdatesService extends Service {
 
@@ -24,19 +30,18 @@ public class LocationUpdatesService extends Service {
 
     private static final int NOTIFICATION_ID = 223;
     public static final String CHANNEL_ID = "channel_00"; //private
+    static final String PREFERENCE_FILE_KEY = "com.example.mobileapp_praktikum.PREFERENCE_FILE_KEY";
+    static final String DB_STATUS_EMPTY = "com.example.mobileapp_praktikum.cache_status";
+    static final String DB_CREATED = "com.example.mobileapp_praktikum.cache_created_status";
+    static final String DB_NAME = "local_json_locations_database";
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest mLocationRequest;
     private Handler mServiceHandler;
     private NotificationManager mNotificationManager;
+    private static ToSendDatabase mlocalDatabase;
 
 
-
-    static final String EXTRA_STRING_USERID = "com.example.mobileapp_praktikum.string" + ".userId";
-    static final String EXTRA_STRING_USERTOKEN = "com.example.mobileapp_praktikum.string" + ".userToken";
-    //passed through intent. not globally needed but helpful for testing
-    private static String userToken = "1";
-    private static String userId = "1";
     //trackingtester@rwth.de and trackingtester2@rwth.de
     //1234
 
@@ -49,30 +54,6 @@ public class LocationUpdatesService extends Service {
         Log.w(TAG, "onCreate");
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        //creates sample user and token
-        /*
-        JsonObject sampleUserObject = new JsonObject();
-        sampleUserObject.addProperty("email", "trackingtester2@rwth.de");
-        sampleUserObject.addProperty("password", "1234");
-        Ion.with(this)
-                .load("http://fjobilabs.de:8383/api/users")
-                .setJsonObjectBody(sampleUserObject)
-                .asJsonObject()
-                .withResponse()
-                .setCallback(new FutureCallback<Response<JsonObject>>() {
-                    @Override
-                    public void onCompleted(Exception e, Response<JsonObject> result) {
-                        Log.w(TAG, result.getResult().get("id").getAsString());
-                    }
-                });
-        */
-
-
-
-
-
-
-
         createLocationRequest();
 
 
@@ -81,6 +62,9 @@ public class LocationUpdatesService extends Service {
         handlerThread.start();
         mServiceHandler = new Handler(handlerThread.getLooper());
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        if (mlocalDatabase == null)
+            //createLocalDB();
 
         // Android O requires a Notification Channel.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -112,6 +96,7 @@ public class LocationUpdatesService extends Service {
         Log.w(TAG, "onDestroy service terminated by os/ ended by itself");
 
         //stopSendingLocUpdates():
+        //needs work. doesnt send stored locations
         fusedLocationClient.flushLocations();
         fusedLocationClient.removeLocationUpdates(pendingIntentCreator());
 
@@ -130,22 +115,22 @@ public class LocationUpdatesService extends Service {
     }
 
 
-
-
     //helpers
 
     private void createLocationRequest() {
         Log.w(TAG, "createLocationRequest");
-        final long UPDATE_INTERVAL = 4 * 1000;
+        final long UPDATE_INTERVAL = 20 * 1000;
 
-        final long FASTEST_UPDATE_INTERVAL = UPDATE_INTERVAL / 2;
+        final long FASTEST_UPDATE_INTERVAL = UPDATE_INTERVAL;
+
+        final long MAX_WAIT_TIME = UPDATE_INTERVAL * 3;// * 120 ;
 
         //real values are 30k 28k 5h
 
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL);
-        mLocationRequest.setMaxWaitTime(UPDATE_INTERVAL);
+        mLocationRequest.setMaxWaitTime(MAX_WAIT_TIME);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
     }
@@ -208,5 +193,28 @@ public class LocationUpdatesService extends Service {
 
         return PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
+
+
+/*
+    private void createLocalDB() {
+
+        mlocalDatabase = Room.databaseBuilder(getApplicationContext(),
+                ToSendDatabase.class, DB_NAME).allowMainThreadQueries().build();
+
+
+        //optional as null works as well
+        /*
+        SharedPreferences pref = this.getSharedPreferences(PREFERENCE_FILE_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean(DB_CREATED, true);
+        editor.commit();
+        */
+
+    //}
+
+    static ToSendDatabase getLocalDB(){
+        return mlocalDatabase;
+    }
+
 
 }
