@@ -61,6 +61,8 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
+                mailfield.setText("");
+                passwordfield.setText("");
                 mListener.changeFragment(1);
             }
         });
@@ -68,6 +70,8 @@ public class LoginFragment extends Fragment {
 
             @Override
             public void onClick(View view) {
+                mailfield.setText("");
+                passwordfield.setText("");
                 mListener.changeFragment(2);
             }
         });
@@ -84,7 +88,9 @@ public class LoginFragment extends Fragment {
                 if (isValidEmail(mailfield.getText().toString()) && passwordLength(passwordfield.getText().toString())) {
                     int result = Usermanagement.getInstance().login(mailfield.getText().toString(),passwordfield.getText().toString(),getContext());
                     if(result == Usermanagement.OPERATION_SUCCESSFUL) {
-                        getContext().startService(new Intent(getContext(), LocationUpdatesService.class));
+                        Objects.requireNonNull(getContext()).startService(new Intent(getContext(), LocationUpdatesService.class));
+                        mailfield.setText("");
+                        passwordfield.setText("");
                         mListener.changeFragment(3);
                     }
                     else if(result == Usermanagement.OPERATION_FAILED){

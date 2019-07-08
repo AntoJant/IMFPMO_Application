@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -46,7 +47,10 @@ public class AnalysisFragment extends Fragment implements AbsListView.OnScrollLi
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
 
         AnalyseMonatListAdapter adapter = new AnalyseMonatListAdapter(getActivity(),((MainActivity)getActivity()).getErgebnisse(), getActivity().getSupportFragmentManager());
-        ListView monatAnalyseergebnistListView  =(ListView) view.findViewById(R.id.listview);
+        ListView monatAnalyseergebnistListView  = view.findViewById(R.id.listview);
+
+        ((DrawerLocker) getActivity()).setDrawerLocked(false);
+        Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).show();
 
         monatAnalyseergebnistListView.setAdapter(adapter);
         monatAnalyseergebnistListView.setOnScrollListener(this);
@@ -61,7 +65,7 @@ public class AnalysisFragment extends Fragment implements AbsListView.OnScrollLi
     public void onScroll(AbsListView absListView, int i, int i1, int i2) {
         int lastItem = i +i1;
 
-        if(((MainActivity) getActivity()).getErgebnisse().size() == lastItem){
+        if(((MainActivity) Objects.requireNonNull(getActivity())).getErgebnisse().size() == lastItem){
             ((MainActivity) getActivity()).getMehrAnalyseErgebnisse(5);
             absListView.invalidateViews();
         }

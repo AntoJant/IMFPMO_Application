@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         //create instance of Usermanagement and check if user is already logged in
         Usermanagement.createInstance(getApplicationContext());
-        if(Usermanagement.getInstance().isLoggedIn()) {
+        if (Usermanagement.getInstance().isLoggedIn()) {
             Log.w(TAG, "User is already logged in");
             changeFragment(3);
         }
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
             if (fragment != null) {
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.framelayout, fragment);
+                ft.replace(R.id.framelayout, fragment).addToBackStack("my_fragment");
                 ft.commit();
             }
             return true;
@@ -158,8 +158,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        }
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            Fragment ways = getSupportFragmentManager().findFragmentById(R.id.nav_ways);
+            Fragment analysis = getSupportFragmentManager().findFragmentById(R.id.nav_analysis);
+            if (ways != null) {
+                bottomNav.setSelectedItemId(R.id.nav_analysis);
+            }
+            if (analysis != null) {
+                bottomNav.setSelectedItemId(R.id.nav_ways);
+            }
+            getFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
         }
@@ -190,15 +202,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             NavigationView navigationView = findViewById(R.id.nav_view);
             ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(false);
 
-
             Usermanagement.getInstance().logout(getApplicationContext());
             Log.w("Token after logout", "Token = " + Usermanagement.getInstance().getSecurityToken());
             Toast.makeText(getApplicationContext(), "Erfolgreich abgemeldet", Toast.LENGTH_SHORT).show();
-            fragment = new LoginFragment();
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
+            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Fragment mail = getSupportFragmentManager().findFragmentById(R.id.login_mail_textfield);
+            Fragment password = getSupportFragmentManager().findFragmentById(R.id.login_password_textfield);
         }
         if (fragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.framelayout, fragment);
+            ft.replace(R.id.framelayout, fragment).addToBackStack("my_fragment");
             ft.commit();
         }
 
@@ -214,39 +230,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == 1) {
             fragment = new RegistrationFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.framelayout, fragment);
+            ft.replace(R.id.framelayout, fragment).addToBackStack("my_fragment");
             ft.commit();
         }
         if (id == 2) {
             fragment = new ResetPasswordFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.framelayout, fragment);
+            ft.replace(R.id.framelayout, fragment).addToBackStack("my_fragment");
             ft.commit();
         }
         if (id == 3) {
             fragment = new AnalysisFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.framelayout, fragment);
+            ft.replace(R.id.framelayout, fragment).addToBackStack("my_fragment");
             ft.commit();
         }
         if (id == 4) {
             fragment = new LoginFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.framelayout, fragment);
+            ft.replace(R.id.framelayout, fragment).addToBackStack("my_fragment");
             Toast.makeText(getApplicationContext(), "Registrierung erfolgreich", Toast.LENGTH_SHORT).show();
             ft.commit();
         }
         if (id == 5) {
             fragment = new LoginFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.framelayout, fragment);
+            ft.replace(R.id.framelayout, fragment).addToBackStack("my_fragment");
             Toast.makeText(getApplicationContext(), "E-Mail versendet", Toast.LENGTH_SHORT).show();
             ft.commit();
         }
         if (id == 6) {
             fragment = new ChangeMailFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.framelayout, fragment);
+            ft.replace(R.id.framelayout, fragment).addToBackStack("my_fragment");
             ft.commit();
         }
         if (id == 7) {
@@ -254,13 +270,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             setDrawerLocked(false);
             Objects.requireNonNull(getSupportActionBar()).show();
-            ft.replace(R.id.framelayout, fragment);
+            ft.replace(R.id.framelayout, fragment).addToBackStack("my_fragment");
             ft.commit();
         }
         if (id == 8) {
             fragment = new LoginFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.framelayout, fragment);
+            ft.replace(R.id.framelayout, fragment).addToBackStack("my_fragment");
             Toast.makeText(getApplicationContext(), "Bitte loggen Sie sich erneut ein", Toast.LENGTH_SHORT).show();
             ft.commit();
         }
@@ -279,7 +295,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return permissionStateFine;
     }
-
 
 
     //implement onRequestPermissionsResult for clean handling of denied permissions
@@ -371,27 +386,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.w(TAG, "onPause");
         super.onPause();
     }
+
     //Methoden für die Darstellung von AnalyseErgebnissen
     //Diese methode laedt die AnalyseErgbinsse des Monats
-    private void setAnalyseErgebnisse(int monat){
+    private void setAnalyseErgebnisse(int monat) {
         analyseErgebnisse = AnalyseRandomErgebnisMaker.getYear();
     }
 
-    public void getMehrAnalyseErgebnisse(int i){
-        int groeße = analyseErgebnisse.size();
-        Calendar lastMonth = analyseErgebnisse.get(groeße-1).getDate();
-        Calendar aktMonth = new GregorianCalendar(lastMonth.get(Calendar.YEAR),lastMonth.get(Calendar.MONTH),1);
-        for(int j =1; j<= i;j++){
+    public void getMehrAnalyseErgebnisse(int i) {
+        int groesse = analyseErgebnisse.size();
+        Calendar lastMonth = analyseErgebnisse.get(groesse - 1).getDate();
+        Calendar aktMonth = new GregorianCalendar(lastMonth.get(Calendar.YEAR), lastMonth.get(Calendar.MONTH), 1);
+        for (int j = 1; j <= i; j++) {
             aktMonth.add(Calendar.MONTH, -1);
             analyseErgebnisse.add(AnalyseRandomErgebnisMaker.makeMonat(new GregorianCalendar(aktMonth.get(Calendar.YEAR), aktMonth.get(Calendar.MONTH), 1)));
         }
     }
-    public ArrayList<AnalyseergebnisMonat> getAnalyseMonate(int lastMonat){
+
+    public ArrayList<AnalyseergebnisMonat> getAnalyseMonate(int lastMonat) {
         Usermanagement usermanagement = Usermanagement.getInstance();
         JsonObject ergebnisObject = usermanagement.getAnalyseErgebnisse(this);
         ArrayList<AnalyseergebnisMonat> monate = new ArrayList<>();
         JsonArray array = ergebnisObject.getAsJsonArray("results");
-        for(int i = 0; i < lastMonat; i++){
+        for (int i = 0; i < lastMonat; i++) {
             int id = array.get(i).getAsJsonObject().get("id").getAsInt();
             Calendar monat = getCalendarDate(array.get(i).getAsJsonObject().get("timestamp").getAsString());
             monate.add(getAnalyseMonat(monat, id));
@@ -399,20 +416,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return monate;
     }
 
-    public AnalyseergebnisMonat getAnalyseMonat(int month, int year){
-        Usermanagement usermanagement =Usermanagement.getInstance();
-        JsonObject monatObject =  usermanagement.getAnalyseWegeMonat(this,month,year);
+    public AnalyseergebnisMonat getAnalyseMonat(int month, int year) {
+        Usermanagement usermanagement = Usermanagement.getInstance();
+        JsonObject monatObject = usermanagement.getAnalyseWegeMonat(this, month, year);
 
         return null;
     }
 
-    public AnalyseergebnisMonat getAnalyseMonat(Calendar monat, int analysisid){
+    public AnalyseergebnisMonat getAnalyseMonat(Calendar monat, int analysisid) {
         Usermanagement usermanagement = Usermanagement.getInstance();
         JsonObject analyseObject = usermanagement.getAnalyseErgebnis(this, analysisid);
         ArrayList<AnalyseergebnisTag> analyseergebnisTags = new ArrayList<>();
         int cMonat = monat.get(Calendar.MONTH);
         int cYear = monat.get(Calendar.YEAR);
-        for(int i=1; i <= monat.getActualMaximum(Calendar.DAY_OF_MONTH); i++){
+        for (int i = 1; i <= monat.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
             analyseergebnisTags.add(getAnaylseTag(new GregorianCalendar(cYear, cMonat, i)));
         }
         int car = analyseObject.get("car").getAsInt();
@@ -423,36 +440,39 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int emmisionen = analyseObject.get("emissions").getAsInt();
         String ampel = analyseObject.get("ampel").getAsString();
         int okoBewertung = 1;
-        switch (ampel){
-            case "red": okoBewertung = 1;
-            case "yellow": okoBewertung = 2;
-            case "green" : okoBewertung = 3;
+        switch (ampel) {
+            case "red":
+                okoBewertung = 1;
+            case "yellow":
+                okoBewertung = 2;
+            case "green":
+                okoBewertung = 3;
         }
 
-        return new AnalyseergebnisMonat(1, analysisid, monat, bike, opnv,car,fuss, emmisionen, okoBewertung, analyseergebnisTags);
+        return new AnalyseergebnisMonat(1, analysisid, monat, bike, opnv, car, fuss, emmisionen, okoBewertung, analyseergebnisTags);
     }
 
-    public AnalyseergebnisTag getAnaylseTag(Calendar tag){
+    public AnalyseergebnisTag getAnaylseTag(Calendar tag) {
         Usermanagement usermanagement = Usermanagement.getInstance();
-        JsonObject tagObject = usermanagement.getAnalyseErgebnisseTag(this,tag);
+        JsonObject tagObject = usermanagement.getAnalyseErgebnisseTag(this, tag);
         JsonArray wegArray = tagObject.get("paths").getAsJsonArray();
         ArrayList<AnalyseergebnisWeg> wege = new ArrayList<>();
-        for(int i = 0; i < wegArray.size(); i++){
+        for (int i = 0; i < wegArray.size(); i++) {
             JsonObject wegObject = wegArray.get(i).getAsJsonObject();
             int wegID = wegObject.get("id").getAsInt();
             wege.add(getAnalyseWeg(wegID));
         }
-        return  new AnalyseergebnisTag(wege,tag);
+        return new AnalyseergebnisTag(wege, tag);
     }
 
-    public AnalyseergebnisWeg getAnalyseWeg(int wegId){
+    public AnalyseergebnisWeg getAnalyseWeg(int wegId) {
         Usermanagement usermanagement = Usermanagement.getInstance();
         JsonObject weg = usermanagement.getAnalyseErgebnisWeg(this, Integer.toString(wegId));
         JsonArray fahten = weg.getAsJsonArray("rides");
         JsonObject wegStart = weg.get("start").getAsJsonObject();
         JsonObject wegEnd = weg.get("end").getAsJsonObject();
         ArrayList<AnalyseergebnisFahrt> fahrtenArray = new ArrayList<>();
-        for(int i = 0; i < fahten.size(); i++){
+        for (int i = 0; i < fahten.size(); i++) {
 
             JsonObject fahrt = fahten.get(i).getAsJsonObject();
             JsonObject start = fahrt.getAsJsonObject("start");
@@ -466,38 +486,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String startName = start.get("name").getAsString();
             String endName = ende.get("name").getAsString();
             Calendar startDate = getCalendarDate(start.get("timestamp").getAsString());
-            Calendar endDate =  getCalendarDate(ende.get("timestamp").getAsString());
+            Calendar endDate = getCalendarDate(ende.get("timestamp").getAsString());
             FahrtModi modi;
-            switch (mode){
-                case "car": modi = FahrtModi.AUTO;break;
-                case "opnv": modi = FahrtModi.OPNV;break;
-                case "train": modi = FahrtModi.OPNV; break;
-                case "bus" : modi = FahrtModi.OPNV; break;
-                case "walk": modi = FahrtModi.WALK;break;
-                case "bike": modi = FahrtModi.FAHRRAD;break;
-                default: modi = FahrtModi.FAHRRAD;
+            switch (mode) {
+                case "car":
+                    modi = FahrtModi.AUTO;
+                    break;
+                case "opnv":
+                    modi = FahrtModi.OPNV;
+                    break;
+                case "train":
+                    modi = FahrtModi.OPNV;
+                    break;
+                case "bus":
+                    modi = FahrtModi.OPNV;
+                    break;
+                case "walk":
+                    modi = FahrtModi.WALK;
+                    break;
+                case "bike":
+                    modi = FahrtModi.FAHRRAD;
+                    break;
+                default:
+                    modi = FahrtModi.FAHRRAD;
             }
             int okoBewertung = 1;
-            switch (ampel){
-                case "red": okoBewertung = 1;
-                case "yellow": okoBewertung = 2;
-                case "green" : okoBewertung = 3;
+            switch (ampel) {
+                case "red":
+                    okoBewertung = 1;
+                case "yellow":
+                    okoBewertung = 2;
+                case "green":
+                    okoBewertung = 3;
             }
-            int dauerStunde = startDate.get(Calendar.HOUR_OF_DAY)-endDate.get(Calendar.HOUR_OF_DAY);
-            int dauerMinute = Math.abs(startDate.get(Calendar.MINUTE)-endDate.get(Calendar.MINUTE));
-            fahrtenArray.add(new AnalyseergebnisFahrt(wegId, modi, FahrtModi.WALK, okoBewertung, emissions,dauerStunde *60+dauerMinute,startDate,endDate,startName,endName, distanz, 1));
+            int dauerStunde = startDate.get(Calendar.HOUR_OF_DAY) - endDate.get(Calendar.HOUR_OF_DAY);
+            int dauerMinute = Math.abs(startDate.get(Calendar.MINUTE) - endDate.get(Calendar.MINUTE));
+            fahrtenArray.add(new AnalyseergebnisFahrt(wegId, modi, FahrtModi.WALK, okoBewertung, emissions, dauerStunde * 60 + dauerMinute, startDate, endDate, startName, endName, distanz, 1));
         }
         return new AnalyseergebnisWeg(fahrtenArray, wegId, getCalendarDate(wegStart.get("timestamp").getAsString()), getCalendarDate(wegEnd.get("timestamp").getAsString()), wegStart.get("name").getAsString(), wegEnd.get("name").getAsString());
     }
 
-    public void changeToAnalyseMonatFragment(Calendar monat){
+    public void changeToAnalyseMonatFragment(Calendar monat) {
         int i = -1;
-        for(int j = 0; j < analyseErgebnisse.size(); j++ ){
-            if(analyseErgebnisse.get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && analyseErgebnisse.get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)){
+        for (int j = 0; j < analyseErgebnisse.size(); j++) {
+            if (analyseErgebnisse.get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && analyseErgebnisse.get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)) {
                 i = j;
             }
         }
-        if(i != -1){
+        if (i != -1) {
             AnalysisMonatFragment temp = new AnalysisMonatFragment(analyseErgebnisse.get(i));
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.framelayout, temp);
@@ -506,21 +542,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void changeToAnalyseTagFragment(Calendar monat){
+    public void changeToAnalyseTagFragment(Calendar monat) {
         int i = -1;
         int r = -1;
-        for(int j = 0; j < analyseErgebnisse.size(); j++ ){
-            if(analyseErgebnisse.get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && analyseErgebnisse.get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)){
+        for (int j = 0; j < analyseErgebnisse.size(); j++) {
+            if (analyseErgebnisse.get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && analyseErgebnisse.get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)) {
                 i = j;
-                for(int l = 0; l < analyseErgebnisse.get(i).getTage().size(); l++){
+                for (int l = 0; l < analyseErgebnisse.get(i).getTage().size(); l++) {
                     int tag = analyseErgebnisse.get(i).getTage().get(l).getTag().get(Calendar.DAY_OF_MONTH);
-                    if(tag == monat.get(Calendar.DAY_OF_MONTH)){
+                    if (tag == monat.get(Calendar.DAY_OF_MONTH)) {
                         r = l;
                     }
                 }
             }
         }
-        if(i != -1){
+        if (i != -1) {
             AnalysisTagFragment temp = new AnalysisTagFragment(analyseErgebnisse.get(i).getTage().get(r));
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.framelayout, temp);
@@ -529,18 +565,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void changeToAnalyseFahrtFragment(AnalyseergebnisWeg weg){
+    public void changeToAnalyseFahrtFragment(AnalyseergebnisWeg weg) {
         AnalysisFahrtFragment temp = new AnalysisFahrtFragment(weg);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.framelayout, temp);
         ft.addToBackStack(null);
         ft.commit();
     }
-    public ArrayList<AnalyseergebnisMonat> getErgebnisse(){
+
+    public ArrayList<AnalyseergebnisMonat> getErgebnisse() {
         return analyseErgebnisse;
     }
 
-    public Calendar getCalendarDate(String date){
-        return new GregorianCalendar(Integer.parseInt(date.substring(0,4)),Integer.parseInt(date.substring(5,7))-1,Integer.parseInt(date.substring(8,10)),Integer.parseInt(date.substring(11,13)),Integer.parseInt(date.substring(14,16)));
+    public Calendar getCalendarDate(String date) {
+        return new GregorianCalendar(Integer.parseInt(date.substring(0, 4)), Integer.parseInt(date.substring(5, 7)) - 1, Integer.parseInt(date.substring(8, 10)), Integer.parseInt(date.substring(11, 13)), Integer.parseInt(date.substring(14, 16)));
     }
 }
