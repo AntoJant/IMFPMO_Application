@@ -187,6 +187,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
         } else if (id == R.id.nav_logoff) {
+            NavigationView navigationView = findViewById(R.id.nav_view);
+            ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(false);
+
+
             Usermanagement.getInstance().logout(getApplicationContext());
             Log.w("Token after logout", "Token = " + Usermanagement.getInstance().getSecurityToken());
             Toast.makeText(getApplicationContext(), "Erfolgreich abgemeldet", Toast.LENGTH_SHORT).show();

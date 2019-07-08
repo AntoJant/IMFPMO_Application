@@ -120,9 +120,16 @@ public class LocationDeliveryBroadcastReciever extends BroadcastReceiver {
             locJson.addProperty("longitude", loc.getLongitude());
             locJson.addProperty("latitude", loc.getLatitude());
             locJson.addProperty("accuracy", loc.getAccuracy());
-            locJson.addProperty("speed", loc.getSpeed());
+            float speed = loc.getSpeed() * 3.6f;
+            locJson.addProperty("speed", speed);
             locJson.addProperty("timestamp", loc.getTime());
-            locJson.addProperty("mode", "walk");
+            if(speed < 8f)
+                locJson.addProperty("mode", "walk");
+            else if(speed < 35f)
+                    locJson.addProperty("mode", "bike");
+                    else
+                    locJson.addProperty("mode", "unknown_vehicle");
+
             newLocationsJson.add(locJson);
         }
 
@@ -132,10 +139,10 @@ public class LocationDeliveryBroadcastReciever extends BroadcastReceiver {
         datapoints.add("data_points", toSendLocations);
 
         Log.w(TAG, datapoints.toString());
-        Log.w(TAG, "will send to user: " + usermanagement.getUserID());
+        Log.w(TAG, "will send to user: " + LocationUpdatesService.getUserId());
 
-        Ion.with(context).load("https://treibhaus.informatik.rwth-aachen.de/praktikum-ss19/api/users/" + usermanagement.getUserID() + "/tracking-data")
-                .setHeader("Authorization", "Bearer " + usermanagement.getSecurityToken())
+        Ion.with(context).load("https://treibhaus.informatik.rwth-aachen.de/praktikum-ss19/api/users/" + LocationUpdatesService.getUserId() + "/tracking-data")
+                .setHeader("Authorization", "Bearer " + LocationUpdatesService.getSecurityToken())
                 .setJsonObjectBody(datapoints)
                 .asJsonObject()
                 .withResponse()

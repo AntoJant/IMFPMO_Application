@@ -35,6 +35,10 @@ public class LocationUpdatesService extends Service {
     static final String DB_CREATED = "com.example.mobileapp_praktikum.cache_created_status";
     static final String DB_NAME = "local_json_locations_database";
 
+
+    private static String userId;
+    private static String securityToken;
+
     private FusedLocationProviderClient fusedLocationClient;
     private LocationRequest mLocationRequest;
     private Handler mServiceHandler;
@@ -62,6 +66,10 @@ public class LocationUpdatesService extends Service {
         handlerThread.start();
         mServiceHandler = new Handler(handlerThread.getLooper());
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        Usermanagement instance = Usermanagement.getInstance();
+        userId = instance.getUserID();
+        securityToken = instance.getSecurityToken();
 
         if (mlocalDatabase == null)
             //createLocalDB();
@@ -216,5 +224,13 @@ public class LocationUpdatesService extends Service {
         return mlocalDatabase;
     }
 
+
+    static String getUserId(){
+        return userId;
+    }
+
+    static String getSecurityToken(){
+        return securityToken;
+    }
 
 }
