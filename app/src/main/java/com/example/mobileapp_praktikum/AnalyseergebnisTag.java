@@ -101,15 +101,15 @@ public class AnalyseergebnisTag {
         return distanz;
     }
 
-    public int getDauer(){
-        int dauer = 0;
+    public float getDauer(){
+        float dauer = 0;
         for (AnalyseergebnisWeg weg:wege)
             dauer += weg.getDauer();
         return dauer;
     }
 
-    public int getAutoDauer(){
-        int dauer = 0;
+    public float getAutoDauer(){
+        float dauer = 0;
         for (AnalyseergebnisWeg weg : wege){
             dauer += weg.getAutoDauer();
         }
@@ -117,24 +117,24 @@ public class AnalyseergebnisTag {
     }
 
 
-    public int getFahrradDauer(){
-        int dauer = 0;
+    public float getFahrradDauer(){
+        float dauer = 0;
         for (AnalyseergebnisWeg weg : wege){
                 dauer += weg.getFahrradDauer();
         }
         return dauer;
     }
 
-    public int getOpnvDauer(){
-        int dauer = 0;
+    public float getOpnvDauer(){
+        float dauer = 0;
         for (AnalyseergebnisWeg weg: wege){
                 dauer += weg.getOpnvDauer();
         }
         return dauer;
     }
 
-    public int getFussDauer(){
-        int dauer = 0;
+    public float getFussDauer(){
+        float dauer = 0;
         for (AnalyseergebnisWeg weg: wege){
             dauer += weg.getFussDauer();
         }

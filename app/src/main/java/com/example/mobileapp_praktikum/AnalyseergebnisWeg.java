@@ -128,48 +128,48 @@ public class AnalyseergebnisWeg {
         return distanz;
     }
 
-    public int getDauer(){
-        int dauer = 0;
+    public float getDauer(){
+        float dauer = 0;
         for (AnalyseergebnisFahrt fahrt:fahrten)
-            dauer += fahrt.getDauer();
+            dauer += ((float)fahrt.getDauer()) / 60;
         return dauer;
     }
 
-    public int getAutoDauer(){
-        int dauer = 0;
+    public float getAutoDauer(){
+        float dauer = 0;
         for (AnalyseergebnisFahrt fahrt : fahrten){
             if(fahrt.getModi() == FahrtModi.AUTO){
-                dauer += fahrt.getDauer();
+                dauer += ((float)fahrt.getDauer()) / 60;
             }
         }
         return dauer;
     }
 
-    public int getFussDauer(){
-        int dauer = 0;
+    public float getFussDauer(){
+        float dauer = 0;
         for (AnalyseergebnisFahrt fahrt : fahrten){
             if(fahrt.getModi() == FahrtModi.WALK){
-                dauer += fahrt.getDauer();
+                dauer += ((float)fahrt.getDauer()) / 60;
             }
         }
         return dauer;
     }
 
-    public int getFahrradDauer(){
-        int dauer = 0;
+    public float getFahrradDauer(){
+        float dauer = 0;
         for (AnalyseergebnisFahrt fahrt : fahrten){
             if(fahrt.getModi() == FahrtModi.FAHRRAD){
-                dauer += fahrt.getDauer();
+                dauer += ((float)fahrt.getDauer()) / 60;
             }
         }
         return dauer;
     }
 
-    public int getOpnvDauer(){
-        int dauer = 0;
+    public float getOpnvDauer(){
+        float dauer = 0;
         for (AnalyseergebnisFahrt fahrt : fahrten){
             if(fahrt.getModi() == FahrtModi.OPNV){
-                dauer += fahrt.getDauer();
+                dauer += ((float)fahrt.getDauer()) / 60;
             }
         }
         return dauer;

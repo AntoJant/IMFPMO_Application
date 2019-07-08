@@ -372,6 +372,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void setAnalyseErgebnisse(int monat){
         analyseErgebnisse = AnalyseRandomErgebnisMaker.getYear();
     }
+
+    public void getMehrAnalyseErgebnisse(int i){
+        int groeße = analyseErgebnisse.size();
+        Calendar lastMonth = analyseErgebnisse.get(groeße-1).getDate();
+        Calendar aktMonth = new GregorianCalendar(lastMonth.get(Calendar.YEAR),lastMonth.get(Calendar.MONTH),1);
+        for(int j =1; j<= i;j++){
+            aktMonth.add(Calendar.MONTH, -1);
+            analyseErgebnisse.add(AnalyseRandomErgebnisMaker.makeMonat(new GregorianCalendar(aktMonth.get(Calendar.YEAR), aktMonth.get(Calendar.MONTH), 1)));
+        }
+    }
     public ArrayList<AnalyseergebnisMonat> getAnalyseMonate(int lastMonat){
         Usermanagement usermanagement = Usermanagement.getInstance();
         JsonObject ergebnisObject = usermanagement.getAnalyseErgebnisse(this);
@@ -383,6 +393,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             monate.add(getAnalyseMonat(monat, id));
         }
         return monate;
+    }
+
+    public AnalyseergebnisMonat getAnalyseMonat(int month, int year){
+        Usermanagement usermanagement =Usermanagement.getInstance();
+        JsonObject monatObject =  usermanagement.getAnalyseWegeMonat(this,month,year);
+
+        return null;
     }
 
     public AnalyseergebnisMonat getAnalyseMonat(Calendar monat, int analysisid){

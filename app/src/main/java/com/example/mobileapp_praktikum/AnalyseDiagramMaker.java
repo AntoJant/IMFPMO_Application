@@ -254,7 +254,7 @@ public class AnalyseDiagramMaker {
         Description desc = new Description();
         desc.setText("");
         pieChart.setDescription(desc);
-        int gesamt = tag.getAutoDauer() + tag.getFahrradDauer() + tag.getOpnvDauer();
+        float gesamt = tag.getAutoDauer() + tag.getFahrradDauer() + tag.getOpnvDauer();
         pieChart.setCenterText("Insgesamt: \n  " + gesamt +" Stunden");
         return pieChart;
     }
@@ -343,7 +343,7 @@ public class AnalyseDiagramMaker {
         Description desc = new Description();
         desc.setText("");
         pieChart.setDescription(desc);
-        int gesamt = weg.getDauer();
+        float gesamt = weg.getDauer();
         pieChart.setCenterText("Insgesamt: \n  " + gesamt +" Stunden");
         return pieChart;
     }
@@ -378,7 +378,7 @@ public class AnalyseDiagramMaker {
         desc.setText("");
         pieChart.setDescription(desc);
         int gesamt = weg.getCO2Austoss();
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt +" Stunden");
+        pieChart.setCenterText("Insgesamt: \n  " + gesamt +" CO2");
         return pieChart;
     }
 
@@ -411,7 +411,7 @@ public class AnalyseDiagramMaker {
         desc.setText("");
         pieChart.setDescription(desc);
         int gesamt = weg.getCO2Austoss();
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt +" Stunden");
+        pieChart.setCenterText("Insgesamt: \n  " + gesamt +" Kilometer");
         return pieChart;
     }
 
@@ -441,8 +441,7 @@ public class AnalyseDiagramMaker {
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return  tage.get((int) value).getTag().get(Calendar.MONTH) +  "." +tage.get((int) value).getTag().get(Calendar.YEAR) + "." + tage.get((int) value).getTag().get(Calendar.DAY_OF_MONTH);
-
+                return Integer.toString((int) value);
             }
         });
 
@@ -481,8 +480,7 @@ public class AnalyseDiagramMaker {
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return  tage.get((int) value).getTag().get(Calendar.MONTH) +  "." +tage.get((int) value).getTag().get(Calendar.YEAR) + "." + tage.get((int) value).getTag().get(Calendar.DAY_OF_MONTH);
-
+                return Integer.toString((int) value);
             }
         });
 
@@ -521,7 +519,7 @@ public class AnalyseDiagramMaker {
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return  tage.get((int) value).getTag().get(Calendar.MONTH) +  "." +tage.get((int) value).getTag().get(Calendar.YEAR) + "." + tage.get((int) value).getTag().get(Calendar.DAY_OF_MONTH);
+                return Integer.toString((int) value);
             }
         });
 

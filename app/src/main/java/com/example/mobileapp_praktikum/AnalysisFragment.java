@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -26,7 +27,7 @@ import java.util.Objects;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AnalysisFragment extends Fragment {
+public class AnalysisFragment extends Fragment implements AbsListView.OnScrollListener{
 
 
     public AnalysisFragment() {
@@ -48,11 +49,25 @@ public class AnalysisFragment extends Fragment {
         ListView monatAnalyseergebnistListView  =(ListView) view.findViewById(R.id.listview);
 
         monatAnalyseergebnistListView.setAdapter(adapter);
+        monatAnalyseergebnistListView.setOnScrollListener(this);
         //must happen only once. maybe check if service already running
         Context context = getActivity();
         context.startService(new Intent(context, LocationUpdatesService.class));
-
         return view;
+    }
+
+    @Override
+    public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+        int lastItem = i +i1;
+
+        if(((MainActivity) getActivity()).getErgebnisse().size() == lastItem){
+            ((MainActivity) getActivity()).getMehrAnalyseErgebnisse(5);
+            absListView.invalidateViews();
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView absListView, int i) {
 
     }
 }

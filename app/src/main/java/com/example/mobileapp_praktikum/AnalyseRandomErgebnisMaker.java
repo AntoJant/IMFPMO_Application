@@ -45,13 +45,13 @@ public class AnalyseRandomErgebnisMaker {
         int cO2 = random.nextInt(100000);
         Calendar startZeit = new GregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         startZeit.set(Calendar.HOUR, random.nextInt(23) + 1);
-        int dauer = random.nextInt(12) + 1;
+        int dauer = random.nextInt(120) + 1;
         startZeit.set(Calendar.MINUTE, random.nextInt(58) + 1);
 
         Calendar  endZeit = new GregorianCalendar(c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
         endZeit.set(Calendar.HOUR, startZeit.get(Calendar.HOUR));
         endZeit.set(Calendar.MINUTE,startZeit.get(Calendar.MINUTE));
-        endZeit.add(Calendar.HOUR, dauer);
+        endZeit.add(Calendar.MINUTE, dauer);
 
         String startadresse = randomString();
         String endadresse = randomString();

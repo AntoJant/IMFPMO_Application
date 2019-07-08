@@ -593,5 +593,60 @@ class Usermanagement {
             return null;
         }
     }
+
+    public JsonObject getAnalyseWegeMonat(Context context,int monat, int jahr){
+        if (isLoggedIn()) {
+            Response<JsonObject> response = null;
+            String monatS = Integer.toString(jahr);
+            if(monat < 10){
+                monatS = "0" + Integer.toString(monat);
+            }
+            try {
+                response = Ion.with(context)
+                        .load(API_URI + "/users/" + userID + "/paths?year="+Integer.toString(jahr)+"&month="+monatS+"&skip=100")
+                        .setLogging("AnalyseLog", Log.VERBOSE)
+                        .setHeader(KEY_AUTHORIZATION, "Bearer " + getSecurityToken())
+                        .asJsonObject()
+                        .withResponse()
+                        .setCallback(new FutureCallback<Response<JsonObject>>() {
+                            @Override
+                            public void onCompleted(Exception e, Response<JsonObject> result) {
+                                if (e != null) {
+                                    Log.e(TAG, "Error = " + e.toString());
+                                }
+                                if (result != null) {
+                                    Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                                }
+                            }
+                        }).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            if (response == null) {
+                Log.w(TAG, "Response == null");
+                return null;
+            } else if (response.getResult() == null) {
+                Log.w(TAG, "json = null");
+                return null;
+            } else if (response.getHeaders().code() == 404) {
+                Log.w(TAG, "COULNDT_REACH_SERVER");
+                return null;
+            }
+            if ((response != null) && (response.getHeaders().code() == 200 && (response.getResult() != null))) {
+
+                return response.getResult();
+            } else {
+                Log.w(TAG, "OPERATION_FAILED");
+                return null;
+            }
+        } else {
+            Log.w(TAG, "User isn't logged in");
+            return null;
+        }
+
+    }
 }
 

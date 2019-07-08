@@ -72,10 +72,10 @@ public class AnalyseFahrtListAdapter extends BaseAdapter {
             TextView dauerTextView = (TextView) view.findViewById(R.id.dauerTextView);
             TextView alternativZeit = (TextView) view.findViewById(R.id.altZeitdauertextView);
             ImageView altImageView = (ImageView) view.findViewById(R.id.altImageView);
-            alternativZeit.setText(" " + ergebnis.getAlternativerZeitaufwand());
-            distanzTextView.setText(" " + ergebnis.getDistanz());
-            co2TextView.setText(" " + ergebnis.getcO2Austoss());
-            dauerTextView.setText(" " + ergebnis.getDauer());
+            alternativZeit.setText(" " + ergebnis.getAlternativerZeitaufwand()+" min");
+            distanzTextView.setText(" " + ergebnis.getDistanz()+ " km");
+            co2TextView.setText(" " + ergebnis.getcO2Austoss()+" kg");
+            dauerTextView.setText(" " + ergebnis.getDauer()+" min");
             switch (ergebnis.getAlternativModi()){
                 case AUTO: altImageView.setImageResource(R.drawable.ic_directions_car_black_24dp);break;
                 case FAHRRAD: altImageView.setImageResource(R.drawable.ic_directions_bike_black_24dp);break;
