@@ -51,8 +51,9 @@ public class AnalysisFragment extends Fragment implements AbsListView.OnScrollLi
         monatAnalyseergebnistListView.setAdapter(adapter);
         monatAnalyseergebnistListView.setOnScrollListener(this);
         //must happen only once. maybe check if service already running
-        Context context = getActivity();
-        context.startService(new Intent(context, LocationUpdatesService.class));
+        //Context context = getActivity();
+        //context.startService(new Intent(context, LocationUpdatesService.class));
+
         return view;
     }
 
