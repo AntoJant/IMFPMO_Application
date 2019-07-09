@@ -204,7 +204,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Usermanagement.getInstance().logout(getApplicationContext());
             Log.w("Token after logout", "Token = " + Usermanagement.getInstance().getSecurityToken());
             Toast.makeText(getApplicationContext(), "Erfolgreich abgemeldet", Toast.LENGTH_SHORT).show();
-            FragmentManager manager = getSupportFragmentManager();
             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }

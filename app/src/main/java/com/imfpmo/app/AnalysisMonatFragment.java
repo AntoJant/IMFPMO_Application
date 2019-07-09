@@ -6,11 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 public class AnalysisMonatFragment extends Fragment {
     private  AnalyseergebnisMonat monatAnalyse;
@@ -21,14 +23,14 @@ public class AnalysisMonatFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.analyse_monat_fragment, container, false);
         BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.nav_analysis);
-        ((MainActivity) getActivity()).FragmentListener(bottomNav);
-        ListView l = (ListView) view.findViewById(R.id.listview);
+        ((MainActivity) Objects.requireNonNull(getActivity())).FragmentListener(bottomNav);
+        ListView l = view.findViewById(R.id.listview);
         int monat = monatAnalyse.getDate().get(Calendar.MONTH);
         int jahr = monatAnalyse.getDate().get(Calendar.YEAR);
         switch(monat){

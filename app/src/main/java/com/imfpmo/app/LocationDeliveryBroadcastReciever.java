@@ -156,11 +156,11 @@ public class LocationDeliveryBroadcastReciever extends BroadcastReceiver {
 
     }
 
-    boolean databaseEmpty(){
+  /*  boolean databaseEmpty(){
         return true;//LocationUpdatesService.getLocalDB().jsonLocationDao().isEmpty() == 0;
 
     }
-    /*
+
     JsonArray getJsonLocationsFromDB(){
         ToSendDatabase db = LocationUpdatesService.getLocalDB();
         return db.jsonLocationDao().getAll();

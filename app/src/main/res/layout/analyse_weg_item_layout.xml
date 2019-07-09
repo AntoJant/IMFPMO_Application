@@ -101,7 +101,6 @@
         android:layout_marginLeft="33dp"
         android:layout_marginTop="0dp"
         android:layout_toEndOf="@+id/okoBewertungLabel"
-        android:layout_toRightOf="@+id/okoBewertungTextView"
         android:text="Fahrten anzeigen" />
 
     <androidx.viewpager.widget.ViewPager

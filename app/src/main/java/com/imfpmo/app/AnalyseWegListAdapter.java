@@ -44,11 +44,11 @@ public class AnalyseWegListAdapter extends BaseAdapter {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_weg_item_layout, viewGroup,false);
         }
         final AnalyseergebnisWeg ergebnis = (AnalyseergebnisWeg) getItem(i);
-        TextView startZeit = (TextView) view.findViewById(R.id.startZeitTextView);
-        TextView endZeit = (TextView)view.findViewById(R.id.endZeitTextView);
-        TextView startPunkt = (TextView)view.findViewById(R.id.startAdresseTextView);
-        TextView endPunkt = (TextView)view.findViewById(R.id.endAdresseTextView);
-        Button b = (Button) view.findViewById(R.id.button);
+        TextView startZeit = view.findViewById(R.id.startZeitTextView);
+        TextView endZeit = view.findViewById(R.id.endZeitTextView);
+        TextView startPunkt = view.findViewById(R.id.startAdresseTextView);
+        TextView endPunkt = view.findViewById(R.id.endAdresseTextView);
+        Button b = view.findViewById(R.id.button);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

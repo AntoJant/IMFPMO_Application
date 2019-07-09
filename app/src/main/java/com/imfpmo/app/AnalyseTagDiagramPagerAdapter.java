@@ -22,9 +22,10 @@ public class AnalyseTagDiagramPagerAdapter extends PagerAdapter {
         this.tag = tag;
     }
 
-    public Object instantiateItem(ViewGroup container, int position) {
+    @NonNull
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View view = this.layoutInflater.inflate(R.layout.analyse_diagram_pie_chart, container, false);
-        PieChart pieChart = (PieChart) view.findViewById(R.id.diagramm);
+        PieChart pieChart = view.findViewById(R.id.diagramm);
         switch (position){
             case 0: AnalyseDiagramMaker.makeTagGesamtCO2PieChart(tag , pieChart); break;
             case 1: AnalyseDiagramMaker.makeTagGesamtDistanzPieChart(tag ,pieChart); break;
@@ -42,7 +43,7 @@ public class AnalyseTagDiagramPagerAdapter extends PagerAdapter {
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view == object;
     }
-    public void destroyItem(ViewGroup container, int position, Object object) {
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
     }
 

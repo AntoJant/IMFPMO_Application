@@ -122,7 +122,7 @@ class Usermanagement {
                                         Log.e(TAG,"Error = " + e.toString());
                                     }
                                     if(result != null) {
-                                        Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                                        Log.w(TAG, "Code = " + result.getHeaders().code());
                                     }
                                 }
                             }).get();
@@ -144,7 +144,7 @@ class Usermanagement {
                     Log.w(TAG, "COULNDT_REACH_SERVER");
                     return COULDNT_REACH_SERVER;
                 }
-                if((response != null) && (response.getHeaders().code() == 200 && (response.getResult() != null))) {
+                if(response.getHeaders().code() == 200 && response.getResult() != null) {
                     Log.w(TAG,"UserID = " + response.getResult().get(KEY_USER_ID).getAsString());
                     setUserID(response.getResult().get(KEY_USER_ID).getAsString());
                     return OPERATION_SUCCESSFUL;
@@ -194,7 +194,7 @@ class Usermanagement {
                                 Log.e(TAG,"Error = " + e.toString());
                             }
                             if(result != null) {
-                                Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                                Log.w(TAG, "Code = " + result.getHeaders().code());
                             }
                         }
                     }).get();
@@ -216,7 +216,7 @@ class Usermanagement {
             Log.w(TAG, "COULNDT_REACH_SERVER");
             return COULDNT_REACH_SERVER;
         }
-        else if((response != null) && (response.getHeaders().code() == 200)) {
+        else if(response.getHeaders().code() == 200) {
             Log.w(TAG, "Token = " + response.getResult().get(KEY_TOKEN).getAsString());
             setSecurityToken(response.getResult().get(KEY_TOKEN).getAsString());
             int gotUserID = fetchUserID(context);
@@ -272,7 +272,7 @@ class Usermanagement {
                                 Log.e(TAG,"Error = " + e.toString());
                             }
                             if(result != null) {
-                                Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                                Log.w(TAG, "Code = " + result.getHeaders().code());
                             }
                         }
                     }).get();
@@ -294,7 +294,7 @@ class Usermanagement {
             Log.w(TAG, "COULNDT_REACH_SERVER");
             return COULDNT_REACH_SERVER;
         }
-        else if((response != null) && (response.getHeaders().code() == 201)) {
+        else if(response.getHeaders().code() == 201) {
             Log.w(TAG,"OPERATION_SUCCESSFUL" );
             return OPERATION_SUCCESSFUL;
         }
@@ -340,7 +340,7 @@ class Usermanagement {
                                 Log.e(TAG,"Error = " + e.toString());
                             }
                             if(result != null) {
-                                Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                                Log.w(TAG, "Code = " + result.getHeaders().code());
                             }
                         }
                     }).get();
@@ -358,7 +358,7 @@ class Usermanagement {
             Log.w(TAG, "COULNDT_REACH_SERVER");
             return COULDNT_REACH_SERVER;
         }
-        else if((response != null) && (response.getHeaders().code() == 200)) {
+        else if(response.getHeaders().code() == 200) {
             Log.w(TAG,"OPERATION_SUCCESSFUL" );
             return OPERATION_SUCCESSFUL;
         }
@@ -374,10 +374,9 @@ class Usermanagement {
      * Deletes the saved security token.
      * @return true if successful
      */
-    boolean logout( Context context) {
+    void logout(Context context) {
         setSecurityToken( "");
         setUserID("");
-        return true;
     }
 
     JsonObject getAnalyseErgebnisse(Context context) {
@@ -397,7 +396,7 @@ class Usermanagement {
                                     Log.e(TAG, "Error = " + e.toString());
                                 }
                                 if (result != null) {
-                                    Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                                    Log.w(TAG, "Code = " + result.getHeaders().code());
                                 }
                             }
                         }).get();
@@ -417,7 +416,7 @@ class Usermanagement {
                 Log.w(TAG, "COULNDT_REACH_SERVER");
                 return null;
             }
-            if ((response != null) && (response.getHeaders().code() == 200 && (response.getResult() != null))) {
+            if (response.getHeaders().code() == 200 && response.getResult() != null) {
 
                 return response.getResult();
             } else {
@@ -447,7 +446,7 @@ class Usermanagement {
                                     Log.e(TAG, "Error = " + e.toString());
                                 }
                                 if (result != null) {
-                                    Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                                    Log.w(TAG, "Code = " + result.getHeaders().code());
                                 }
                             }
                         }).get();
@@ -467,7 +466,7 @@ class Usermanagement {
                 Log.w(TAG, "COULNDT_REACH_SERVER");
                 return null;
             }
-            if ((response != null) && (response.getHeaders().code() == 200 && (response.getResult() != null))) {
+            if (response.getHeaders().code() == 200 && response.getResult() != null) {
 
                 return response.getResult();
             } else {
@@ -511,7 +510,7 @@ class Usermanagement {
                                     Log.e(TAG, "Error = " + e.toString());
                                 }
                                 if (result != null) {
-                                    Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                                    Log.w(TAG, "Code = " + result.getHeaders().code());
                                 }
                             }
                         }).get();
@@ -531,7 +530,7 @@ class Usermanagement {
                 Log.w(TAG, "COULNDT_REACH_SERVER");
                 return null;
             }
-            if ((response != null) && (response.getHeaders().code() == 200 && (response.getResult() != null))) {
+            if (response.getHeaders().code() == 200 && response.getResult() != null) {
 
                 return response.getResult();
             } else {
@@ -561,7 +560,7 @@ class Usermanagement {
                                     Log.e(TAG, "Error = " + e.toString());
                                 }
                                 if (result != null) {
-                                    Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                                    Log.w(TAG, "Code = " + result.getHeaders().code());
                                 }
                             }
                         }).get();
@@ -581,7 +580,7 @@ class Usermanagement {
                 Log.w(TAG, "COULNDT_REACH_SERVER");
                 return null;
             }
-            if ((response != null) && (response.getHeaders().code() == 200 && (response.getResult() != null))) {
+            if (response.getHeaders().code() == 200 && response.getResult() != null) {
 
                 return response.getResult();
             } else {
@@ -599,11 +598,11 @@ class Usermanagement {
             Response<JsonObject> response = null;
             String monatS = Integer.toString(jahr);
             if(monat < 10){
-                monatS = "0" + Integer.toString(monat);
+                monatS = "0" + monat;
             }
             try {
                 response = Ion.with(context)
-                        .load(API_URI + "/users/" + userID + "/paths?year="+Integer.toString(jahr)+"&month="+monatS+"&skip=100")
+                        .load(API_URI + "/users/" + userID + "/paths?year="+ jahr +"&month="+monatS+"&skip=100")
                         .setLogging("AnalyseLog", Log.VERBOSE)
                         .setHeader(KEY_AUTHORIZATION, "Bearer " + getSecurityToken())
                         .asJsonObject()
@@ -615,7 +614,7 @@ class Usermanagement {
                                     Log.e(TAG, "Error = " + e.toString());
                                 }
                                 if (result != null) {
-                                    Log.w(TAG, "Code = " + String.valueOf(result.getHeaders().code()));
+                                    Log.w(TAG, "Code = " + result.getHeaders().code());
                                 }
                             }
                         }).get();
@@ -635,7 +634,7 @@ class Usermanagement {
                 Log.w(TAG, "COULNDT_REACH_SERVER");
                 return null;
             }
-            if ((response != null) && (response.getHeaders().code() == 200 && (response.getResult() != null))) {
+            if (response.getHeaders().code() == 200 && response.getResult() != null) {
 
                 return response.getResult();
             } else {

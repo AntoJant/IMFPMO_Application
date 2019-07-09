@@ -59,7 +59,7 @@ public class AnalyseMonatListAdapter extends BaseAdapter {
         }else{
             view = LayoutInflater.from(context).inflate(R.layout.analyse_monat_item_layout, viewGroup,false);
             final AnalyseergebnisMonat ergebnis = (AnalyseergebnisMonat) getItem(i);
-            TextView monat = (TextView) view.findViewById(R.id.monatLabel);
+            TextView monat = view.findViewById(R.id.monatLabel);
             switch(ergebnis.getDate().get(Calendar.MONTH)){
                 case 0:monat.setText("Januar" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
                 case 1:monat.setText("Februar" + " " + ergebnis.getDate().get(Calendar.YEAR));break;

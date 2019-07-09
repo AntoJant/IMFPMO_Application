@@ -67,11 +67,11 @@ public class AnalyseFahrtListAdapter extends BaseAdapter {
             case WALK:imageView.setImageResource(R.drawable.ic_directions_walk_black_24dp);
         }
         if(ausgeklappteItems[i]) {
-            TextView distanzTextView = (TextView) view.findViewById(R.id.distanzTextView);
-            TextView co2TextView = (TextView) view.findViewById(R.id.cO2textView);
-            TextView dauerTextView = (TextView) view.findViewById(R.id.dauerTextView);
-            TextView alternativZeit = (TextView) view.findViewById(R.id.altZeitdauertextView);
-            ImageView altImageView = (ImageView) view.findViewById(R.id.altImageView);
+            TextView distanzTextView = view.findViewById(R.id.distanzTextView);
+            TextView co2TextView = view.findViewById(R.id.cO2textView);
+            TextView dauerTextView = view.findViewById(R.id.dauerTextView);
+            TextView alternativZeit = view.findViewById(R.id.altZeitdauertextView);
+            ImageView altImageView = view.findViewById(R.id.altImageView);
             alternativZeit.setText(" " + ergebnis.getAlternativerZeitaufwand()+" min");
             distanzTextView.setText(" " + ergebnis.getDistanz()+ " km");
             co2TextView.setText(" " + ergebnis.getcO2Austoss()+" kg");

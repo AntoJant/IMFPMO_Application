@@ -22,9 +22,10 @@ public class AnalyseMonatDiagramPagerAdapter extends PagerAdapter {
         this.monat = monat;
     }
 
-    public Object instantiateItem(ViewGroup container, int position) {
+    @NonNull
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View view = this.layoutInflater.inflate(R.layout.analyse_diagram_pie_chart, container, false);
-        PieChart pieChart = (PieChart) view.findViewById(R.id.diagramm);
+        PieChart pieChart = view.findViewById(R.id.diagramm);
         switch (position){
             case 0: AnalyseDiagramMaker.makeGesamtCO2Diagramm(monat.getCO2Auto(), monat.getCO2Opnv(), pieChart); break;
             case 1: AnalyseDiagramMaker.makeGesamtDistanzDiagramm(monat.getAutoDistanz(),monat.getOpnvDistanz(),monat.getFahrradDistanz(),monat.getFussDistanz(),pieChart); break;
@@ -44,7 +45,7 @@ public class AnalyseMonatDiagramPagerAdapter extends PagerAdapter {
         return view == object;
     }
     @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
     }
 
