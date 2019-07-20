@@ -1,6 +1,7 @@
 package com.imfpmo.app;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -375,8 +376,10 @@ class Usermanagement {
      * @return true if successful
      */
     void logout(Context context) {
+
         setSecurityToken( "");
         setUserID("");
+
     }
 
     JsonObject getAnalyseErgebnisse(Context context) {
