@@ -379,12 +379,12 @@ class Usermanagement {
         setUserID("");
     }
 
-    JsonObject getAnalyseErgebnisse(Context context) {
+    JsonObject getAnalyseErgebnisse(Context context,int skip,int limit) {
         if (isLoggedIn()) {
             Response<JsonObject> response = null;
             try {
                 response = Ion.with(context)
-                        .load(API_URI + "/users/" + userID + "/analysis-results")
+                        .load(API_URI + "/users/" + userID + "/analysis-results?skip="+skip+"&limit="+limit)
                         .setLogging("AnalyseLog", Log.VERBOSE)
                         .setHeader(KEY_AUTHORIZATION, "Bearer " + getSecurityToken())
                         .asJsonObject()
@@ -429,171 +429,8 @@ class Usermanagement {
         }
     }
 
-    JsonObject getAnalyseErgebnis(Context context, int analyseId){
-        if (isLoggedIn()) {
-            Response<JsonObject> response = null;
-            try {
-                response = Ion.with(context)
-                        .load(API_URI + "/users/" + userID + "/analysis-results/" + analyseId)
-                        .setLogging("AnalyseLog", Log.VERBOSE)
-                        .setHeader(KEY_AUTHORIZATION, "Bearer " + getSecurityToken())
-                        .asJsonObject()
-                        .withResponse()
-                        .setCallback(new FutureCallback<Response<JsonObject>>() {
-                            @Override
-                            public void onCompleted(Exception e, Response<JsonObject> result) {
-                                if (e != null) {
-                                    Log.e(TAG, "Error = " + e.toString());
-                                }
-                                if (result != null) {
-                                    Log.w(TAG, "Code = " + result.getHeaders().code());
-                                }
-                            }
-                        }).get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
-            if (response == null) {
-                Log.w(TAG, "Response == null");
-                return null;
-            } else if (response.getResult() == null) {
-                Log.w(TAG, "json = null");
-                return null;
-            } else if (response.getHeaders().code() == 404) {
-                Log.w(TAG, "COULNDT_REACH_SERVER");
-                return null;
-            }
-            if (response.getHeaders().code() == 200 && response.getResult() != null) {
-
-                return response.getResult();
-            } else {
-                Log.w(TAG, "OPERATION_FAILED");
-                return null;
-            }
-        } else {
-            Log.w(TAG, "User isn't logged in");
-            return null;
-        }
-    }
-
-    JsonObject getAnalyseErgebnisseTag(Context context, Calendar tag) {
-        if (isLoggedIn()) {
-            Response<JsonObject> response = null;
-            String tagS ="";
-            tagS = tagS.concat(tag.get(Calendar.YEAR) + "-");
-            int monat = tag.get(Calendar.MONTH)+1;
-            if (monat < 10){
-                tagS = tagS.concat("0" + monat +"-");
-            }else {
-                tagS =tagS.concat(monat+"-");
-            }
-            if(tag.get(Calendar.DAY_OF_MONTH) < 10){
-                tagS = tagS.concat("0" + tag.get(Calendar.DAY_OF_MONTH));
-            }else{
-                tagS = tagS.concat(""+ tag.get(Calendar.DAY_OF_MONTH));
-            }
-
-            try {
-                response = Ion.with(context)
-                        .load(API_URI + "/users/" + userID + "/paths?date="+tagS)
-                        .setLogging("AnalyseLog", Log.VERBOSE)
-                        .setHeader(KEY_AUTHORIZATION, "Bearer " + getSecurityToken())
-                        .asJsonObject()
-                        .withResponse()
-                        .setCallback(new FutureCallback<Response<JsonObject>>() {
-                            @Override
-                            public void onCompleted(Exception e, Response<JsonObject> result) {
-                                if (e != null) {
-                                    Log.e(TAG, "Error = " + e.toString());
-                                }
-                                if (result != null) {
-                                    Log.w(TAG, "Code = " + result.getHeaders().code());
-                                }
-                            }
-                        }).get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            if (response == null) {
-                Log.w(TAG, "Response == null");
-                return null;
-            } else if (response.getResult() == null) {
-                Log.w(TAG, "json = null");
-                return null;
-            } else if (response.getHeaders().code() == 404) {
-                Log.w(TAG, "COULNDT_REACH_SERVER");
-                return null;
-            }
-            if (response.getHeaders().code() == 200 && response.getResult() != null) {
-
-                return response.getResult();
-            } else {
-                Log.w(TAG, "OPERATION_FAILED");
-                return null;
-            }
-        } else {
-            Log.w(TAG, "User isn't logged in");
-            return null;
-        }
-    }
-
-    JsonObject getAnalyseErgebnisWeg(Context context, String wegId){
-        if (isLoggedIn()) {
-            Response<JsonObject> response = null;
-            try {
-                response = Ion.with(context)
-                        .load(API_URI + "/users/" + userID + "/paths/" + wegId)
-                        .setLogging("AnalyseLog", Log.VERBOSE)
-                        .setHeader(KEY_AUTHORIZATION, "Bearer " + getSecurityToken())
-                        .asJsonObject()
-                        .withResponse()
-                        .setCallback(new FutureCallback<Response<JsonObject>>() {
-                            @Override
-                            public void onCompleted(Exception e, Response<JsonObject> result) {
-                                if (e != null) {
-                                    Log.e(TAG, "Error = " + e.toString());
-                                }
-                                if (result != null) {
-                                    Log.w(TAG, "Code = " + result.getHeaders().code());
-                                }
-                            }
-                        }).get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            if (response == null) {
-                Log.w(TAG, "Response == null");
-                return null;
-            } else if (response.getResult() == null) {
-                Log.w(TAG, "json = null");
-                return null;
-            } else if (response.getHeaders().code() == 404) {
-                Log.w(TAG, "COULNDT_REACH_SERVER");
-                return null;
-            }
-            if (response.getHeaders().code() == 200 && response.getResult() != null) {
-
-                return response.getResult();
-            } else {
-                Log.w(TAG, "OPERATION_FAILED");
-                return null;
-            }
-        } else {
-            Log.w(TAG, "User isn't logged in");
-            return null;
-        }
-    }
-
-    public JsonObject getAnalyseWegeMonat(Context context,int monat, int jahr){
+    public JsonObject getAnalyseWegeMonat(Context context,int monat, int jahr,int skip){
         if (isLoggedIn()) {
             Response<JsonObject> response = null;
             String monatS = Integer.toString(jahr);
@@ -602,7 +439,7 @@ class Usermanagement {
             }
             try {
                 response = Ion.with(context)
-                        .load(API_URI + "/users/" + userID + "/paths?year="+ jahr +"&month="+monatS+"&skip=100")
+                        .load(API_URI + "/users/" + userID + "/paths?year="+ jahr +"&month="+monatS +"&limit="+10000)
                         .setLogging("AnalyseLog", Log.VERBOSE)
                         .setHeader(KEY_AUTHORIZATION, "Bearer " + getSecurityToken())
                         .asJsonObject()

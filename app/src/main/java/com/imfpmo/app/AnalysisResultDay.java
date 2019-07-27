@@ -3,16 +3,43 @@ package com.imfpmo.app;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class AnalyseergebnisTag {
-    private ArrayList<AnalyseergebnisWeg> wege;
+public class AnalysisResultDay {
+    private ArrayList<AnalysisResultPath> wege;
     private Calendar tag;
+    private int gesamtCO2, autoCO2, walkCO2, fahrradCO2, opnvCO2;
+    private int gesamtDistanz, autoDistanz, walkDistanz, fahrradDistanz, opnvDistanz;
+    private int gesamtDauer, autoDauer, walkDauer, fahrradDauer, opnvDauer;
+    private int okoBewertung;
 
-    public AnalyseergebnisTag(ArrayList<AnalyseergebnisWeg> wege, Calendar tag) {
-        this.wege = wege;
+    public AnalysisResultDay(Calendar tag) {
+        wege = new ArrayList<>();
         this.tag = tag;
     }
 
-    public ArrayList<AnalyseergebnisWeg> getWege() {
+    public void  generateItems(){
+        for (AnalysisResultPath path : wege){
+            path.generateAtributes();
+        }
+        for(AnalysisResultPath weg : wege) {
+            weg.generateAtributes();
+            autoCO2 += weg.autoCO2Austoss;
+            walkCO2 += weg.walkCO2Austoss;
+            fahrradCO2 += weg.fahrradCO2Austoss;
+            opnvCO2 += weg.opnvCO2Austoss;
+            autoDistanz += weg.autoDistanz;
+            fahrradDistanz += weg.getFahrradDistanz();
+            walkDistanz += weg.getFussDistanz();
+            fahrradDistanz += weg.getFahrradDistanz();
+            autoDauer += weg.getAutoDauer();
+            fahrradDauer += weg.getAutoDauer();
+            opnvDauer += weg.getOpnvDauer();
+            walkDauer += weg.getFussDauer();
+            okoBewertung += weg.getOkobewertung();
+        }
+
+    }
+
+    public ArrayList<AnalysisResultPath> getWege() {
         return wege;
     }
 
@@ -20,17 +47,20 @@ public class AnalyseergebnisTag {
         return tag;
     }
 
+    public void addWeg(AnalysisResultPath weg){
+        wege.add(weg);
+    }
 
     public int getCO2Austoss(){
         int cO2 = 0;
-        for (AnalyseergebnisWeg weg : wege)
+        for (AnalysisResultPath weg : wege)
             cO2 += weg.getCO2Austoss();
         return cO2;
     }
 
     public int getAutoCO2Austoss(){
         int cO2 = 0;
-        for (AnalyseergebnisWeg weg : wege){
+        for (AnalysisResultPath weg : wege){
             cO2 += weg.getAutoCO2Austoss();
 
         }
@@ -39,7 +69,7 @@ public class AnalyseergebnisTag {
 
     public int getFahrradCO2Austoss(){
         int cO2 = 0;
-        for (AnalyseergebnisWeg weg : wege){
+        for (AnalysisResultPath weg : wege){
                 cO2 += weg.getFahrradCO2Austoss();
         }
         return cO2;
@@ -47,7 +77,7 @@ public class AnalyseergebnisTag {
 
     public int getOpnvCO2Austoss(){
         int cO2 = 0;
-        for (AnalyseergebnisWeg  weg: wege){
+        for (AnalysisResultPath weg: wege){
                 cO2 += weg.getOpnvCO2Austoss();
         }
         return cO2;
@@ -55,7 +85,7 @@ public class AnalyseergebnisTag {
 
     public int getFussCO2Austoss(){
         int cO2 = 0;
-        for (AnalyseergebnisWeg  weg: wege){
+        for (AnalysisResultPath weg: wege){
             cO2 += weg.getFussCO2Austoss();
         }
         return cO2;
@@ -63,7 +93,7 @@ public class AnalyseergebnisTag {
 
     public int getDistanz(){
         int distanz = 0;
-        for(AnalyseergebnisWeg weg : wege){
+        for(AnalysisResultPath weg : wege){
             distanz += weg.getDistanz();
         }
         return distanz;
@@ -71,7 +101,7 @@ public class AnalyseergebnisTag {
 
     public int getAutoDistanz(){
         int distanz = 0;
-        for (AnalyseergebnisWeg weg : wege){
+        for (AnalysisResultPath weg : wege){
                 distanz += weg.getAutoDistanz();
         }
         return distanz;
@@ -79,7 +109,7 @@ public class AnalyseergebnisTag {
 
     public int getFahrradDistanz(){
         int distanz = 0;
-        for (AnalyseergebnisWeg weg : wege){
+        for (AnalysisResultPath weg : wege){
                 distanz += weg.getFahrradDistanz();
         }
         return distanz;
@@ -87,7 +117,7 @@ public class AnalyseergebnisTag {
 
     public int getOpnvDistanz(){
         int distanz = 0;
-        for (AnalyseergebnisWeg weg : wege){
+        for (AnalysisResultPath weg : wege){
                 distanz += weg.getOpnvDistanz();
         }
         return distanz;
@@ -95,7 +125,7 @@ public class AnalyseergebnisTag {
 
     public int getFussDistanz(){
         int distanz = 0;
-        for (AnalyseergebnisWeg weg : wege){
+        for (AnalysisResultPath weg : wege){
             distanz += weg.getFussDistanz();
         }
         return distanz;
@@ -103,14 +133,14 @@ public class AnalyseergebnisTag {
 
     public float getDauer(){
         float dauer = 0;
-        for (AnalyseergebnisWeg weg:wege)
+        for (AnalysisResultPath weg:wege)
             dauer += weg.getDauer();
         return dauer;
     }
 
     public float getAutoDauer(){
         float dauer = 0;
-        for (AnalyseergebnisWeg weg : wege){
+        for (AnalysisResultPath weg : wege){
             dauer += weg.getAutoDauer();
         }
         return dauer;
@@ -119,7 +149,7 @@ public class AnalyseergebnisTag {
 
     public float getFahrradDauer(){
         float dauer = 0;
-        for (AnalyseergebnisWeg weg : wege){
+        for (AnalysisResultPath weg : wege){
                 dauer += weg.getFahrradDauer();
         }
         return dauer;
@@ -127,7 +157,7 @@ public class AnalyseergebnisTag {
 
     public float getOpnvDauer(){
         float dauer = 0;
-        for (AnalyseergebnisWeg weg: wege){
+        for (AnalysisResultPath weg: wege){
                 dauer += weg.getOpnvDauer();
         }
         return dauer;
@@ -135,7 +165,7 @@ public class AnalyseergebnisTag {
 
     public float getFussDauer(){
         float dauer = 0;
-        for (AnalyseergebnisWeg weg: wege){
+        for (AnalysisResultPath weg: wege){
             dauer += weg.getFussDauer();
         }
         return dauer;
@@ -143,7 +173,7 @@ public class AnalyseergebnisTag {
 
     public double getOkobewertung(){
         double bewertung = 0;
-        for(AnalyseergebnisWeg weg : wege){
+        for(AnalysisResultPath weg : wege){
             bewertung += weg.getOkobewertung();
         }
         return bewertung / wege.size();

@@ -10,16 +10,16 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.github.mikephil.charting.charts.PieChart;
 
-public class AnalyseMonatDiagramPagerAdapter extends PagerAdapter {
+public class AnalysisDayDiagramPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private AnalyseergebnisMonat monat;
+    private AnalysisResultDay tag;
 
 
-    public AnalyseMonatDiagramPagerAdapter(Context context, AnalyseergebnisMonat monat){
+    public AnalysisDayDiagramPagerAdapter(Context context, AnalysisResultDay tag){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
-        this.monat = monat;
+        this.tag = tag;
     }
 
     @NonNull
@@ -27,24 +27,22 @@ public class AnalyseMonatDiagramPagerAdapter extends PagerAdapter {
         View view = this.layoutInflater.inflate(R.layout.analyse_diagram_pie_chart, container, false);
         PieChart pieChart = view.findViewById(R.id.diagramm);
         switch (position){
-            case 0: AnalyseDiagramMaker.makeGesamtCO2Diagramm(monat.getCO2Auto(), monat.getCO2Opnv(), pieChart); break;
-            case 1: AnalyseDiagramMaker.makeGesamtDistanzDiagramm(monat.getAutoDistanz(),monat.getOpnvDistanz(),monat.getFahrradDistanz(),monat.getFussDistanz(),pieChart); break;
-            case 2: AnalyseDiagramMaker.makeGesamtZeitDiagramm(monat.getZeitAuto(),monat.getZeitFahrrad(),monat.getZeitOpnv(), monat.getZeitFuss(),pieChart);break;
+            case 0: AnalysisDiagramMaker.makeTagGesamtCO2PieChart(tag , pieChart,context); break;
+            case 1: AnalysisDiagramMaker.makeTagGesamtDistanzPieChart(tag ,pieChart,context); break;
+            case 2: AnalysisDiagramMaker.makeTagGesamtZeitPieChart(tag,pieChart,context);break;
         }
         container.addView(view);
         return view;
     }
 
-    @Override
+
     public int getCount() {
         return 3;
     }
 
-    @Override
     public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
         return view == object;
     }
-    @Override
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
     }

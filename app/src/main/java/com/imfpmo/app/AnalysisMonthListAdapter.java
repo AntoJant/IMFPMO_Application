@@ -15,12 +15,12 @@ import androidx.viewpager.widget.ViewPager;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class AnalyseMonatListAdapter extends BaseAdapter {
+public class AnalysisMonthListAdapter extends BaseAdapter {
     private Activity context;
     private FragmentManager fragmentManager;
-    private ArrayList<AnalyseergebnisMonat> ergebnisse;
+    private ArrayList<AnalysisResultMonth> ergebnisse;
     private FragmentManager support;
-    public AnalyseMonatListAdapter(Activity context, ArrayList<AnalyseergebnisMonat> ergebnisse, FragmentManager fragmentManager){
+    public AnalysisMonthListAdapter(Activity context, ArrayList<AnalysisResultMonth> ergebnisse, FragmentManager fragmentManager){
         this.context = context;
         this.ergebnisse = ergebnisse;
         this.fragmentManager = fragmentManager;
@@ -53,12 +53,12 @@ public class AnalyseMonatListAdapter extends BaseAdapter {
             TextView textView = view.findViewById(R.id.ergebnisType);
             textView.setText("Gesamtergebnisse");
             ViewPager vp = view.findViewById(R.id.viewPage);
-            AnalyseMonatGesamtErgebnisPagerAdapter adapter = new AnalyseMonatGesamtErgebnisPagerAdapter(context, ergebnisse);
+            AnalysisMonthOverviewPagerAdapter adapter = new AnalysisMonthOverviewPagerAdapter(context, ergebnisse);
             vp.setAdapter(adapter);
             return view;
         }else{
             view = LayoutInflater.from(context).inflate(R.layout.analyse_monat_item_layout, viewGroup,false);
-            final AnalyseergebnisMonat ergebnis = (AnalyseergebnisMonat) getItem(i);
+            final AnalysisResultMonth ergebnis = (AnalysisResultMonth) getItem(i);
             TextView monat = view.findViewById(R.id.monatLabel);
             switch(ergebnis.getDate().get(Calendar.MONTH)){
                 case 0:monat.setText("Januar" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
@@ -94,7 +94,7 @@ public class AnalyseMonatListAdapter extends BaseAdapter {
                 }
             });
 
-            AnalyseMonatDiagramPagerAdapter mp = new AnalyseMonatDiagramPagerAdapter(context, ergebnis);
+            AnalysisMonthDiagramPagerAdapter mp = new AnalysisMonthDiagramPagerAdapter(context, ergebnis);
             vp.setAdapter(mp);
             return  view;
         }

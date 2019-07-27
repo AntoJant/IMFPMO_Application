@@ -12,10 +12,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import java.util.Calendar;
 
-public class AnalyseWegListAdapter extends BaseAdapter {
-    private AnalyseergebnisTag tag;
+public class AnalysisPathListAdapter extends BaseAdapter {
+    private AnalysisResultDay tag;
     private boolean[] istAufgeklappt;
-    public AnalyseWegListAdapter(AnalyseergebnisTag tag){
+    public AnalysisPathListAdapter(AnalysisResultDay tag){
         this.tag = tag;
         istAufgeklappt = new boolean[tag.getWege().size()];
         for (int i = 0; i<istAufgeklappt.length;i++)
@@ -43,7 +43,7 @@ public class AnalyseWegListAdapter extends BaseAdapter {
         if (view == null) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_weg_item_layout, viewGroup,false);
         }
-        final AnalyseergebnisWeg ergebnis = (AnalyseergebnisWeg) getItem(i);
+        final AnalysisResultPath ergebnis = (AnalysisResultPath) getItem(i);
         TextView startZeit = view.findViewById(R.id.startZeitTextView);
         TextView endZeit = view.findViewById(R.id.endZeitTextView);
         TextView startPunkt = view.findViewById(R.id.startAdresseTextView);
@@ -68,7 +68,7 @@ public class AnalyseWegListAdapter extends BaseAdapter {
         }
 
         ViewPager vp = view.findViewById(R.id.viewPager);
-        AnalyseWegDiagramPagerAdapter mp = new AnalyseWegDiagramPagerAdapter(viewGroup.getContext(), ergebnis);
+        AnalysisPathDiagramPagerAdapter mp = new AnalysisPathDiagramPagerAdapter(viewGroup.getContext(), ergebnis);
         vp.setAdapter(mp);
 
 

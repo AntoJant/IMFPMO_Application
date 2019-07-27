@@ -12,13 +12,13 @@ import com.github.mikephil.charting.charts.BarChart;
 
 import java.util.ArrayList;
 
-public class AnalyseTagGesamtErgebnisPagerAdapter extends PagerAdapter {
+public class AnalysisPathOverviewPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private ArrayList<AnalyseergebnisTag> tage;
+    private ArrayList<AnalysisResultDay> tage;
 
 
-    public AnalyseTagGesamtErgebnisPagerAdapter(Context context, ArrayList<AnalyseergebnisTag> tage){
+    public AnalysisPathOverviewPagerAdapter(Context context, ArrayList<AnalysisResultDay> tage){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
         this.tage = tage;
@@ -29,9 +29,9 @@ public class AnalyseTagGesamtErgebnisPagerAdapter extends PagerAdapter {
         View view = this.layoutInflater.inflate(R.layout.analyse_diagram_bar_chart, container, false);
         BarChart barChart = view.findViewById(R.id.diagramm);
         switch (position){
-            case 0: AnalyseDiagramMaker.makeTagGesamtCO2BarChart(tage, barChart); break;
-            case 1: AnalyseDiagramMaker.makeTagGesamtDistanzBarChart(tage,barChart); break;
-            case 2: AnalyseDiagramMaker.makeTagGesamtZeitBarChart(tage ,barChart);break;
+            case 0: AnalysisDiagramMaker.makeTagGesamtCO2BarChart(tage, barChart,context); break;
+            case 1: AnalysisDiagramMaker.makeTagGesamtDistanzBarChart(tage,barChart,context); break;
+            case 2: AnalysisDiagramMaker.makeTagGesamtZeitBarChart(tage ,barChart,context);break;
         }
         container.addView(view);
         return view;
@@ -50,5 +50,4 @@ public class AnalyseTagGesamtErgebnisPagerAdapter extends PagerAdapter {
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
     }
-
 }

@@ -14,10 +14,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class AnalysisTagFragment extends Fragment {
-    private  AnalyseergebnisTag tagAnalyse;
+public class AnalysisDayFragment extends Fragment {
+    private AnalysisResultDay tagAnalyse;
 
-    public AnalysisTagFragment(AnalyseergebnisTag tag) {
+    public AnalysisDayFragment(AnalysisResultDay tag) {
         this.tagAnalyse = tag;
     }
 
@@ -33,12 +33,12 @@ public class AnalysisTagFragment extends Fragment {
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
         ListView l = view.findViewById(R.id.listview);
 
-        int monat = tagAnalyse.getTag().get(Calendar.MONTH);
+        int monat = tagAnalyse.getTag().get(Calendar.MONTH)+1;
         int jahr = tagAnalyse.getTag().get(Calendar.YEAR);
         int tag = tagAnalyse.getTag().get(Calendar.DAY_OF_MONTH);
         getActivity().setTitle(tag + "." + monat+ "." + jahr);
 
-        AnalyseWegListAdapter listAdapter = new AnalyseWegListAdapter(tagAnalyse);
+        AnalysisPathListAdapter listAdapter = new AnalysisPathListAdapter(tagAnalyse);
         l.setAdapter(listAdapter);
         return view;
     }

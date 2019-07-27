@@ -12,10 +12,10 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 
-public class AnalyseFahrtListAdapter extends BaseAdapter {
-    private AnalyseergebnisWeg weg;
+public class AnalysisRideListAdapter extends BaseAdapter {
+    private AnalysisResultPath weg;
     private boolean[] ausgeklappteItems;
-    public AnalyseFahrtListAdapter(AnalyseergebnisWeg weg){
+    public AnalysisRideListAdapter(AnalysisResultPath weg){
         this.weg = weg;
         ausgeklappteItems = new boolean[weg.getFahrten().size()];
         for (int i = 0; i < ausgeklappteItems.length; i++){
@@ -46,7 +46,7 @@ public class AnalyseFahrtListAdapter extends BaseAdapter {
         }else {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_fahrt_item_list, viewGroup,false);
         }
-        AnalyseergebnisFahrt ergebnis = (AnalyseergebnisFahrt) getItem(i);
+        AnalysisResultRide ergebnis = (AnalysisResultRide) getItem(i);
 
         TextView zeitTextView = view.findViewById(R.id.zeitTextView);
         TextView startAdresse = view.findViewById(R.id.startPunktTextView);

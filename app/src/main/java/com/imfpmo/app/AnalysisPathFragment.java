@@ -14,11 +14,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
 
-public class AnalysisFahrtFragment extends Fragment {
-    private  AnalyseergebnisWeg weg;
-    private AnalyseFahrtListAdapter listAdapter;
+public class AnalysisPathFragment extends Fragment {
+    private AnalysisResultPath weg;
+    private AnalysisRideListAdapter listAdapter;
     private ListView lv;
-    public AnalysisFahrtFragment(AnalyseergebnisWeg weg) {
+    public AnalysisPathFragment(AnalysisResultPath weg) {
         this.weg = weg;
     }
 
@@ -33,19 +33,20 @@ public class AnalysisFahrtFragment extends Fragment {
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
         lv = view.findViewById(R.id.listview);
-        listAdapter = new AnalyseFahrtListAdapter(weg);
+        listAdapter = new AnalysisRideListAdapter(weg);
         lv.setAdapter(listAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                   klappAus(i);
+                klappAus(i);
             }
         });
         return view;
     }
-
     private void klappAus(int i){
         listAdapter.setAusgeklappteItems(i);
         lv.invalidateViews();
     }
+
+
 }

@@ -10,13 +10,13 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.github.mikephil.charting.charts.PieChart;
 
-public class AnalyseWegDiagramPagerAdapter extends PagerAdapter {
+public class AnalysisPathDiagramPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private AnalyseergebnisWeg weg;
+    private AnalysisResultPath weg;
 
 
-    public AnalyseWegDiagramPagerAdapter(Context context, AnalyseergebnisWeg weg){
+    public AnalysisPathDiagramPagerAdapter(Context context, AnalysisResultPath weg){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
         this.weg = weg;
@@ -27,9 +27,9 @@ public class AnalyseWegDiagramPagerAdapter extends PagerAdapter {
         View view = this.layoutInflater.inflate(R.layout.analyse_diagram_pie_chart, container, false);
         PieChart pieChart = view.findViewById(R.id.diagramm);
         switch (position){
-            case 0: AnalyseDiagramMaker.makeWegGesamtCO2PieChart(weg , pieChart); break;
-            case 1: AnalyseDiagramMaker.makeWegGesamtDistanzPieChart(weg ,pieChart); break;
-            case 2: AnalyseDiagramMaker.makeWegGesamtZeitPieChart(weg ,pieChart);break;
+            case 0: AnalysisDiagramMaker.makeWegGesamtCO2PieChart(weg , pieChart, context); break;
+            case 1: AnalysisDiagramMaker.makeWegGesamtDistanzPieChart(weg ,pieChart,context); break;
+            case 2: AnalysisDiagramMaker.makeWegGesamtZeitPieChart(weg ,pieChart,context);break;
         }
         container.addView(view);
         return view;

@@ -11,10 +11,11 @@ import android.widget.TextView;
 import androidx.viewpager.widget.ViewPager;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
-public class AnalyseTagListAdapter extends BaseAdapter {
-    private AnalyseergebnisMonat monatAnalyse;
-    public AnalyseTagListAdapter(AnalyseergebnisMonat monat){
+public class AnalysisDayListAdapter extends BaseAdapter {
+    private AnalysisResultMonth monatAnalyse;
+    public AnalysisDayListAdapter(AnalysisResultMonth monat){
         this.monatAnalyse = monat;
     }
 
@@ -43,12 +44,12 @@ public class AnalyseTagListAdapter extends BaseAdapter {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_monat_viewpage_item_layout, viewGroup,false);
             ViewPager vp = view.findViewById(R.id.viewPage);
 
-            AnalyseTagGesamtErgebnisPagerAdapter adapter = new AnalyseTagGesamtErgebnisPagerAdapter(viewGroup.getContext(), monatAnalyse.getTage());
+            AnalysisDayOverviewPagerAdapter adapter = new AnalysisDayOverviewPagerAdapter(viewGroup.getContext(), monatAnalyse.getTage());
             vp.setAdapter(adapter);
             return view;
         }else{
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_tag_item_layout, viewGroup,false);
-            final AnalyseergebnisTag ergebnis = (AnalyseergebnisTag) getItem(i);
+            final AnalysisResultDay ergebnis = (AnalysisResultDay) getItem(i);
             TextView datum = view.findViewById(R.id.monatLabel);
             int tag = i;
             int month =  monatAnalyse.getDate().get(Calendar.MONTH) +1 ;
@@ -60,7 +61,7 @@ public class AnalyseTagListAdapter extends BaseAdapter {
                 case 3: okoBewertung.setImageResource(R.drawable.ic_lens_black_24dp);break;
             }
             ViewPager vp = view.findViewById(R.id.viewPager);
-            AnalyseTagDiagramPagerAdapter mp = new AnalyseTagDiagramPagerAdapter(viewGroup.getContext(), ergebnis);
+            AnalysisDayDiagramPagerAdapter mp = new AnalysisDayDiagramPagerAdapter(viewGroup.getContext(), ergebnis);
             vp.setAdapter(mp);
             Button button = view.findViewById(R.id.button);
 
@@ -68,7 +69,7 @@ public class AnalyseTagListAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 MainActivity activity =(MainActivity) viewGroup.getContext();
-                activity.changeToAnalyseTagFragment(ergebnis.getTag());
+                activity.changeToAnalyseTagFragment(new GregorianCalendar(ergebnis.getTag().get(Calendar.YEAR), ergebnis.getTag().get(Calendar.MONTH), ergebnis.getTag().get(Calendar.DAY_OF_MONTH)));
             }
         });
         return view;

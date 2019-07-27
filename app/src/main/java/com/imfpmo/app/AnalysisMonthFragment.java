@@ -14,10 +14,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class AnalysisMonatFragment extends Fragment {
-    private  AnalyseergebnisMonat monatAnalyse;
+public class AnalysisMonthFragment extends Fragment {
+    private AnalysisResultMonth monatAnalyse;
 
-    public AnalysisMonatFragment(AnalyseergebnisMonat monat) {
+    public AnalysisMonthFragment(AnalysisResultMonth monat) {
         this.monatAnalyse = monat;
     }
 
@@ -48,7 +48,7 @@ public class AnalysisMonatFragment extends Fragment {
             case 11:getActivity().setTitle("Dezember" + " " + jahr);break;
         }
 
-        AnalyseTagListAdapter listAdapter = new AnalyseTagListAdapter(monatAnalyse);
+        AnalysisDayListAdapter listAdapter = new AnalysisDayListAdapter(monatAnalyse);
         l.setAdapter(listAdapter);
 
         return view;
