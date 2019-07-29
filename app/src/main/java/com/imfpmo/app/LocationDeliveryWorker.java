@@ -72,6 +72,7 @@ public class LocationDeliveryWorker extends Worker {
 
         long checkDuplicateTime = 0;
 
+        // TODO: 7/22/19 handle duplicates better. maybe do binary search
         for(JsonLocation loc : locationsToSend) {
             if(loc.getTimestamp() != checkDuplicateTime) {
                 JsonObject locJson = loc.toJsonObject();
@@ -84,6 +85,7 @@ public class LocationDeliveryWorker extends Worker {
         JsonObject datapoints = new JsonObject();
         datapoints.add("data_points", locationsToSendJson);
 
+        Log.w(TAG, "Check contiguous block for datapoints: " + datapoints);
         Log.w(TAG, "will send to user: " + userId);
 
 

@@ -29,6 +29,8 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.work.BackoffPolicy;
 import androidx.work.Constraints;
 import androidx.work.Data;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.ExistingWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
@@ -160,14 +162,17 @@ public class LocationUpdatesService extends Service {
             }
     }
 
-
+    // TODO: 7/21/19 take out one or the other
     @Override
     public void onDestroy() {
         //
         Log.w(TAG, "onDestroy service terminated by os/ ended by itself");
 
         activityRecognitionClient
-                .removeActivityTransitionUpdates(pendingIntentCreator("START-RECOGNITION"));
+                .removeActivityTransitionUpdates(pendingIntentCreator("START-RECOGNITION")).addOnSuccessListener(
+                        result -> pendingIntentCreator("START-RECOGNITION").cancel());
+
+        //activityRecognitionClient.removeActivityUpdates(pendingIntentCreator("START-RECOGNITION"));
 
         fusedLocationClient.flushLocations().addOnCompleteListener(
                 task -> fusedLocationClient.removeLocationUpdates(pendingIntentCreator("START-UPDATES")));
@@ -218,11 +223,11 @@ public class LocationUpdatesService extends Service {
         currentTransitions = new ArrayList<>();
         currentTransitions.add(
                 new ActivityTransitionEvent(
-                        DetectedActivity.ON_FOOT, ActivityTransition.ACTIVITY_TRANSITION_ENTER, SystemClock.elapsedRealtimeNanos()
+                        DetectedActivity.STILL, ActivityTransition.ACTIVITY_TRANSITION_ENTER, SystemClock.elapsedRealtimeNanos()
                 )
         );
 
-        Log.w(TAG, "START PADDING AT INIT: " + SystemClock.elapsedRealtimeNanos());
+        Log.w(TAG, "START PADDING AT INIT: " + currentTransitions.get(0));
         List<ActivityTransition> transitions = new ArrayList<>();
 
         transitions.add(
@@ -233,32 +238,8 @@ public class LocationUpdatesService extends Service {
 
         transitions.add(
                 new ActivityTransition.Builder()
-                        .setActivityType(DetectedActivity.IN_VEHICLE)
-                        .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                        .build());
-
-        transitions.add(
-                new ActivityTransition.Builder()
                         .setActivityType(DetectedActivity.ON_BICYCLE)
                         .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                        .build());
-
-        transitions.add(
-                new ActivityTransition.Builder()
-                        .setActivityType(DetectedActivity.ON_BICYCLE)
-                        .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
-                        .build());
-
-        transitions.add(
-                new ActivityTransition.Builder()
-                        .setActivityType(DetectedActivity.ON_FOOT)
-                        .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
-                        .build());
-
-        transitions.add(
-                new ActivityTransition.Builder()
-                        .setActivityType(DetectedActivity.ON_FOOT)
-                        .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
                         .build());
 
         transitions.add(
@@ -267,20 +248,34 @@ public class LocationUpdatesService extends Service {
                         .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                         .build());
 
+        //from here only for testing
         transitions.add(
                 new ActivityTransition.Builder()
-                        .setActivityType(DetectedActivity.STILL)
-                        .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_EXIT)
+                        .setActivityType(DetectedActivity.RUNNING)
+                        .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
                         .build());
+
+        transitions.add(
+                new ActivityTransition.Builder()
+                        .setActivityType(DetectedActivity.WALKING)
+                        .setActivityTransition(ActivityTransition.ACTIVITY_TRANSITION_ENTER)
+                        .build());
+
 
         mTransitionRequest = new ActivityTransitionRequest(transitions);
 
     }
 
-
+    // TODO: 7/21/19 take out activityUpdates
     private void requestActivityRecognitionUpdates(){
-        activityRecognitionClient
+        Task<Void> task = activityRecognitionClient
                 .requestActivityTransitionUpdates(mTransitionRequest, pendingIntentCreator("START-RECOGNITION"));
+
+        task.addOnSuccessListener(result -> Log.w(TAG, "ActivityRecognition initialization succesful"));
+        task.addOnFailureListener(e -> Log.w(TAG, "ActivityRecognition initialization failure: " + e));
+
+        //activityRecognitionClient.requestActivityUpdates(10000, pendingIntentCreator("START-RECOGNITION"));
+
     }
 
     private void requestLocationUpdates() {
@@ -346,7 +341,7 @@ public class LocationUpdatesService extends Service {
 
 
 
-//non testing values: init delay 2 h, repeater 10h(so if fail it sends back in 10h.
+//non testing values: init delay 2 h, repeater 12h(so if fail it sends back in 10h. and !charging
 
 
     private static void scheduleSendingWorker(Context context, String type){
@@ -357,24 +352,29 @@ public class LocationUpdatesService extends Service {
                 .build();
 
 
-
         if(type.equals(WORKER_TYPE_REGULAR)) {
             Constraints constraints = new Constraints.Builder()
-                    //.setRequiresCharging(true)
+                    .setRequiresCharging(true)
                     .setRequiredNetworkType(NetworkType.UNMETERED)
                     //.setRequiresDeviceIdle(true)
                     .build();
 
+            ExistingPeriodicWorkPolicy existingPolicy = ExistingPeriodicWorkPolicy.KEEP;
+
             PeriodicWorkRequest saveRequest =
-                    new PeriodicWorkRequest.Builder(LocationDeliveryWorker.class, 1, TimeUnit.HOURS)
+                    new PeriodicWorkRequest.Builder(LocationDeliveryWorker.class, 10, TimeUnit.HOURS)
                             .setConstraints(constraints)
                             .addTag(WORKER_TYPE_REGULAR)
                             .setInputData(userAuthData)
                             .setInitialDelay(1, TimeUnit.MINUTES)
                             .build();
 
+
+            WorkManager.getInstance(context).enqueueUniquePeriodicWork(WORKER_TYPE_REGULAR, existingPolicy, saveRequest);
+            //WorkManager.getInstance(context).enqueue(saveRequest);
+
             Log.w(TAG, "Sending task scheduled");
-            WorkManager.getInstance(context).enqueue(saveRequest);
+
 
             Helpers.setSendingWorkerScheduled(context, true);
 
@@ -384,6 +384,8 @@ public class LocationUpdatesService extends Service {
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build();
 
+            ExistingWorkPolicy existingPolicy = ExistingWorkPolicy.KEEP;
+
             OneTimeWorkRequest saveRequest =
                     new OneTimeWorkRequest.Builder(LocationDeliveryWorker.class)
                         .setConstraints(constraints)
@@ -392,7 +394,11 @@ public class LocationUpdatesService extends Service {
                         .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, OneTimeWorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
                         .build();
 
-            WorkManager.getInstance(context).enqueue(saveRequest);
+
+
+            WorkManager.getInstance(context).enqueueUniqueWork(WORKER_TYPE_ONCE, existingPolicy, saveRequest);
+            //WorkManager.getInstance(context).enqueue(saveRequest);
+
             Log.w(TAG, "sending remaining data worker scheduled");
 
         }
@@ -401,7 +407,7 @@ public class LocationUpdatesService extends Service {
     static void sendLastDataAndCancelWorker(Context context){
         Helpers.setSendingWorkerScheduled(context, false);
 
-        WorkManager.getInstance(context).cancelAllWorkByTag("Periodic");
+        WorkManager.getInstance(context).cancelAllWorkByTag(WORKER_TYPE_REGULAR);
         Log.w(TAG, "workers cancelled, one-time-only send-remaining-data worker scheduled");
 
         scheduleSendingWorker(context, WORKER_TYPE_ONCE);

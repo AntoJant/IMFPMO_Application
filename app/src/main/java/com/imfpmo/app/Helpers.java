@@ -9,7 +9,7 @@ class Helpers {
 
     private static String TAG = Helpers.class.getSimpleName();
 
-    private static final String KEY_REQUESTING_LOCATION_UPDATES = "requesting_locaction_updates";
+    static final String KEY_REQUESTING_LOCATION_UPDATES = "requesting_locaction_updates";
     private static final String KEY_SENDING_WORKER_SHEDULED = "scheduling_location_deliveries";
     private static final String KEY_IS_DATA_AVAILABLE = "is_data_in_local_db_waiting_to_be_sent";
 

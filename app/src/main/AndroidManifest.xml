@@ -23,10 +23,6 @@
             android:enabled="true"
             android:exported="false" />
         <receiver
-            android:name=".RestartServiceBroadcast"
-            android:enabled="true"
-            android:exported="false" />
-        <receiver
             android:name=".LocationDeliveryBroadcastReceiver"
             android:enabled="true"
             android:exported="false" />

@@ -89,9 +89,7 @@ class JsonLocation {
         locJson.addProperty("longitude", this.getLongitude());
         locJson.addProperty("latitude", this.getLatitude());
         locJson.addProperty("accuracy", this.getAccuracy());
-        //speed is sent in m/s atm
-        float speed = this.getSpeed();
-        locJson.addProperty("speed", speed);
+        locJson.addProperty("speed", this.getSpeed());
         locJson.addProperty("timestamp", this.getTimestamp());
         locJson.addProperty("mode", this.getMode());
 
