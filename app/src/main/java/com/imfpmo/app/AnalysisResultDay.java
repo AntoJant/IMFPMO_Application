@@ -20,6 +20,29 @@ public class AnalysisResultDay {
         for (AnalysisResultPath path : wege){
             path.generateAtributes();
         }
+
+        gesamtCO2 = 0;
+        gesamtDauer = 0;
+        gesamtDistanz = 0;
+
+        walkCO2 = 0;
+        walkDauer = 0;
+        walkDistanz = 0;
+
+        autoCO2 = 0;
+        autoDauer = 0;
+        autoDistanz = 0;
+
+        fahrradCO2 = 0;
+        fahrradDauer = 0;
+        fahrradDistanz = 0;
+
+        opnvCO2 = 0;
+        opnvDauer = 0;
+        opnvDistanz = 0;
+
+        okoBewertung = 0;
+
         for(AnalysisResultPath weg : wege) {
             weg.generateAtributes();
             autoCO2 += weg.autoCO2Austoss;

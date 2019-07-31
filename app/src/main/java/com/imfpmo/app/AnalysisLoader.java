@@ -43,6 +43,7 @@ public class AnalysisLoader {
     }
 
     public void loadResults(int i){
+        String test =  usermanagement.getAnalyseErgebnisse(context,skip,i).toString();
         JsonArray analysisResult = usermanagement.getAnalyseErgebnisse(context,skip,i).get("results").getAsJsonArray();
         AnalysisResultMonth[] newMonths = new Gson().fromJson(analysisResult, AnalysisResultMonth[].class);
         skip += i;
@@ -52,7 +53,6 @@ public class AnalysisLoader {
             JsonArray object = usermanagement.getAnalyseWegeMonat(context, lastLoadedMonth.get(Calendar.MONTH)+1,lastLoadedMonth.get(Calendar.YEAR),1).get("paths").getAsJsonArray();
             AnalysisResultPath[] paths = new Gson().fromJson(object, AnalysisResultPath[].class);
             ArrayList<AnalysisResultDay> days = new ArrayList<>();
-            int test = lastLoadedMonth.getActualMaximum(Calendar.DAY_OF_MONTH);
             for(int k = 0; k < lastLoadedMonth.getActualMaximum(Calendar.DAY_OF_MONTH); k++){
                 days.add(new AnalysisResultDay(new GregorianCalendar(lastLoadedMonth.get(Calendar.YEAR), lastLoadedMonth.get(Calendar.MONTH), k+1)));
             }

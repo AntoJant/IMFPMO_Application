@@ -45,7 +45,7 @@ public class AnalysisDiagramMaker {
         pieChart.setTouchEnabled(false);
         Description desc = new Description();
         int gesamt = autoCO2 + opnvCO2;
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt + "Tonnen CO2");
+        pieChart.setCenterText("Insgesamt: \n  " + gesamt + "gramm CO2");
         desc.setText("");
         pieChart.setDescription(desc);
         pieChart.setRotationEnabled(false);
@@ -81,7 +81,7 @@ public class AnalysisDiagramMaker {
         pieChart.setRotationEnabled(false);
         pieChart.setTouchEnabled(false);
         int gesamt = autoDistanz + opnvDistanz + fahrradDistanz;
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " Kilometer");
+        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " km");
         Description desc = new Description();
         desc.setText("");
         pieChart.setDescription(desc);
@@ -284,7 +284,7 @@ public class AnalysisDiagramMaker {
         Description desc = new Description();
         desc.setText("");
         pieChart.setDescription(desc);
-        float gesamt = tag.getAutoDauer() + tag.getFahrradDauer() + tag.getOpnvDauer();
+        float gesamt = tag.getDauer();
         pieChart.setCenterText("Insgesamt: \n  " + gesamt + " Stunden");
         pieChart.getLegend().setEnabled(false);
         return pieChart;
@@ -321,7 +321,7 @@ public class AnalysisDiagramMaker {
         desc.setText("");
         pieChart.setDescription(desc);
         int gesamt = tag.getCO2Austoss();
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " Stunden");
+        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " gramm");
         pieChart.getLegend().setEnabled(false);
 
         return pieChart;
@@ -357,8 +357,8 @@ public class AnalysisDiagramMaker {
         Description desc = new Description();
         desc.setText("");
         pieChart.setDescription(desc);
-        int gesamt = tag.getCO2Austoss();
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " Stunden");
+        int gesamt = tag.getDistanz();
+        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " km");
         pieChart.getLegend().setEnabled(false);
 
         return pieChart;
@@ -394,7 +394,7 @@ public class AnalysisDiagramMaker {
         desc.setText("");
         pieChart.setDescription(desc);
         float gesamt = weg.getDauer();
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " Stunden");
+        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " min");
         pieChart.getLegend().setEnabled(false);
 
         return pieChart;
@@ -473,7 +473,7 @@ public class AnalysisDiagramMaker {
         Description desc = new Description();
         desc.setText("");
         pieChart.setDescription(desc);
-        int gesamt = weg.getCO2Austoss();
+        int gesamt = weg.getDistanz();
         pieChart.setCenterText("Insgesamt: \n  " + gesamt + " Kilometer");
         pieChart.getLegend().setEnabled(false);
 

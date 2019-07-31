@@ -40,7 +40,6 @@ public class AnalysisFragment extends Fragment implements AbsListView.OnScrollLi
         AnalysisLoader.getInstance().loadFirst(12);
         AnalysisMonthListAdapter adapter = new AnalysisMonthListAdapter(getActivity(),AnalysisLoader.getInstance().getResults(), getActivity().getSupportFragmentManager());
         ListView monatAnalyseergebnistListView  = view.findViewById(R.id.listview);
-
         ((DrawerLocker) getActivity()).setDrawerLocked(false);
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).show();
 

@@ -26,6 +26,15 @@ public class AnalysisResultPath {
     }
 
     public void generateAtributes(){
+        walkCO2Austoss = 0;
+        walkDauer = 0;
+        walkDistanz = 0;
+        autoCO2Austoss = 0;
+        autoDauer = 0;
+        autoDistanz = 0;
+        fahrradCO2Austoss = 0;
+        fahrradDauer = 0;
+        fahrradDistanz = 0;
         for(AnalysisResultRide fahrt:rides){
             fahrt.generateAtributes();
         }
