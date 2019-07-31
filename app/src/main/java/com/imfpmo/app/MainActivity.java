@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Helpers.setRequestingLocationUpdates(this, false);
             LocationUpdatesService.sendLastDataAndCancelWorker(this);
 
-            Usermanagement.getInstance().logout(getApplicationContext());
+            Usermanagement.getInstance().logout();
 
             Log.w("Token after logout", "Token = " + Usermanagement.getInstance().getSecurityToken());
             Toast.makeText(getApplicationContext(), "Erfolgreich abgemeldet", Toast.LENGTH_SHORT).show();
