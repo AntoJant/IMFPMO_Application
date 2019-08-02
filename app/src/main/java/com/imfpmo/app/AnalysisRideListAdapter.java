@@ -10,28 +10,26 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.util.Calendar;
-
 public class AnalysisRideListAdapter extends BaseAdapter {
-    private AnalysisResultPath weg;
-    private boolean[] ausgeklappteItems;
-    public AnalysisRideListAdapter(AnalysisResultPath weg){
-        this.weg = weg;
-        ausgeklappteItems = new boolean[weg.getFahrten().size()];
-        for (int i = 0; i < ausgeklappteItems.length; i++){
-            ausgeklappteItems[i] = false;
+    private AnalysisResultPath path;
+    private boolean[] expandedItems;
+    public AnalysisRideListAdapter(AnalysisResultPath path){
+        this.path = path;
+        expandedItems = new boolean[path.getFahrten().size()];
+        for (int i = 0; i < expandedItems.length; i++){
+            expandedItems[i] = false;
         }
     }
 
 
     @Override
     public int getCount() {
-        return weg.getFahrten().size();
+        return path.getFahrten().size();
     }
 
     @Override
     public Object getItem(int i) {
-        return weg.getFahrten().get(i);
+        return path.getFahrten().get(i);
     }
 
     @Override
@@ -41,7 +39,7 @@ public class AnalysisRideListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if (ausgeklappteItems[i]) {
+        if (expandedItems[i]) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_fahrt_item_erweitert_list, viewGroup,false);
         }else {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_fahrt_item_list, viewGroup,false);
@@ -53,8 +51,6 @@ public class AnalysisRideListAdapter extends BaseAdapter {
         ImageView imageView = view.findViewById(R.id.imageView2);
         RelativeLayout relativeLayout = view.findViewById(R.id.relativeLayout);
         LinearLayout mainLayout = view.findViewById(R.id.mainLayout);
-
-
         switch (ergebnis.getOkoBewertung()){
             case 1: relativeLayout.setBackgroundColor(Color.argb(40,255,0,0));break;
             case 2: relativeLayout.setBackgroundColor(Color.argb(40,255,255,0));break;
@@ -64,9 +60,10 @@ public class AnalysisRideListAdapter extends BaseAdapter {
             case AUTO: imageView.setImageResource(R.drawable.ic_directions_car_black_24dp);break;
             case FAHRRAD: imageView.setImageResource(R.drawable.ic_directions_bike_black_24dp);break;
             case OPNV: imageView.setImageResource(R.drawable.ic_directions_bus_black_24dp);break;
-            case WALK:imageView.setImageResource(R.drawable.ic_directions_walk_black_24dp);
+            case WALK:imageView.setImageResource(R.drawable.ic_directions_walk_black_24dp); break;
         }
-        if(ausgeklappteItems[i]) {
+        if(expandedItems[i]) {
+            TextView zielAdresseTextView = view.findViewById(R.id.zielTextView);
             TextView distanzTextView = view.findViewById(R.id.distanzTextView);
             TextView co2TextView = view.findViewById(R.id.cO2textView);
             TextView dauerTextView = view.findViewById(R.id.dauerTextView);
@@ -74,8 +71,9 @@ public class AnalysisRideListAdapter extends BaseAdapter {
             ImageView altImageView = view.findViewById(R.id.altImageView);
             alternativZeit.setText(" " + ergebnis.getAlternativerZeitaufwand()+" min");
             distanzTextView.setText(" " + ergebnis.getDistanz()+ " km");
-            co2TextView.setText(" " + ergebnis.getcO2Austoss()+" kg");
+            co2TextView.setText(" " + ergebnis.getcO2Austoss()+" gramm CO2");
             dauerTextView.setText(" " + ergebnis.getDauer()+" min");
+            zielAdresseTextView.setText("" + ergebnis.getZieladresse());
             switch (ergebnis.getAlternativModi()){
                 case AUTO: altImageView.setImageResource(R.drawable.ic_directions_car_black_24dp);break;
                 case FAHRRAD: altImageView.setImageResource(R.drawable.ic_directions_bike_black_24dp);break;
@@ -83,16 +81,14 @@ public class AnalysisRideListAdapter extends BaseAdapter {
                 case WALK: altImageView.setImageResource(R.drawable.ic_directions_walk_black_24dp);break;
             }
         }
-        zeitTextView.setText("Startzeit:" +ergebnis.getStartzeit().get(Calendar.HOUR)+":"+ergebnis.getStartzeit().get(Calendar.MINUTE));
-        startAdresse.setText("Startadrasse: " +ergebnis.getStartadresse());
-
-
+        zeitTextView.setText("" + ergebnis.start.getTimeAsString());
+        startAdresse.setText("" +ergebnis.getStartadresse());
         return view;
     }
-    public void setAusgeklappteItems(int i){
-        if(ausgeklappteItems[i] == false)
-            ausgeklappteItems[i] = true;
+    public void expandItems(int i){
+        if(expandedItems[i] == false)
+            expandedItems[i] = true;
         else
-            ausgeklappteItems[i] = false;
+            expandedItems[i] = false;
     }
 }

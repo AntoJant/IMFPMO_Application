@@ -56,8 +56,8 @@ public class AnalysisPathListAdapter extends BaseAdapter {
                 activity.changeToAnalyseFahrtFragment(ergebnis);
             }
         });
-        startZeit.setText(ergebnis.getStartzeit().get(Calendar.HOUR_OF_DAY) + "." + ergebnis.getStartzeit().get(Calendar.MINUTE) );
-        endZeit.setText(ergebnis.getEndzeit().get(Calendar.HOUR_OF_DAY) + "." +ergebnis.getEndzeit().get(Calendar.MINUTE));
+        startZeit.setText(ergebnis.start.getTimeAsString());
+        endZeit.setText(ergebnis.end.getTimeAsString()  );
         startPunkt.setText(ergebnis.getStartAdresse());
         endPunkt.setText(ergebnis.getEndAdresse());
         ImageView okoBewertung = view.findViewById(R.id.okoImageView);

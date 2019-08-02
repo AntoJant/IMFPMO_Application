@@ -32,6 +32,7 @@ public class AnalysisMonthOverviewPagerAdapter extends PagerAdapter{
             case 0: AnalysisDiagramMaker.makeMonatGesamtCO2BarChart(monate, barChart,context); break;
             case 1: AnalysisDiagramMaker.makeMonatGesamtDistanzBarChart(monate,barChart, context); break;
             case 2: AnalysisDiagramMaker.makeMonatGesamtZeitBarChart(monate ,barChart,context);break;
+            case 3: AnalysisDiagramMaker.makeMonatTotalRideCountBarChart(monate, barChart, context);break;
         }
         container.addView(view);
         return view;
@@ -39,7 +40,7 @@ public class AnalysisMonthOverviewPagerAdapter extends PagerAdapter{
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Override

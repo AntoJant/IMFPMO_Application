@@ -1,5 +1,7 @@
 package com.imfpmo.app;
 
+import com.google.android.gms.common.server.response.FastJsonResponse;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -11,8 +13,11 @@ public class AnalysisResultMonth {
     public String bestAlternative;
     public int emissions;
     public String ampel;
-    private int autoCO2,bikeCO2, footCO2, opnvCO2;
+    private int totalCO2,autoCO2,bikeCO2, footCO2, opnvCO2;
+    private int totalDistance, carDistance, bikeDistance, walkDistance, opnvDistance;
+    private int totalRideCount, carRideCount, bikeRideCount, walkRideCount, opnvRideCount;
     private Calendar date;
+    private FahrtModi altModi;
     private int okoBewertung;
     private ArrayList<AnalysisResultDay> tage;
 
@@ -24,11 +29,53 @@ public class AnalysisResultMonth {
         for(AnalysisResultDay day : tage){
             day.generateItems();
         }
+        autoCO2 = 0;
+        bikeCO2 = 0;
+        footCO2 = 0;
+        opnvCO2 = 0;
+        totalCO2 = 0;
+        totalDistance = 0;
+        carDistance =0;
+        bikeDistance = 0;
+        walkDistance = 0;
+        opnvDistance = 0;
+        totalRideCount = 0;
+        carRideCount = 0;
+        bikeRideCount = 0;
+        walkRideCount = 0;
+        opnvRideCount = 0;
+
         for(AnalysisResultDay tag :tage){
             autoCO2 += tag.getAutoCO2Austoss();
+            carDistance += tag.getAutoDistanz();
+            carRideCount += tag.getCarRideCount();
+
             bikeCO2 += tag.getFahrradCO2Austoss();
+            bikeDistance +=tag.getFahrradDistanz();
+            bikeRideCount += tag.getBikeRideCount();
+
             footCO2 += tag.getFussCO2Austoss();
+            walkDistance += tag.getFussDistanz();
+            walkRideCount += tag.getWalkRideCount();
+
             opnvCO2 += tag.getOpnvCO2Austoss();
+            opnvDistance += tag.getOpnvDistanz();
+            opnvRideCount += tag.getOpnvRideCount();
+        }
+        totalCO2 = autoCO2 + bikeCO2 + footCO2+ opnvCO2;
+        totalRideCount = carRideCount + bikeRideCount +walkRideCount +opnvCO2;
+        totalDistance = carDistance + bikeDistance +walkDistance + opnvDistance;
+        switch(bestAlternative){
+            case "walk": altModi = FahrtModi.WALK;break;
+            case "bike": altModi = FahrtModi.FAHRRAD;break;
+            case "car" : altModi = FahrtModi.AUTO;break;
+            default: altModi = FahrtModi.OPNV;
+        }
+
+        switch(ampel){
+            case "green": okoBewertung = 3; break;
+            case "red" : okoBewertung = 1; break;
+            case "yellow" : okoBewertung = 2;break;
         }
         date =new GregorianCalendar(Integer.parseInt(timestamp.substring(0, 4)), Integer.parseInt(timestamp.substring(5, 7)) - 1, Integer.parseInt(timestamp.substring(8, 10)), Integer.parseInt(timestamp.substring(11, 13)), Integer.parseInt(timestamp.substring(14, 16)));
     }
@@ -44,6 +91,7 @@ public class AnalysisResultMonth {
     public int getZeitAuto() {
         return car;
     }
+
     public int getZeitFuss(){return foot;}
 
     public int getGesamtCO2() {
@@ -71,46 +119,50 @@ public class AnalysisResultMonth {
     }
 
     public int getGesamtDistanz(){
-        int distanz = 0;
-        for (AnalysisResultDay tag:tage){
-            distanz += tag.getDistanz();
-        }
-        return distanz;
+        return totalDistance;
     }
 
     public int getAutoDistanz(){
-        int distanz = 0;
-        for (AnalysisResultDay tag:tage){
-            distanz += tag.getAutoDistanz();
-        }
-        return distanz;
+        return carDistance;
     }
 
     public int getFahrradDistanz(){
-        int distanz = 0;
-        for (AnalysisResultDay tag:tage){
-            distanz += tag.getFahrradDistanz();
-        }
-        return distanz;
+        return bikeDistance;
     }
 
     public int getOpnvDistanz(){
-        int distanz = 0;
-        for (AnalysisResultDay tag:tage){
-            distanz += tag.getOpnvDistanz();
-        }
-        return distanz;
+        return opnvDistance;
     }
     public int getFussDistanz(){
-        int distanz = 0;
-        for (AnalysisResultDay tag:tage){
-            distanz += tag.getFussDistanz();
-        }
-        return distanz;
+        return walkDistance;
+    }
+
+    public int getTotalRideCount(){
+        return totalRideCount;
+    }
+
+    public int getCarRideCount(){
+        return carRideCount;
+    }
+
+    public int getBikeRideCount(){
+        return bikeRideCount;
+    }
+
+    public int getOpnvRideCount(){
+        return  opnvRideCount;
+    }
+
+    public int getWalkRideCount(){
+        return walkRideCount;
     }
 
     public void setTage(ArrayList<AnalysisResultDay> temp){
         tage = temp;
+    }
+
+    public FahrtModi getAlternativeModi(){
+        return altModi;
     }
 
 

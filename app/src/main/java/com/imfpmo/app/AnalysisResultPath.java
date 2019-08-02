@@ -10,6 +10,7 @@ public class AnalysisResultPath {
     public int gesamtCO2Austoss, autoCO2Austoss, fahrradCO2Austoss, opnvCO2Austoss, walkCO2Austoss;
     public int gesamtDistanz, autoDistanz, fahrradDistanz, opnvDistanz, walkDistanz;
     public int gesamtDauer, autoDauer, fahrradDauer, opnvDauer, walkDauer;
+    public int totalRideCount, carRideCount, bikeRideCount, opnvRideCount, walkRideCount;
     public Calendar startZeit,endZeit;
     public int okoBewertung;
     public ArrayList<AnalysisResultRide> getFahrten() {
@@ -35,6 +36,18 @@ public class AnalysisResultPath {
         fahrradCO2Austoss = 0;
         fahrradDauer = 0;
         fahrradDistanz = 0;
+        opnvDauer = 0;
+        opnvDistanz = 0;
+        opnvCO2Austoss = 0;
+        gesamtCO2Austoss = 0;
+        gesamtDauer = 0;
+        gesamtDistanz = 0;
+        totalRideCount  =0;
+        carRideCount = 0;
+        bikeRideCount = 0;
+        opnvRideCount = 0;
+        walkRideCount = 0;
+        int bewerteteFahrten = 0;
         for(AnalysisResultRide fahrt:rides){
             fahrt.generateAtributes();
         }
@@ -44,29 +57,41 @@ public class AnalysisResultPath {
                     walkCO2Austoss += fahrt.getcO2Austoss();
                     walkDauer += fahrt.getDauer();
                     walkDistanz += fahrt.getDistanz();
+                    walkRideCount++;
                 }break;
                 case AUTO: {
                     autoCO2Austoss += fahrt.getcO2Austoss();
                     autoDauer += fahrt.getDauer();
                     autoDistanz += fahrt.getDistanz();
+                    carRideCount++;
                 }break;
                 case OPNV:{
                     opnvCO2Austoss += fahrt.getcO2Austoss();
                     opnvDauer += fahrt.getDauer();
                     opnvDistanz += fahrt.getDistanz();
+                    opnvRideCount ++;
                 }break;
                 case FAHRRAD:{
                     fahrradCO2Austoss += fahrt.getcO2Austoss();
                     fahrradDauer += fahrt.getDauer();
                     fahrradDistanz += fahrt.getDistanz();
+                    bikeRideCount ++;
                 }break;
             }
-            okoBewertung = fahrt.getOkoBewertung();
+            if(fahrt.getOkoBewertung() != 0) {
+                okoBewertung += fahrt.getOkoBewertung();
+                bewerteteFahrten++;
+            }
+
         }
+        totalRideCount = carRideCount + bikeRideCount+ opnvRideCount+walkRideCount;
         gesamtCO2Austoss = walkCO2Austoss + autoCO2Austoss+ opnvCO2Austoss+ fahrradCO2Austoss;
         gesamtDauer = walkDauer+autoDauer+opnvDauer+fahrradDauer;
         gesamtDistanz = walkDistanz + autoDistanz+opnvDistanz+fahrradDistanz;
-        okoBewertung = okoBewertung / rides.size();
+        if(bewerteteFahrten != 0 ){
+            okoBewertung = okoBewertung / bewerteteFahrten;
+        }
+
         startZeit = start.getDate();
         endZeit = end.getDate();
     }
@@ -111,23 +136,23 @@ public class AnalysisResultPath {
         return walkDistanz;
     }
 
-    public float getDauer(){
+    public int getDauer(){
         return gesamtDauer;
     }
 
-    public float getAutoDauer(){
+    public int getAutoDauer(){
         return autoDauer;
     }
 
-    public float getFussDauer(){
+    public int getFussDauer(){
         return walkDauer;
     }
 
-    public float getFahrradDauer(){
+    public int getFahrradDauer(){
         return fahrradDauer;
     }
 
-    public float getOpnvDauer(){
+    public int getOpnvDauer(){
         return opnvDauer;
     }
 

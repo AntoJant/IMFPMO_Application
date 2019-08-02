@@ -82,6 +82,15 @@ public class AnalysisMonthListAdapter extends BaseAdapter {
                 case 3: okoBewertung.setImageResource(R.drawable.ic_lens_black_24dp);break;
             }
 
+            ImageView alternativeModi = view.findViewById(R.id.bestAlternativeImageView);
+            switch (ergebnis.getAlternativeModi()){
+                case AUTO: alternativeModi.setImageResource(R.drawable.ic_directions_car_black_24dp);break;
+                case FAHRRAD: alternativeModi.setImageResource(R.drawable.ic_directions_bike_black_24dp);break;
+                case OPNV: alternativeModi.setImageResource(R.drawable.ic_directions_bus_black_24dp);break;
+                case WALK: alternativeModi.setImageResource(R.drawable.ic_directions_walk_black_24dp);break;
+
+            }
+
 
             Button button = view.findViewById(R.id.button);
             ViewPager vp = view.findViewById(R.id.viewPager);

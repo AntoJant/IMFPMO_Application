@@ -30,7 +30,7 @@ public class AnalysisMonthFragment extends Fragment {
         BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         ((MainActivity) Objects.requireNonNull(getActivity())).FragmentListener(bottomNav);
-        ListView l = view.findViewById(R.id.listview);
+        ListView l = view.findViewById(R.id.listviewMonth);
         int monat = monatAnalyse.getDate().get(Calendar.MONTH);
         int jahr = monatAnalyse.getDate().get(Calendar.YEAR);
         switch(monat){

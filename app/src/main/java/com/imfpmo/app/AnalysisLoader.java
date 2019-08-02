@@ -16,6 +16,7 @@ public class AnalysisLoader {
     private static AnalysisLoader instance;
     private ArrayList<AnalysisResultMonth> results;
     private int skip = 0;
+    private boolean allLoaded;
     private AnalysisLoader(Context context){
         this.context = context;
         usermanagement = Usermanagement.getInstance();
@@ -43,10 +44,12 @@ public class AnalysisLoader {
     }
 
     public void loadResults(int i){
-        String test =  usermanagement.getAnalyseErgebnisse(context,skip,i).toString();
         JsonArray analysisResult = usermanagement.getAnalyseErgebnisse(context,skip,i).get("results").getAsJsonArray();
         AnalysisResultMonth[] newMonths = new Gson().fromJson(analysisResult, AnalysisResultMonth[].class);
         skip += i;
+        if(newMonths.length != i){
+            allLoaded = true;
+        }
 
         for(int j = 0; j < newMonths.length; j++ ){
             Calendar lastLoadedMonth = getCalendarDate(newMonths[j].timestamp);
@@ -71,4 +74,9 @@ public class AnalysisLoader {
     public Calendar getCalendarDate(String date) {
         return new GregorianCalendar(Integer.parseInt(date.substring(0, 4)), Integer.parseInt(date.substring(5, 7)) - 1, Integer.parseInt(date.substring(8, 10)), Integer.parseInt(date.substring(11, 13)), Integer.parseInt(date.substring(14, 16)));
     }
+
+    public boolean isAllLoaded(){
+        return allLoaded;
+    }
+
 }

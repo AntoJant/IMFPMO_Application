@@ -9,6 +9,7 @@ public class AnalysisResultDay {
     private int gesamtCO2, autoCO2, walkCO2, fahrradCO2, opnvCO2;
     private int gesamtDistanz, autoDistanz, walkDistanz, fahrradDistanz, opnvDistanz;
     private int gesamtDauer, autoDauer, walkDauer, fahrradDauer, opnvDauer;
+    private int totalRideCount, carRideCount, bikeRideCount, opnvRideCount, walkRideCount;
     private int okoBewertung;
 
     public AnalysisResultDay(Calendar tag) {
@@ -24,25 +25,30 @@ public class AnalysisResultDay {
         gesamtCO2 = 0;
         gesamtDauer = 0;
         gesamtDistanz = 0;
+        totalRideCount = 0;
 
         walkCO2 = 0;
         walkDauer = 0;
         walkDistanz = 0;
+        walkRideCount = 0;
 
         autoCO2 = 0;
         autoDauer = 0;
         autoDistanz = 0;
+        carRideCount = 0;
 
         fahrradCO2 = 0;
         fahrradDauer = 0;
         fahrradDistanz = 0;
+        bikeRideCount = 0;
 
         opnvCO2 = 0;
         opnvDauer = 0;
         opnvDistanz = 0;
+        opnvRideCount = 0;
 
         okoBewertung = 0;
-
+        int bewertetFahrten = 0;
         for(AnalysisResultPath weg : wege) {
             weg.generateAtributes();
             autoCO2 += weg.autoCO2Austoss;
@@ -54,10 +60,25 @@ public class AnalysisResultDay {
             walkDistanz += weg.getFussDistanz();
             fahrradDistanz += weg.getFahrradDistanz();
             autoDauer += weg.getAutoDauer();
-            fahrradDauer += weg.getAutoDauer();
+            fahrradDauer += weg.getFahrradDauer();
             opnvDauer += weg.getOpnvDauer();
             walkDauer += weg.getFussDauer();
-            okoBewertung += weg.getOkobewertung();
+            carRideCount += weg.carRideCount;
+            bikeRideCount += weg.bikeRideCount;
+            walkRideCount += weg.walkRideCount;
+            opnvRideCount += weg.opnvRideCount;
+            if(weg.getOkobewertung() != 0){
+                bewertetFahrten ++;
+                okoBewertung += weg.getOkobewertung();
+            }
+        }
+        gesamtDistanz = autoDistanz + fahrradDistanz+ opnvDistanz + walkDistanz;
+        gesamtDauer = autoDauer + fahrradDauer +opnvDauer +walkDauer;
+        gesamtCO2 = autoCO2 + fahrradCO2 + opnvDauer + walkCO2;
+        totalRideCount = carRideCount + walkRideCount + opnvRideCount+ bikeRideCount;
+
+        if(bewertetFahrten != 0){
+            okoBewertung = okoBewertung / bewertetFahrten;
         }
 
     }
@@ -75,131 +96,88 @@ public class AnalysisResultDay {
     }
 
     public int getCO2Austoss(){
-        int cO2 = 0;
-        for (AnalysisResultPath weg : wege)
-            cO2 += weg.getCO2Austoss();
-        return cO2;
+        return gesamtCO2;
     }
 
     public int getAutoCO2Austoss(){
-        int cO2 = 0;
-        for (AnalysisResultPath weg : wege){
-            cO2 += weg.getAutoCO2Austoss();
-
-        }
-        return cO2;
+        return autoCO2;
     }
 
     public int getFahrradCO2Austoss(){
-        int cO2 = 0;
-        for (AnalysisResultPath weg : wege){
-                cO2 += weg.getFahrradCO2Austoss();
-        }
-        return cO2;
+        return fahrradCO2;
     }
 
     public int getOpnvCO2Austoss(){
-        int cO2 = 0;
-        for (AnalysisResultPath weg: wege){
-                cO2 += weg.getOpnvCO2Austoss();
-        }
-        return cO2;
+        return opnvCO2;
     }
 
     public int getFussCO2Austoss(){
-        int cO2 = 0;
-        for (AnalysisResultPath weg: wege){
-            cO2 += weg.getFussCO2Austoss();
-        }
-        return cO2;
+        return walkCO2;
     }
 
     public int getDistanz(){
-        int distanz = 0;
-        for(AnalysisResultPath weg : wege){
-            distanz += weg.getDistanz();
-        }
-        return distanz;
+        return gesamtDistanz;
     }
 
     public int getAutoDistanz(){
-        int distanz = 0;
-        for (AnalysisResultPath weg : wege){
-                distanz += weg.getAutoDistanz();
-        }
-        return distanz;
+        return autoDistanz;
     }
 
     public int getFahrradDistanz(){
-        int distanz = 0;
-        for (AnalysisResultPath weg : wege){
-                distanz += weg.getFahrradDistanz();
-        }
-        return distanz;
+        return fahrradDistanz;
     }
 
     public int getOpnvDistanz(){
-        int distanz = 0;
-        for (AnalysisResultPath weg : wege){
-                distanz += weg.getOpnvDistanz();
-        }
-        return distanz;
+        return opnvDistanz;
     }
 
     public int getFussDistanz(){
-        int distanz = 0;
-        for (AnalysisResultPath weg : wege){
-            distanz += weg.getFussDistanz();
-        }
-        return distanz;
+        return walkDistanz;
     }
 
-    public float getDauer(){
-        float dauer = 0;
-        for (AnalysisResultPath weg:wege)
-            dauer += weg.getDauer();
-        return dauer;
+    public int getDauer(){
+        return gesamtDauer;
     }
 
     public float getAutoDauer(){
-        float dauer = 0;
-        for (AnalysisResultPath weg : wege){
-            dauer += weg.getAutoDauer();
-        }
-        return dauer;
+        return autoDauer;
     }
 
 
     public float getFahrradDauer(){
-        float dauer = 0;
-        for (AnalysisResultPath weg : wege){
-                dauer += weg.getFahrradDauer();
-        }
-        return dauer;
+        return fahrradDauer;
     }
 
     public float getOpnvDauer(){
-        float dauer = 0;
-        for (AnalysisResultPath weg: wege){
-                dauer += weg.getOpnvDauer();
-        }
-        return dauer;
+        return opnvDauer;
     }
 
     public float getFussDauer(){
-        float dauer = 0;
-        for (AnalysisResultPath weg: wege){
-            dauer += weg.getFussDauer();
-        }
-        return dauer;
+        return walkDauer;
     }
 
     public double getOkobewertung(){
-        double bewertung = 0;
-        for(AnalysisResultPath weg : wege){
-            bewertung += weg.getOkobewertung();
-        }
-        return bewertung / wege.size();
+        return okoBewertung;
+    }
+
+    public int getTotalRideCount(){
+        return totalRideCount;
+    }
+
+    public int getCarRideCount(){
+        return carRideCount;
+    }
+
+    public int getBikeRideCount(){
+        return bikeRideCount;
+    }
+
+    public int getWalkRideCount(){
+        return walkRideCount;
+    }
+
+    public int getOpnvRideCount(){
+        return opnvRideCount;
     }
 
 }

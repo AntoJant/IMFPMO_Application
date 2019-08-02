@@ -22,6 +22,12 @@ import java.util.Calendar;
 import java.util.List;
 
 public class AnalysisDiagramMaker {
+    private static final int maxMinutes = 60;
+    private static final int maxMeters = 1000;
+    private static final int maxGrammCO2 = 1000;
+    private static final int nachkommerstelleMinutes = 100;
+    private static final int nachkommerstelleMeters = 10;
+    private static final int nachkommerstelleCO2 = 100;
 
     public static PieChart makeGesamtCO2Diagramm(int autoCO2, int opnvCO2, PieChart pieChart, Context context) {
         Drawable auto = context.getDrawable(R.drawable.ic_directions_car_black_24dp);
@@ -45,7 +51,10 @@ public class AnalysisDiagramMaker {
         pieChart.setTouchEnabled(false);
         Description desc = new Description();
         int gesamt = autoCO2 + opnvCO2;
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt + "gramm CO2");
+
+        pieChart.setCenterText(getTotalCO2Text(gesamt));
+
+
         desc.setText("");
         pieChart.setDescription(desc);
         pieChart.setRotationEnabled(false);
@@ -81,7 +90,7 @@ public class AnalysisDiagramMaker {
         pieChart.setRotationEnabled(false);
         pieChart.setTouchEnabled(false);
         int gesamt = autoDistanz + opnvDistanz + fahrradDistanz;
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " km");
+        pieChart.setCenterText(getTotalDistanceText(gesamt));
         Description desc = new Description();
         desc.setText("");
         pieChart.setDescription(desc);
@@ -159,7 +168,7 @@ public class AnalysisDiagramMaker {
             public String getFormattedValue(float value) {
                 int lastIndex = monate.size() - 1;
                 int realMonat = monate.get((lastIndex - (int) value)).getDate().get(Calendar.MONTH) + 1;
-                return realMonat + " " + monate.get(lastIndex - ((int) value)).getDate().get(Calendar.YEAR);
+                return realMonat + "." + monate.get(lastIndex - ((int) value)).getDate().get(Calendar.YEAR);
             }
         });
 
@@ -200,7 +209,7 @@ public class AnalysisDiagramMaker {
             @Override
             public String getFormattedValue(float value) {
                 int lastIndex = monate.size() - 1;
-                return monate.get(lastIndex - ((int) value)).getDate().get(Calendar.MONTH) + " " + monate.get(lastIndex - ((int) value)).getDate().get(Calendar.YEAR);
+                return monate.get(lastIndex - ((int) value)).getDate().get(Calendar.MONTH) + "." + monate.get(lastIndex - ((int) value)).getDate().get(Calendar.YEAR);
             }
         });
 
@@ -242,7 +251,49 @@ public class AnalysisDiagramMaker {
             @Override
             public String getFormattedValue(float value) {
                 int lastIndex = monate.size() - 1;
-                return monate.get(lastIndex - ((int) value)).getDate().get(Calendar.MONTH) + " " + monate.get(lastIndex - ((int) value)).getDate().get(Calendar.YEAR);
+                return monate.get(lastIndex - ((int) value)).getDate().get(Calendar.MONTH) + "." + monate.get(lastIndex - ((int) value)).getDate().get(Calendar.YEAR);
+            }
+        });
+
+        YAxis yAxis1 = barChart.getAxisLeft();
+        YAxis yAxis2 = barChart.getAxisRight();
+        yAxis1.setDrawGridLines(false);
+        yAxis1.setAxisMinimum(0);
+        yAxis2.setEnabled(false);
+        return barChart;
+    }
+
+    public static BarChart makeMonatTotalRideCountBarChart(final ArrayList<AnalysisResultMonth> monate, BarChart barChart, Context context) {
+        List<BarEntry> entries = new ArrayList<>();
+        int lastIndex = monate.size() - 1;
+
+        for (int i = 0; i < monate.size(); i++) {
+            entries.add(new BarEntry(i, new float[]{monate.get(lastIndex - i).getCarRideCount(), monate.get(lastIndex - i).getOpnvRideCount(), monate.get(lastIndex - i).getBikeRideCount(), monate.get(lastIndex - i).getWalkRideCount()}));
+        }
+        BarDataSet set = new BarDataSet(entries, "Gesamtzahl Fahrten");
+        set.setStackLabels(new String[]{"Auto", "ÖPNV", "Fahrrad", "zu Fuß"});
+        set.setDrawIcons(false);
+        set.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
+        set.setDrawValues(false);
+        BarData barData = new BarData(set);
+
+        barChart.setData(barData);
+        barChart.setScaleEnabled(false);
+        barChart.setDrawGridBackground(false);
+        barChart.setTouchEnabled(false);
+        Description des = new Description();
+        des.setText("");
+        barChart.setDescription(des);
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                int lastIndex = monate.size() - 1;
+                return monate.get(lastIndex - ((int) value)).getDate().get(Calendar.MONTH) + "." + monate.get(lastIndex - ((int) value)).getDate().get(Calendar.YEAR);
             }
         });
 
@@ -284,8 +335,8 @@ public class AnalysisDiagramMaker {
         Description desc = new Description();
         desc.setText("");
         pieChart.setDescription(desc);
-        float gesamt = tag.getDauer();
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " Stunden");
+        int gesamt = tag.getDauer();
+        pieChart.setCenterText(getTotalDurationText(gesamt));
         pieChart.getLegend().setEnabled(false);
         return pieChart;
     }
@@ -321,7 +372,7 @@ public class AnalysisDiagramMaker {
         desc.setText("");
         pieChart.setDescription(desc);
         int gesamt = tag.getCO2Austoss();
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " gramm");
+        pieChart.setCenterText(getTotalCO2Text(gesamt));
         pieChart.getLegend().setEnabled(false);
 
         return pieChart;
@@ -358,7 +409,7 @@ public class AnalysisDiagramMaker {
         desc.setText("");
         pieChart.setDescription(desc);
         int gesamt = tag.getDistanz();
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " km");
+        pieChart.setCenterText(getTotalDistanceText(gesamt));
         pieChart.getLegend().setEnabled(false);
 
         return pieChart;
@@ -393,8 +444,8 @@ public class AnalysisDiagramMaker {
         Description desc = new Description();
         desc.setText("");
         pieChart.setDescription(desc);
-        float gesamt = weg.getDauer();
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " min");
+        int gesamt = weg.getDauer();
+        pieChart.setCenterText(getTotalDurationText(gesamt));
         pieChart.getLegend().setEnabled(false);
 
         return pieChart;
@@ -435,7 +486,7 @@ public class AnalysisDiagramMaker {
         desc.setText("");
         pieChart.setDescription(desc);
         int gesamt = weg.getCO2Austoss();
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " CO2");
+        pieChart.setCenterText(getTotalCO2Text(gesamt));
         pieChart.getLegend().setEnabled(false);
 
         return pieChart;
@@ -474,7 +525,7 @@ public class AnalysisDiagramMaker {
         desc.setText("");
         pieChart.setDescription(desc);
         int gesamt = weg.getDistanz();
-        pieChart.setCenterText("Insgesamt: \n  " + gesamt + " Kilometer");
+        pieChart.setCenterText(getTotalDistanceText(gesamt));
         pieChart.getLegend().setEnabled(false);
 
         return pieChart;
@@ -508,7 +559,7 @@ public class AnalysisDiagramMaker {
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return Integer.toString((int) value);
+                return Integer.toString((int) value + 1);
             }
         });
 
@@ -547,7 +598,7 @@ public class AnalysisDiagramMaker {
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return Integer.toString((int) value);
+                return Integer.toString((int) value + 1);
             }
         });
 
@@ -586,7 +637,7 @@ public class AnalysisDiagramMaker {
         xAxis.setValueFormatter(new ValueFormatter() {
             @Override
             public String getFormattedValue(float value) {
-                return Integer.toString((int) value);
+                return Integer.toString((int) value + 1);
             }
         });
 
@@ -597,5 +648,33 @@ public class AnalysisDiagramMaker {
         yAxis2.setEnabled(false);
         return barChart;
     }
+
+    public static String getTotalCO2Text(int gesamtCO2){
+        if(gesamtCO2 >= maxGrammCO2){
+            double kilogramm =(double) Math.round((double) gesamtCO2 / 1000 * nachkommerstelleCO2) /nachkommerstelleCO2;
+            return  "Insgesamt: \n  " + kilogramm + " kg CO2";
+        }else{
+            return "Insgesamt: \n  " + gesamtCO2 + " gramm CO2";
+        }
+    }
+
+    public static String getTotalDistanceText(int gesamtDistance){
+        if(gesamtDistance >= maxMeters){
+            double kilometer = (double) Math.round((double) gesamtDistance / 1000 * nachkommerstelleMeters) /nachkommerstelleMeters;
+            return  "Insgesamt: \n  " + kilometer + " km";
+        }else{
+            return "Insgesamt: \n  " + gesamtDistance + " m";
+        }
+    }
+
+    public static String getTotalDurationText(int totalDuration){
+        if(totalDuration >= maxMinutes){
+            double hour =(double) Math.round((double) totalDuration / 60 * 100)/ 100;
+            return "Insgesamt: \n  " + hour + " Stunden";
+        }else{
+            return "Insgesamt: \n  " + totalDuration + " Minuten";
+        }
+    }
+
 
 }

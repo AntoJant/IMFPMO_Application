@@ -31,7 +31,7 @@ public class AnalysisDayFragment extends Fragment {
         BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
-        ListView l = view.findViewById(R.id.listview);
+        ListView l = view.findViewById(R.id.listviewMonth);
 
         int monat = tagAnalyse.getTag().get(Calendar.MONTH)+1;
         int jahr = tagAnalyse.getTag().get(Calendar.YEAR);
