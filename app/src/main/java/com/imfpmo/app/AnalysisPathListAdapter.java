@@ -10,27 +10,25 @@ import android.widget.TextView;
 
 import androidx.viewpager.widget.ViewPager;
 
-import java.util.Calendar;
-
 public class AnalysisPathListAdapter extends BaseAdapter {
-    private AnalysisResultDay tag;
-    private boolean[] istAufgeklappt;
-    public AnalysisPathListAdapter(AnalysisResultDay tag){
-        this.tag = tag;
-        istAufgeklappt = new boolean[tag.getWege().size()];
-        for (int i = 0; i<istAufgeklappt.length;i++)
-            istAufgeklappt[i] = false;
+    private AnalysisResultDay day;
+    private boolean[] isUnfolded;
+    public AnalysisPathListAdapter(AnalysisResultDay day){
+        this.day = day;
+        isUnfolded = new boolean[day.getRides().size()];
+        for (int i = 0; i< isUnfolded.length; i++)
+            isUnfolded[i] = false;
     }
 
 
     @Override
     public int getCount() {
-        return tag.getWege().size();
+        return day.getRides().size();
     }
 
     @Override
     public Object getItem(int i) {
-        return tag.getWege().get(i);
+        return day.getRides().get(i);
     }
 
     @Override
@@ -44,10 +42,10 @@ public class AnalysisPathListAdapter extends BaseAdapter {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_weg_item_layout, viewGroup,false);
         }
         final AnalysisResultPath ergebnis = (AnalysisResultPath) getItem(i);
-        TextView startZeit = view.findViewById(R.id.startZeitTextView);
-        TextView endZeit = view.findViewById(R.id.endZeitTextView);
-        TextView startPunkt = view.findViewById(R.id.startAdresseTextView);
-        TextView endPunkt = view.findViewById(R.id.endAdresseTextView);
+        TextView startTime = view.findViewById(R.id.startZeitTextView);
+        TextView endTime = view.findViewById(R.id.endZeitTextView);
+        TextView startAddress = view.findViewById(R.id.startAdresseTextView);
+        TextView endAdress = view.findViewById(R.id.endAdresseTextView);
         Button b = view.findViewById(R.id.button);
         b.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,15 +54,15 @@ public class AnalysisPathListAdapter extends BaseAdapter {
                 activity.changeToAnalyseFahrtFragment(ergebnis);
             }
         });
-        startZeit.setText(ergebnis.start.getTimeAsString());
-        endZeit.setText(ergebnis.end.getTimeAsString()  );
-        startPunkt.setText(ergebnis.getStartAdresse());
-        endPunkt.setText(ergebnis.getEndAdresse());
-        ImageView okoBewertung = view.findViewById(R.id.okoImageView);
-        switch ((int) ergebnis.getOkobewertung()){
-            case 1: okoBewertung.setImageResource(R.drawable.red_dot_24dp);break;
-            case 2: okoBewertung.setImageResource(R.drawable.yellow_dot_24dp);break;
-            case 3: okoBewertung.setImageResource(R.drawable.ic_lens_black_24dp);break;
+        startTime.setText(ergebnis.start.getTimeAsString());
+        endTime.setText(ergebnis.end.getTimeAsString()  );
+        startAddress.setText(ergebnis.getStartAdress());
+        endAdress.setText(ergebnis.getEndAdress());
+        ImageView okoGrade = view.findViewById(R.id.okoImageView);
+        switch ((int) ergebnis.getOkoGrade()){
+            case 1: okoGrade.setImageResource(R.drawable.red_dot_24dp);break;
+            case 2: okoGrade.setImageResource(R.drawable.yellow_dot_24dp);break;
+            case 3: okoGrade.setImageResource(R.drawable.ic_lens_black_24dp);break;
         }
 
         ViewPager vp = view.findViewById(R.id.viewPager);

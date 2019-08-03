@@ -18,18 +18,18 @@ import java.util.Calendar;
 public class AnalysisMonthListAdapter extends BaseAdapter {
     private Activity context;
     private FragmentManager fragmentManager;
-    private ArrayList<AnalysisResultMonth> ergebnisse;
+    private ArrayList<AnalysisResultMonth> results;
     private FragmentManager support;
-    public AnalysisMonthListAdapter(Activity context, ArrayList<AnalysisResultMonth> ergebnisse, FragmentManager fragmentManager){
+    public AnalysisMonthListAdapter(Activity context, ArrayList<AnalysisResultMonth> results, FragmentManager fragmentManager){
         this.context = context;
-        this.ergebnisse = ergebnisse;
+        this.results = results;
         this.fragmentManager = fragmentManager;
     }
 
 
     @Override
     public int getCount() {
-        return ergebnisse.size()+1;
+        return results.size()+1;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class AnalysisMonthListAdapter extends BaseAdapter {
         if(i == 0){
             return null;
         }
-        return ergebnisse.get(i-1);
+        return results.get(i-1);
     }
 
     @Override
@@ -53,41 +53,41 @@ public class AnalysisMonthListAdapter extends BaseAdapter {
             TextView textView = view.findViewById(R.id.ergebnisType);
             textView.setText("Gesamtergebnisse");
             ViewPager vp = view.findViewById(R.id.viewPage);
-            AnalysisMonthOverviewPagerAdapter adapter = new AnalysisMonthOverviewPagerAdapter(context, ergebnisse);
+            AnalysisMonthOverviewPagerAdapter adapter = new AnalysisMonthOverviewPagerAdapter(context, results);
             vp.setAdapter(adapter);
             return view;
         }else{
             view = LayoutInflater.from(context).inflate(R.layout.analyse_monat_item_layout, viewGroup,false);
-            final AnalysisResultMonth ergebnis = (AnalysisResultMonth) getItem(i);
-            TextView monat = view.findViewById(R.id.monatLabel);
-            switch(ergebnis.getDate().get(Calendar.MONTH)){
-                case 0:monat.setText("Januar" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-                case 1:monat.setText("Februar" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-                case 2:monat.setText("März" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-                case 3:monat.setText("April" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-                case 4:monat.setText("Mai" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-                case 5:monat.setText("Juni" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-                case 6:monat.setText("Juli" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-                case 7:monat.setText("August" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-                case 8:monat.setText("September" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-                case 9:monat.setText("Oktober" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-                case 10:monat.setText("November" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
-                case 11:monat.setText("Dezember" + " " + ergebnis.getDate().get(Calendar.YEAR));break;
+            final AnalysisResultMonth result = (AnalysisResultMonth) getItem(i);
+            TextView month = view.findViewById(R.id.monatLabel);
+            switch(result.getDate().get(Calendar.MONTH)){
+                case 0:month.setText("Januar" + " " + result.getDate().get(Calendar.YEAR));break;
+                case 1:month.setText("Februar" + " " + result.getDate().get(Calendar.YEAR));break;
+                case 2:month.setText("März" + " " + result.getDate().get(Calendar.YEAR));break;
+                case 3:month.setText("April" + " " + result.getDate().get(Calendar.YEAR));break;
+                case 4:month.setText("Mai" + " " + result.getDate().get(Calendar.YEAR));break;
+                case 5:month.setText("Juni" + " " + result.getDate().get(Calendar.YEAR));break;
+                case 6:month.setText("Juli" + " " + result.getDate().get(Calendar.YEAR));break;
+                case 7:month.setText("August" + " " + result.getDate().get(Calendar.YEAR));break;
+                case 8:month.setText("September" + " " + result.getDate().get(Calendar.YEAR));break;
+                case 9:month.setText("Oktober" + " " + result.getDate().get(Calendar.YEAR));break;
+                case 10:month.setText("November" + " " + result.getDate().get(Calendar.YEAR));break;
+                case 11:month.setText("Dezember" + " " + result.getDate().get(Calendar.YEAR));break;
             }
 
-            ImageView okoBewertung = view.findViewById(R.id.okoImageView);
-            switch (ergebnis.getOkoBewertung()){
-                case 1: okoBewertung.setImageResource(R.drawable.red_dot_24dp);break;
-                case 2: okoBewertung.setImageResource(R.drawable.yellow_dot_24dp);break;
-                case 3: okoBewertung.setImageResource(R.drawable.ic_lens_black_24dp);break;
+            ImageView okoGrade = view.findViewById(R.id.okoImageView);
+            switch (result.getOkoGrade()){
+                case 1: okoGrade.setImageResource(R.drawable.red_dot_24dp);break;
+                case 2: okoGrade.setImageResource(R.drawable.yellow_dot_24dp);break;
+                case 3: okoGrade.setImageResource(R.drawable.ic_lens_black_24dp);break;
             }
 
-            ImageView alternativeModi = view.findViewById(R.id.bestAlternativeImageView);
-            switch (ergebnis.getAlternativeModi()){
-                case AUTO: alternativeModi.setImageResource(R.drawable.ic_directions_car_black_24dp);break;
-                case FAHRRAD: alternativeModi.setImageResource(R.drawable.ic_directions_bike_black_24dp);break;
-                case OPNV: alternativeModi.setImageResource(R.drawable.ic_directions_bus_black_24dp);break;
-                case WALK: alternativeModi.setImageResource(R.drawable.ic_directions_walk_black_24dp);break;
+            ImageView alternativeMode = view.findViewById(R.id.bestAlternativeImageView);
+            switch (result.getAlternativeMode()){
+                case CAR: alternativeMode.setImageResource(R.drawable.ic_directions_car_black_24dp);break;
+                case BIKE: alternativeMode.setImageResource(R.drawable.ic_directions_bike_black_24dp);break;
+                case OPNV: alternativeMode.setImageResource(R.drawable.ic_directions_bus_black_24dp);break;
+                case WALK: alternativeMode.setImageResource(R.drawable.ic_directions_walk_black_24dp);break;
 
             }
 
@@ -99,11 +99,11 @@ public class AnalysisMonthListAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
                     MainActivity activity =(MainActivity) viewGroup.getContext();
-                    activity.changeToAnalyseMonatFragment(ergebnis.getDate());
+                    activity.changeToAnalyseMonatFragment(result.getDate());
                 }
             });
 
-            AnalysisMonthDiagramPagerAdapter mp = new AnalysisMonthDiagramPagerAdapter(context, ergebnis);
+            AnalysisMonthDiagramPagerAdapter mp = new AnalysisMonthDiagramPagerAdapter(context, result);
             vp.setAdapter(mp);
             return  view;
         }

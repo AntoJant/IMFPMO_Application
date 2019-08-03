@@ -15,10 +15,10 @@ import java.util.Calendar;
 import java.util.Objects;
 
 public class AnalysisMonthFragment extends Fragment {
-    private AnalysisResultMonth monatAnalyse;
+    private AnalysisResultMonth monthAnalysis;
 
-    public AnalysisMonthFragment(AnalysisResultMonth monat) {
-        this.monatAnalyse = monat;
+    public AnalysisMonthFragment(AnalysisResultMonth month) {
+        this.monthAnalysis = month;
     }
 
 
@@ -31,24 +31,24 @@ public class AnalysisMonthFragment extends Fragment {
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         ((MainActivity) Objects.requireNonNull(getActivity())).FragmentListener(bottomNav);
         ListView l = view.findViewById(R.id.listviewMonth);
-        int monat = monatAnalyse.getDate().get(Calendar.MONTH);
-        int jahr = monatAnalyse.getDate().get(Calendar.YEAR);
-        switch(monat){
-            case 0:getActivity().setTitle("Januar" + " " +jahr);break;
-            case 1:getActivity().setTitle("Februar" + " " + jahr);break;
-            case 2:getActivity().setTitle("März" + " " + jahr);break;
-            case 3:getActivity().setTitle("April" + " " + jahr);break;
-            case 4:getActivity().setTitle("Mai" + " " + jahr);break;
-            case 5:getActivity().setTitle("Juni" + " " + jahr);break;
-            case 6:getActivity().setTitle("Juli" + " " + jahr);break;
-            case 7:getActivity().setTitle("August" + " " + jahr);break;
-            case 8:getActivity().setTitle("September" + " " + jahr);break;
-            case 9:getActivity().setTitle("Oktober" + " " + jahr);break;
-            case 10:getActivity().setTitle("November" + " " + jahr);break;
-            case 11:getActivity().setTitle("Dezember" + " " + jahr);break;
+        int month = monthAnalysis.getDate().get(Calendar.MONTH);
+        int year = monthAnalysis.getDate().get(Calendar.YEAR);
+        switch(month){
+            case 0:getActivity().setTitle("Januar" + " " +year);break;
+            case 1:getActivity().setTitle("Februar" + " " + year);break;
+            case 2:getActivity().setTitle("März" + " " + year);break;
+            case 3:getActivity().setTitle("April" + " " + year);break;
+            case 4:getActivity().setTitle("Mai" + " " + year);break;
+            case 5:getActivity().setTitle("Juni" + " " + year);break;
+            case 6:getActivity().setTitle("Juli" + " " + year);break;
+            case 7:getActivity().setTitle("August" + " " + year);break;
+            case 8:getActivity().setTitle("September" + " " + year);break;
+            case 9:getActivity().setTitle("Oktober" + " " + year);break;
+            case 10:getActivity().setTitle("November" + " " + year);break;
+            case 11:getActivity().setTitle("Dezember" + " " + year);break;
         }
 
-        AnalysisDayListAdapter listAdapter = new AnalysisDayListAdapter(monatAnalyse);
+        AnalysisDayListAdapter listAdapter = new AnalysisDayListAdapter(monthAnalysis);
         l.setAdapter(listAdapter);
 
         return view;

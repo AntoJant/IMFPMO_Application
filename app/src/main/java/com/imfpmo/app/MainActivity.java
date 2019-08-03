@@ -26,14 +26,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener, DrawerLocker {
@@ -412,8 +406,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         for (int j = 0; j < AnalysisLoader.getInstance().getResults().size(); j++) {
             if (AnalysisLoader.getInstance().getResults().get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && AnalysisLoader.getInstance().getResults().get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)) {
                 i = j;
-                for (int l = 0; l < AnalysisLoader.getInstance().getResults().get(i).getTage().size(); l++) {
-                    int tag = AnalysisLoader.getInstance().getResults().get(i).getTage().get(l).getTag().get(Calendar.DAY_OF_MONTH);
+                for (int l = 0; l < AnalysisLoader.getInstance().getResults().get(i).getDays().size(); l++) {
+                    int tag = AnalysisLoader.getInstance().getResults().get(i).getDays().get(l).getDay().get(Calendar.DAY_OF_MONTH);
                     if (tag == monat.get(Calendar.DAY_OF_MONTH)) {
                         r = l; break;
                     }
@@ -421,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
         if (i != -1) {
-            AnalysisDayFragment temp = new AnalysisDayFragment(AnalysisLoader.getInstance().getResults().get(i).getTage().get(r));
+            AnalysisDayFragment temp = new AnalysisDayFragment(AnalysisLoader.getInstance().getResults().get(i).getDays().get(r));
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.framelayout, temp);
             ft.addToBackStack(null);

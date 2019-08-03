@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -16,6 +15,7 @@ public class AnalysisLoader {
     private static AnalysisLoader instance;
     private ArrayList<AnalysisResultMonth> results;
     private int skip = 0;
+    private static int errorMessage = 0;
     private boolean allLoaded;
     private AnalysisLoader(Context context){
         this.context = context;
@@ -60,16 +60,20 @@ public class AnalysisLoader {
                 days.add(new AnalysisResultDay(new GregorianCalendar(lastLoadedMonth.get(Calendar.YEAR), lastLoadedMonth.get(Calendar.MONTH), k+1)));
             }
             for(AnalysisResultPath path : paths){
-                days.get(Integer.parseInt(path.start.timestamp.substring(8,10))-1).addWeg(path);
+                days.get(Integer.parseInt(path.start.timestamp.substring(8,10))-1).addPath(path);
             }
-            newMonths[j].setTage(days);
-            newMonths[j].generateItems();
+            newMonths[j].setDays(days);
+            newMonths[j].generateAttributes();
             results.add(newMonths[j]);
 
         }
     }
 
-
+    public static int getErrorMessage(){
+        int temp = errorMessage;
+        errorMessage = 0;
+        return temp;
+    }
 
     public Calendar getCalendarDate(String date) {
         return new GregorianCalendar(Integer.parseInt(date.substring(0, 4)), Integer.parseInt(date.substring(5, 7)) - 1, Integer.parseInt(date.substring(8, 10)), Integer.parseInt(date.substring(11, 13)), Integer.parseInt(date.substring(14, 16)));

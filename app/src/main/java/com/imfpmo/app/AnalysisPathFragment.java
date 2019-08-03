@@ -15,11 +15,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Objects;
 
 public class AnalysisPathFragment extends Fragment {
-    private AnalysisResultPath weg;
+    private AnalysisResultPath path;
     private AnalysisRideListAdapter listAdapter;
     private ListView lv;
-    public AnalysisPathFragment(AnalysisResultPath weg) {
-        this.weg = weg;
+    public AnalysisPathFragment(AnalysisResultPath path) {
+        this.path = path;
     }
 
 
@@ -33,7 +33,7 @@ public class AnalysisPathFragment extends Fragment {
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
         lv = view.findViewById(R.id.listviewMonth);
-        listAdapter = new AnalysisRideListAdapter(weg);
+        listAdapter = new AnalysisRideListAdapter(path);
         lv.setAdapter(listAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
