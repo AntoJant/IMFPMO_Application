@@ -1,21 +1,25 @@
 package com.imfpmo.app;
 
 import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.Query;
+
+import java.util.List;
 
 @Dao
 interface JsonLocationDao {
-/*
-    @Query("SELECT * FROM jsonLocation")
-    List<String> getAll();
 
-    @Query("SELECT count(*) FROM jsonLocation")
+    @Query("SELECT * FROM locations")
+    List<JsonLocation> getAll();
+
+    @Query("SELECT count(*) FROM locations")
     int isEmpty();
 
     @Insert
-    void insertAll(JsonLocation jsonLocations); //maybe collection is needed
+    void insertAll(List<JsonLocation> jsonLocations); //maybe collection is needed
 
-    @Query("DELETE FROM jsonLocation")
+    @Query("DELETE FROM locations")
     void deleteAll();
 
-*/
+
 }
