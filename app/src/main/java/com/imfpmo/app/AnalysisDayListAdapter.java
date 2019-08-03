@@ -14,15 +14,15 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class AnalysisDayListAdapter extends BaseAdapter {
-    private AnalysisResultMonth monthAnalysis;
-    public AnalysisDayListAdapter(AnalysisResultMonth month){
-        this.monthAnalysis = month;
+    private AnalysisResultMonth monatAnalyse;
+    public AnalysisDayListAdapter(AnalysisResultMonth monat){
+        this.monatAnalyse = monat;
     }
 
 
     @Override
     public int getCount() {
-        return monthAnalysis.getDays().size()+1;
+        return monatAnalyse.getTage().size()+1;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class AnalysisDayListAdapter extends BaseAdapter {
         if(i == 0){
             return null;
         }
-        return monthAnalysis.getDays().get(i-1);
+        return monatAnalyse.getTage().get(i-1);
     }
 
     @Override
@@ -44,24 +44,24 @@ public class AnalysisDayListAdapter extends BaseAdapter {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_monat_viewpage_item_layout, viewGroup,false);
             ViewPager vp = view.findViewById(R.id.viewPage);
 
-            AnalysisDayOverviewPagerAdapter adapter = new AnalysisDayOverviewPagerAdapter(viewGroup.getContext(), monthAnalysis.getDays());
+            AnalysisDayOverviewPagerAdapter adapter = new AnalysisDayOverviewPagerAdapter(viewGroup.getContext(), monatAnalyse.getTage());
             vp.setAdapter(adapter);
             return view;
         }else{
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_tag_item_layout, viewGroup,false);
-            final AnalysisResultDay results = (AnalysisResultDay) getItem(i);
-            TextView date = view.findViewById(R.id.monatLabel);
-            int day = i;
-            int month =  monthAnalysis.getDate().get(Calendar.MONTH) +1 ;
-            date.setText( day +"."+ month + "." + monthAnalysis.getDate().get(Calendar.YEAR));
-            ImageView okoGrade = view.findViewById(R.id.okoImageView);
-            switch ((int) results.getOkoGrade()){
-                case 1: okoGrade.setImageResource(R.drawable.red_dot_24dp);break;
-                case 2: okoGrade.setImageResource(R.drawable.yellow_dot_24dp);break;
-                case 3: okoGrade.setImageResource(R.drawable.ic_lens_black_24dp);break;
+            final AnalysisResultDay ergebnis = (AnalysisResultDay) getItem(i);
+            TextView datum = view.findViewById(R.id.monatLabel);
+            int tag = i;
+            int month =  monatAnalyse.getDate().get(Calendar.MONTH) +1 ;
+            datum.setText( tag +"."+ month + "." + monatAnalyse.getDate().get(Calendar.YEAR));
+            ImageView okoBewertung = view.findViewById(R.id.okoImageView);
+            switch ((int) ergebnis.getOkobewertung()){
+                case 1: okoBewertung.setImageResource(R.drawable.red_dot_24dp);break;
+                case 2: okoBewertung.setImageResource(R.drawable.yellow_dot_24dp);break;
+                case 3: okoBewertung.setImageResource(R.drawable.ic_lens_black_24dp);break;
             }
             ViewPager vp = view.findViewById(R.id.viewPager);
-            AnalysisDayDiagramPagerAdapter mp = new AnalysisDayDiagramPagerAdapter(viewGroup.getContext(), results);
+            AnalysisDayDiagramPagerAdapter mp = new AnalysisDayDiagramPagerAdapter(viewGroup.getContext(), ergebnis);
             vp.setAdapter(mp);
             Button button = view.findViewById(R.id.button);
 
@@ -69,7 +69,7 @@ public class AnalysisDayListAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 MainActivity activity =(MainActivity) viewGroup.getContext();
-                activity.changeToAnalyseTagFragment(new GregorianCalendar(results.getDay().get(Calendar.YEAR), results.getDay().get(Calendar.MONTH), results.getDay().get(Calendar.DAY_OF_MONTH)));
+                activity.changeToAnalyseTagFragment(new GregorianCalendar(ergebnis.getTag().get(Calendar.YEAR), ergebnis.getTag().get(Calendar.MONTH), ergebnis.getTag().get(Calendar.DAY_OF_MONTH)));
             }
         });
         return view;

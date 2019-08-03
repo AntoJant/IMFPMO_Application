@@ -86,7 +86,7 @@
     <ImageView
         android:id="@+id/okoImageView"
         android:layout_width="29dp"
-        android:layout_height="24dp"
+        android:layout_height="23dp"
         android:layout_alignTop="@+id/okoBewertungLabel"
         android:layout_marginStart="5dp"
         android:layout_marginTop="0dp"

@@ -15,13 +15,13 @@ import java.util.ArrayList;
 public class AnalysisMonthOverviewPagerAdapter extends PagerAdapter{
     private Context context;
     private LayoutInflater layoutInflater;
-    private ArrayList<AnalysisResultMonth> months;
+    private ArrayList<AnalysisResultMonth> monate;
 
 
-    public AnalysisMonthOverviewPagerAdapter(Context context, ArrayList<AnalysisResultMonth> months){
+    public AnalysisMonthOverviewPagerAdapter(Context context, ArrayList<AnalysisResultMonth> monate){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
-        this.months = months;
+        this.monate = monate;
     }
 
     @NonNull
@@ -29,10 +29,9 @@ public class AnalysisMonthOverviewPagerAdapter extends PagerAdapter{
         View view = this.layoutInflater.inflate(R.layout.analyse_diagram_bar_chart, container, false);
         BarChart barChart = view.findViewById(R.id.diagramm);
         switch (position){
-            case 0: AnalysisDiagramMaker.makeMonthEmissionBarChart(months, barChart,context); break;
-            case 1: AnalysisDiagramMaker.makeMonthDistanceBarChart(months,barChart, context); break;
-            case 2: AnalysisDiagramMaker.makeMonthTimeEffortBarChart(months,barChart,context);break;
-            case 3: AnalysisDiagramMaker.makeMonthTotalRideCountBarChart(months, barChart, context);break;
+            case 0: AnalysisDiagramMaker.makeMonatGesamtCO2BarChart(monate, barChart,context); break;
+            case 1: AnalysisDiagramMaker.makeMonatGesamtDistanzBarChart(monate,barChart, context); break;
+            case 2: AnalysisDiagramMaker.makeMonatGesamtZeitBarChart(monate ,barChart,context);break;
         }
         container.addView(view);
         return view;
@@ -40,7 +39,7 @@ public class AnalysisMonthOverviewPagerAdapter extends PagerAdapter{
 
     @Override
     public int getCount() {
-        return 4;
+        return 3;
     }
 
     @Override
