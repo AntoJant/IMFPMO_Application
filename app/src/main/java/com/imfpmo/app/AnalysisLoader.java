@@ -14,10 +14,10 @@ public class AnalysisLoader {
     private Context context;
     private Usermanagement usermanagement;
     private static AnalysisLoader instance;
-    private ArrayList<AnalysisResultMonth> results;
-    private int skip = 0;
+    private static ArrayList<AnalysisResultMonth> results;
+    private static int skip = 0;
     private static int errorMessage = 0;
-    private boolean allLoaded;
+    private static boolean allLoaded;
     private AnalysisLoader(Context context){
         this.context = context;
         usermanagement = Usermanagement.getInstance();
@@ -28,6 +28,13 @@ public class AnalysisLoader {
         if(instance == null){
             instance = new AnalysisLoader(context);
         }
+    }
+
+    public static void resetInstance(){
+        results = new ArrayList<>();
+        skip = 0;
+        allLoaded = false;
+
     }
 
     public static AnalysisLoader getInstance(){

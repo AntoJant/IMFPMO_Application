@@ -446,6 +446,7 @@ class Usermanagement {
 
         setSecurityToken( "");
         setUserID("");
+        AnalysisLoader.getInstance().resetInstance();
 
     }
 
