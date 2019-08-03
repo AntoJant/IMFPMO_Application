@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,15 +38,17 @@ public class AnalysisLoader {
         return results;
     }
 
-    public void loadFirst(int i){
+    public int loadFirst(int i){
         if(results.size() == 0){
-            loadResults(i);
+            return loadResults(i);
         }
+        return 0;
     }
 
-    public void loadResults(int i){
-        JsonArray analysisResult = usermanagement.getAnalyseErgebnisse(context,skip,i).get("results").getAsJsonArray();
-        AnalysisResultMonth[] newMonths = new Gson().fromJson(analysisResult, AnalysisResultMonth[].class);
+    public int loadResults(int i){
+        JsonObject analysisResult = usermanagement.getAnalyseErgebnisse(context,skip,i);
+        if(analysisResult == null){return 2;}
+        AnalysisResultMonth[] newMonths = new Gson().fromJson(analysisResult.get("results").getAsJsonArray(), AnalysisResultMonth[].class);
         skip += i;
         if(newMonths.length != i){
             allLoaded = true;
@@ -66,6 +69,11 @@ public class AnalysisLoader {
             newMonths[j].generateAttributes();
             results.add(newMonths[j]);
 
+        }
+        if(newMonths.length == 0){
+            return 1;
+        }else{
+            return 0;
         }
     }
 
