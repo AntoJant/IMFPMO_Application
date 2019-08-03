@@ -13,13 +13,13 @@ import com.github.mikephil.charting.charts.PieChart;
 public class AnalysisPathDiagramPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private AnalysisResultPath path;
+    private AnalysisResultPath weg;
 
 
-    public AnalysisPathDiagramPagerAdapter(Context context, AnalysisResultPath path){
+    public AnalysisPathDiagramPagerAdapter(Context context, AnalysisResultPath weg){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
-        this.path = path;
+        this.weg = weg;
     }
 
     @NonNull
@@ -27,9 +27,9 @@ public class AnalysisPathDiagramPagerAdapter extends PagerAdapter {
         View view = this.layoutInflater.inflate(R.layout.analyse_diagram_pie_chart, container, false);
         PieChart pieChart = view.findViewById(R.id.diagramm);
         switch (position){
-            case 0: AnalysisDiagramMaker.makeEmissionPieChart(path, pieChart, context); break;
-            case 1: AnalysisDiagramMaker.makeDistancePieChart(path,pieChart,context); break;
-            case 2: AnalysisDiagramMaker.makeTimeEffortPieChart(path,pieChart,context);break;
+            case 0: AnalysisDiagramMaker.makeWegGesamtCO2PieChart(weg , pieChart, context); break;
+            case 1: AnalysisDiagramMaker.makeWegGesamtDistanzPieChart(weg ,pieChart,context); break;
+            case 2: AnalysisDiagramMaker.makeWegGesamtZeitPieChart(weg ,pieChart,context);break;
         }
         container.addView(view);
         return view;

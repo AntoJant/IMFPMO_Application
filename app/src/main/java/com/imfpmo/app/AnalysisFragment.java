@@ -22,10 +22,8 @@ import java.util.Objects;
  * A simple {@link Fragment} subclass.
  */
 public class AnalysisFragment extends Fragment implements AbsListView.OnScrollListener{
-    private int preLast;
-    private AnalysisMonthListAdapter adapter;
-    private final static int firstLoadCount = 2;
-    private final static int nextLoadCount = 2;
+
+
     public AnalysisFragment() {
         // Required empty public constructor
     }
@@ -39,9 +37,10 @@ public class AnalysisFragment extends Fragment implements AbsListView.OnScrollLi
         BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
-        AnalysisLoader.getInstance().loadFirst(firstLoadCount);
-        adapter = new AnalysisMonthListAdapter(getActivity(),AnalysisLoader.getInstance().getResults(), getActivity().getSupportFragmentManager());
-        ListView monatAnalyseergebnistListView  = view.findViewById(R.id.listviewMonth);
+        AnalysisLoader.getInstance().loadFirst(12);
+        AnalysisMonthListAdapter adapter = new AnalysisMonthListAdapter(getActivity(),AnalysisLoader.getInstance().getResults(), getActivity().getSupportFragmentManager());
+        ListView monatAnalyseergebnistListView  = view.findViewById(R.id.listview);
+
         ((DrawerLocker) getActivity()).setDrawerLocked(false);
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).show();
 
@@ -52,19 +51,7 @@ public class AnalysisFragment extends Fragment implements AbsListView.OnScrollLi
 
     @Override
     public void onScroll(AbsListView absListView, int i, int i1, int i2) {
-        switch (absListView.getId()){
-            case R.id.listviewMonth:
-                final int lastItem = i + i1;
-                if(lastItem == i2){
-                    if(preLast != lastItem){
-                        preLast = lastItem;
-                        AnalysisLoader.getInstance().loadResults(nextLoadCount);
 
-                        adapter.notifyDataSetChanged();
-                    }
-
-                }
-        }
     }
 
     @Override

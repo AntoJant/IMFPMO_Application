@@ -10,26 +10,28 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.Calendar;
+
 public class AnalysisRideListAdapter extends BaseAdapter {
-    private AnalysisResultPath path;
-    private boolean[] expandedItems;
-    public AnalysisRideListAdapter(AnalysisResultPath path){
-        this.path = path;
-        expandedItems = new boolean[path.getRides().size()];
-        for (int i = 0; i < expandedItems.length; i++){
-            expandedItems[i] = false;
+    private AnalysisResultPath weg;
+    private boolean[] ausgeklappteItems;
+    public AnalysisRideListAdapter(AnalysisResultPath weg){
+        this.weg = weg;
+        ausgeklappteItems = new boolean[weg.getFahrten().size()];
+        for (int i = 0; i < ausgeklappteItems.length; i++){
+            ausgeklappteItems[i] = false;
         }
     }
 
 
     @Override
     public int getCount() {
-        return path.getRides().size();
+        return weg.getFahrten().size();
     }
 
     @Override
     public Object getItem(int i) {
-        return path.getRides().get(i);
+        return weg.getFahrten().get(i);
     }
 
     @Override
@@ -39,56 +41,58 @@ public class AnalysisRideListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if (expandedItems[i]) {
+        if (ausgeklappteItems[i]) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_fahrt_item_erweitert_list, viewGroup,false);
         }else {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_fahrt_item_list, viewGroup,false);
         }
-        AnalysisResultRide results = (AnalysisResultRide) getItem(i);
+        AnalysisResultRide ergebnis = (AnalysisResultRide) getItem(i);
 
-        TextView timeTextView = view.findViewById(R.id.zeitTextView);
-        TextView startAddress = view.findViewById(R.id.startPunktTextView);
+        TextView zeitTextView = view.findViewById(R.id.zeitTextView);
+        TextView startAdresse = view.findViewById(R.id.startPunktTextView);
         ImageView imageView = view.findViewById(R.id.imageView2);
         RelativeLayout relativeLayout = view.findViewById(R.id.relativeLayout);
         LinearLayout mainLayout = view.findViewById(R.id.mainLayout);
-        switch (results.getOkoGrade()){
+
+
+        switch (ergebnis.getOkoBewertung()){
             case 1: relativeLayout.setBackgroundColor(Color.argb(40,255,0,0));break;
             case 2: relativeLayout.setBackgroundColor(Color.argb(40,255,255,0));break;
             case 3: relativeLayout.setBackgroundColor(Color.argb(40,0,255,0));break;
         }
-        switch (results.getMode()){
-            case CAR: imageView.setImageResource(R.drawable.ic_directions_car_black_24dp);break;
-            case BIKE: imageView.setImageResource(R.drawable.ic_directions_bike_black_24dp);break;
+        switch (ergebnis.getModi()){
+            case AUTO: imageView.setImageResource(R.drawable.ic_directions_car_black_24dp);break;
+            case FAHRRAD: imageView.setImageResource(R.drawable.ic_directions_bike_black_24dp);break;
             case OPNV: imageView.setImageResource(R.drawable.ic_directions_bus_black_24dp);break;
-            case WALK:imageView.setImageResource(R.drawable.ic_directions_walk_black_24dp); break;
+            case WALK:imageView.setImageResource(R.drawable.ic_directions_walk_black_24dp);
         }
-        if(expandedItems[i]) {
-            TextView endAddressTextView = view.findViewById(R.id.zielTextView);
-            TextView distanceTextView = view.findViewById(R.id.distanzTextView);
-            TextView emissionTextView = view.findViewById(R.id.cO2textView);
-            TextView timeEffortTextView = view.findViewById(R.id.dauerTextView);
-            TextView alternativeTime = view.findViewById(R.id.altZeitdauertextView);
+        if(ausgeklappteItems[i]) {
+            TextView distanzTextView = view.findViewById(R.id.distanzTextView);
+            TextView co2TextView = view.findViewById(R.id.cO2textView);
+            TextView dauerTextView = view.findViewById(R.id.dauerTextView);
+            TextView alternativZeit = view.findViewById(R.id.altZeitdauertextView);
             ImageView altImageView = view.findViewById(R.id.altImageView);
-            alternativeTime.setText(" " + results.getAlternativeTimeEffort()+" min");
-            distanceTextView.setText(" " + results.getDistance()+ " km");
-            emissionTextView.setText(" " + results.getCO2Emissions()+" gramm CO2");
-            timeEffortTextView.setText(" " + results.getTimeEffort()+" min");
-            endAddressTextView.setText("" + results.getEndAddress());
-            switch (results.getAlternativeMode()){
-                case CAR: altImageView.setImageResource(R.drawable.ic_directions_car_black_24dp);break;
-                case BIKE: altImageView.setImageResource(R.drawable.ic_directions_bike_black_24dp);break;
+            alternativZeit.setText(" " + ergebnis.getAlternativerZeitaufwand()+" min");
+            distanzTextView.setText(" " + ergebnis.getDistanz()+ " km");
+            co2TextView.setText(" " + ergebnis.getcO2Austoss()+" kg");
+            dauerTextView.setText(" " + ergebnis.getDauer()+" min");
+            switch (ergebnis.getAlternativModi()){
+                case AUTO: altImageView.setImageResource(R.drawable.ic_directions_car_black_24dp);break;
+                case FAHRRAD: altImageView.setImageResource(R.drawable.ic_directions_bike_black_24dp);break;
                 case OPNV: altImageView.setImageResource(R.drawable.ic_directions_bus_black_24dp);break;
                 case WALK: altImageView.setImageResource(R.drawable.ic_directions_walk_black_24dp);break;
             }
         }
-        timeTextView.setText("" + results.start.getTimeAsString());
-        startAddress.setText("" +results.getStartAddress());
+        zeitTextView.setText("Startzeit:" +ergebnis.getStartzeit().get(Calendar.HOUR)+":"+ergebnis.getStartzeit().get(Calendar.MINUTE));
+        startAdresse.setText("Startadrasse: " +ergebnis.getStartadresse());
+
+
         return view;
     }
-    public void expandItems(int i){
-        if(expandedItems[i] == false)
-            expandedItems[i] = true;
+    public void setAusgeklappteItems(int i){
+        if(ausgeklappteItems[i] == false)
+            ausgeklappteItems[i] = true;
         else
-            expandedItems[i] = false;
+            ausgeklappteItems[i] = false;
     }
 }

@@ -15,13 +15,13 @@ import java.util.ArrayList;
 public class AnalysisDayOverviewPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private ArrayList<AnalysisResultDay> days;
+    private ArrayList<AnalysisResultDay> tage;
 
 
-    public AnalysisDayOverviewPagerAdapter(Context context, ArrayList<AnalysisResultDay> days){
+    public AnalysisDayOverviewPagerAdapter(Context context, ArrayList<AnalysisResultDay> tage){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
-        this.days = days;
+        this.tage = tage;
     }
 
     @NonNull
@@ -29,9 +29,9 @@ public class AnalysisDayOverviewPagerAdapter extends PagerAdapter {
         View view = this.layoutInflater.inflate(R.layout.analyse_diagram_bar_chart, container, false);
         BarChart barChart = view.findViewById(R.id.diagramm);
         switch (position){
-            case 0: AnalysisDiagramMaker.makeDayEmissionBarChart(days, barChart, context); break;
-            case 1: AnalysisDiagramMaker.makeDayDistanceBarChart(days,barChart,context); break;
-            case 2: AnalysisDiagramMaker.makeDayTimeEffortBarChart(days,barChart,context);break;
+            case 0: AnalysisDiagramMaker.makeTagGesamtCO2BarChart(tage, barChart, context); break;
+            case 1: AnalysisDiagramMaker.makeTagGesamtDistanzBarChart(tage,barChart,context); break;
+            case 2: AnalysisDiagramMaker.makeTagGesamtZeitBarChart(tage ,barChart,context);break;
         }
         container.addView(view);
         return view;

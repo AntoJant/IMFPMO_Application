@@ -15,10 +15,10 @@ import java.util.Calendar;
 import java.util.Objects;
 
 public class AnalysisDayFragment extends Fragment {
-    private AnalysisResultDay dayAnalysis;
+    private AnalysisResultDay tagAnalyse;
 
-    public AnalysisDayFragment(AnalysisResultDay day) {
-        this.dayAnalysis = day;
+    public AnalysisDayFragment(AnalysisResultDay tag) {
+        this.tagAnalyse = tag;
     }
 
 
@@ -31,14 +31,14 @@ public class AnalysisDayFragment extends Fragment {
         BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
-        ListView l = view.findViewById(R.id.listviewMonth);
+        ListView l = view.findViewById(R.id.listview);
 
-        int month = dayAnalysis.getDay().get(Calendar.MONTH)+1;
-        int year = dayAnalysis.getDay().get(Calendar.YEAR);
-        int day = dayAnalysis.getDay().get(Calendar.DAY_OF_MONTH);
-        getActivity().setTitle(day + "." + month+ "." + year);
+        int monat = tagAnalyse.getTag().get(Calendar.MONTH)+1;
+        int jahr = tagAnalyse.getTag().get(Calendar.YEAR);
+        int tag = tagAnalyse.getTag().get(Calendar.DAY_OF_MONTH);
+        getActivity().setTitle(tag + "." + monat+ "." + jahr);
 
-        AnalysisPathListAdapter listAdapter = new AnalysisPathListAdapter(dayAnalysis);
+        AnalysisPathListAdapter listAdapter = new AnalysisPathListAdapter(tagAnalyse);
         l.setAdapter(listAdapter);
         return view;
     }
