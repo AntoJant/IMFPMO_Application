@@ -4,16 +4,20 @@ package com.imfpmo.app;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.Objects;
 
@@ -24,6 +28,8 @@ import java.util.Objects;
 public class LoginFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+
+    private static final String TAG = LoginFragment.class.getSimpleName();
 
     public LoginFragment() {
         // Required empty public constructor
@@ -85,7 +91,11 @@ public class LoginFragment extends Fragment {
                 if (isValidEmail(mailfield.getText().toString()) && passwordLength(passwordfield.getText().toString())) {
                     int result = Usermanagement.getInstance().login(mailfield.getText().toString(),passwordfield.getText().toString(),getContext());
                     if(result == Usermanagement.OPERATION_SUCCESSFUL) {
-                        Objects.requireNonNull(getContext()).startService(new Intent(getContext(), LocationUpdatesService.class));
+
+                        //failsafe in case of app crash. new login guarantees service starts
+                        Helpers.setRequestingLocationUpdates(getContext(), false);
+                        LocationUpdatesService.requestLocationUpdates(getActivity());
+
                         mailfield.setText("");
                         passwordfield.setText("");
                         mListener.changeFragment(3);
