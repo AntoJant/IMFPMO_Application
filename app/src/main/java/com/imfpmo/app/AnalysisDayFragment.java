@@ -14,11 +14,11 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class AnalysisTagFragment extends Fragment {
-    private  AnalyseergebnisTag tagAnalyse;
+public class AnalysisDayFragment extends Fragment {
+    private AnalysisResultDay dayAnalysis;
 
-    public AnalysisTagFragment(AnalyseergebnisTag tag) {
-        this.tagAnalyse = tag;
+    public AnalysisDayFragment(AnalysisResultDay day) {
+        this.dayAnalysis = day;
     }
 
 
@@ -31,14 +31,14 @@ public class AnalysisTagFragment extends Fragment {
         BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
-        ListView l = view.findViewById(R.id.listview);
+        ListView l = view.findViewById(R.id.listviewMonth);
 
-        int monat = tagAnalyse.getTag().get(Calendar.MONTH);
-        int jahr = tagAnalyse.getTag().get(Calendar.YEAR);
-        int tag = tagAnalyse.getTag().get(Calendar.DAY_OF_MONTH);
-        getActivity().setTitle(tag + "." + monat+ "." + jahr);
+        int month = dayAnalysis.getDay().get(Calendar.MONTH)+1;
+        int year = dayAnalysis.getDay().get(Calendar.YEAR);
+        int day = dayAnalysis.getDay().get(Calendar.DAY_OF_MONTH);
+        getActivity().setTitle(day + "." + month+ "." + year);
 
-        AnalyseWegListAdapter listAdapter = new AnalyseWegListAdapter(tagAnalyse);
+        AnalysisPathListAdapter listAdapter = new AnalysisPathListAdapter(dayAnalysis);
         l.setAdapter(listAdapter);
         return view;
     }

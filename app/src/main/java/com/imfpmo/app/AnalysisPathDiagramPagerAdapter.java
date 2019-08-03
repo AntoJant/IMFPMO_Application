@@ -10,16 +10,16 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.github.mikephil.charting.charts.PieChart;
 
-public class AnalyseTagDiagramPagerAdapter extends PagerAdapter {
+public class AnalysisPathDiagramPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private AnalyseergebnisTag tag;
+    private AnalysisResultPath path;
 
 
-    public AnalyseTagDiagramPagerAdapter(Context context, AnalyseergebnisTag tag){
+    public AnalysisPathDiagramPagerAdapter(Context context, AnalysisResultPath path){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
-        this.tag = tag;
+        this.path = path;
     }
 
     @NonNull
@@ -27,9 +27,9 @@ public class AnalyseTagDiagramPagerAdapter extends PagerAdapter {
         View view = this.layoutInflater.inflate(R.layout.analyse_diagram_pie_chart, container, false);
         PieChart pieChart = view.findViewById(R.id.diagramm);
         switch (position){
-            case 0: AnalyseDiagramMaker.makeTagGesamtCO2PieChart(tag , pieChart); break;
-            case 1: AnalyseDiagramMaker.makeTagGesamtDistanzPieChart(tag ,pieChart); break;
-            case 2: AnalyseDiagramMaker.makeTagGesamtZeitPieChart(tag,pieChart);break;
+            case 0: AnalysisDiagramMaker.makeEmissionPieChart(path, pieChart, context); break;
+            case 1: AnalysisDiagramMaker.makeDistancePieChart(path,pieChart,context); break;
+            case 2: AnalysisDiagramMaker.makeTimeEffortPieChart(path,pieChart,context);break;
         }
         container.addView(view);
         return view;

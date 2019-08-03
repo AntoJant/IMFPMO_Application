@@ -14,38 +14,39 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.Objects;
 
-public class AnalysisFahrtFragment extends Fragment {
-    private  AnalyseergebnisWeg weg;
-    private AnalyseFahrtListAdapter listAdapter;
+public class AnalysisPathFragment extends Fragment {
+    private AnalysisResultPath path;
+    private AnalysisRideListAdapter listAdapter;
     private ListView lv;
-    public AnalysisFahrtFragment(AnalyseergebnisWeg weg) {
-        this.weg = weg;
+    public AnalysisPathFragment(AnalysisResultPath path) {
+        this.path = path;
     }
 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Objects.requireNonNull(getActivity()).setTitle("Weg");
+        Objects.requireNonNull(getActivity()).setTitle("Fahrten");
 
         View view = inflater.inflate(R.layout.analyse_tag_fragment, container, false);
         BottomNavigationView bottomNav = view.findViewById(R.id.bottom_navigation);
         bottomNav.setSelectedItemId(R.id.nav_analysis);
         ((MainActivity) getActivity()).FragmentListener(bottomNav);
-        lv = view.findViewById(R.id.listview);
-        listAdapter = new AnalyseFahrtListAdapter(weg);
+        lv = view.findViewById(R.id.listviewMonth);
+        listAdapter = new AnalysisRideListAdapter(path);
         lv.setAdapter(listAdapter);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                   klappAus(i);
+                klappAus(i);
             }
         });
         return view;
     }
-
     private void klappAus(int i){
-        listAdapter.setAusgeklappteItems(i);
+        listAdapter.expandItems(i);
         lv.invalidateViews();
     }
+
+
 }

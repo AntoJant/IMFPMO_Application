@@ -12,16 +12,16 @@ import com.github.mikephil.charting.charts.BarChart;
 
 import java.util.ArrayList;
 
-public class AnalyseMonatGesamtErgebnisPagerAdapter extends PagerAdapter{
+public class AnalysisPathOverviewPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private ArrayList<AnalyseergebnisMonat> monate;
+    private ArrayList<AnalysisResultDay> days;
 
 
-    public AnalyseMonatGesamtErgebnisPagerAdapter(Context context, ArrayList<AnalyseergebnisMonat> monate){
+    public AnalysisPathOverviewPagerAdapter(Context context, ArrayList<AnalysisResultDay> days){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
-        this.monate = monate;
+        this.days = days;
     }
 
     @NonNull
@@ -29,9 +29,9 @@ public class AnalyseMonatGesamtErgebnisPagerAdapter extends PagerAdapter{
         View view = this.layoutInflater.inflate(R.layout.analyse_diagram_bar_chart, container, false);
         BarChart barChart = view.findViewById(R.id.diagramm);
         switch (position){
-            case 0: AnalyseDiagramMaker.makeMonatGesamtCO2BarChart(monate, barChart); break;
-            case 1: AnalyseDiagramMaker.makeMonatGesamtDistanzBarChart(monate,barChart); break;
-            case 2: AnalyseDiagramMaker.makeMonatGesamtZeitBarChart(monate ,barChart);break;
+            case 0: AnalysisDiagramMaker.makeDayEmissionBarChart(days, barChart,context); break;
+            case 1: AnalysisDiagramMaker.makeDayDistanceBarChart(days,barChart,context); break;
+            case 2: AnalysisDiagramMaker.makeDayTimeEffortBarChart(days,barChart,context);break;
         }
         container.addView(view);
         return view;
@@ -50,5 +50,4 @@ public class AnalyseMonatGesamtErgebnisPagerAdapter extends PagerAdapter{
     public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
         container.removeView((View) object);
     }
-
 }

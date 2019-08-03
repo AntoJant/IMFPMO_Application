@@ -34,18 +34,13 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Objects;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener, DrawerLocker, SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-    private ArrayList<AnalyseergebnisMonat> analyseErgebnisse;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.w(TAG, "onCreate");
@@ -117,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         //Sachen für die AnalyseDarstellung
-        setAnalyseErgebnisse(3);
+        AnalysisLoader.createInstance(this);
     }
 
     public void FragmentListener(BottomNavigationView bottomNav) {
@@ -377,152 +372,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //Methoden für die Darstellung von AnalyseErgebnissen
     //Diese methode laedt die AnalyseErgbinsse des Monats
-    private void setAnalyseErgebnisse(int monat) {
-        analyseErgebnisse = AnalyseRandomErgebnisMaker.getYear();
-    }
 
-    public void getMehrAnalyseErgebnisse(int i) {
-        int groesse = analyseErgebnisse.size();
-        Calendar lastMonth = analyseErgebnisse.get(groesse - 1).getDate();
-        Calendar aktMonth = new GregorianCalendar(lastMonth.get(Calendar.YEAR), lastMonth.get(Calendar.MONTH), 1);
-        for (int j = 1; j <= i; j++) {
-            aktMonth.add(Calendar.MONTH, -1);
-            analyseErgebnisse.add(AnalyseRandomErgebnisMaker.makeMonat(new GregorianCalendar(aktMonth.get(Calendar.YEAR), aktMonth.get(Calendar.MONTH), 1)));
-        }
-    }
 
-    public ArrayList<AnalyseergebnisMonat> getAnalyseMonate(int lastMonat) {
-        Usermanagement usermanagement = Usermanagement.getInstance();
-        JsonObject ergebnisObject = usermanagement.getAnalyseErgebnisse(this);
-        ArrayList<AnalyseergebnisMonat> monate = new ArrayList<>();
-        JsonArray array = ergebnisObject.getAsJsonArray("results");
-        for (int i = 0; i < lastMonat; i++) {
-            int id = array.get(i).getAsJsonObject().get("id").getAsInt();
-            Calendar monat = getCalendarDate(array.get(i).getAsJsonObject().get("timestamp").getAsString());
-            monate.add(getAnalyseMonat(monat, id));
-        }
-        return monate;
-    }
 
-    public AnalyseergebnisMonat getAnalyseMonat(int month, int year) {
-        Usermanagement usermanagement = Usermanagement.getInstance();
-        JsonObject monatObject = usermanagement.getAnalyseWegeMonat(this, month, year);
-
-        return null;
-    }
-
-    public AnalyseergebnisMonat getAnalyseMonat(Calendar monat, int analysisid) {
-        Usermanagement usermanagement = Usermanagement.getInstance();
-        JsonObject analyseObject = usermanagement.getAnalyseErgebnis(this, analysisid);
-        ArrayList<AnalyseergebnisTag> analyseergebnisTags = new ArrayList<>();
-        int cMonat = monat.get(Calendar.MONTH);
-        int cYear = monat.get(Calendar.YEAR);
-        for (int i = 1; i <= monat.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
-            analyseergebnisTags.add(getAnaylseTag(new GregorianCalendar(cYear, cMonat, i)));
-        }
-        int car = analyseObject.get("car").getAsInt();
-        int bike = analyseObject.get("bike").getAsInt();
-        int opnv = analyseObject.get("opnv").getAsInt();
-        int fuss = analyseObject.get("foot").getAsInt();
-        String besteAlternative = analyseObject.get("bestAlternative").getAsString();
-        int emmisionen = analyseObject.get("emissions").getAsInt();
-        String ampel = analyseObject.get("ampel").getAsString();
-        int okoBewertung = 1;
-        switch (ampel) {
-            case "red":
-                okoBewertung = 1;
-            case "yellow":
-                okoBewertung = 2;
-            case "green":
-                okoBewertung = 3;
-        }
-
-        return new AnalyseergebnisMonat(1, analysisid, monat, bike, opnv, car, fuss, emmisionen, okoBewertung, analyseergebnisTags);
-    }
-
-    public AnalyseergebnisTag getAnaylseTag(Calendar tag) {
-        Usermanagement usermanagement = Usermanagement.getInstance();
-        JsonObject tagObject = usermanagement.getAnalyseErgebnisseTag(this, tag);
-        JsonArray wegArray = tagObject.get("paths").getAsJsonArray();
-        ArrayList<AnalyseergebnisWeg> wege = new ArrayList<>();
-        for (int i = 0; i < wegArray.size(); i++) {
-            JsonObject wegObject = wegArray.get(i).getAsJsonObject();
-            int wegID = wegObject.get("id").getAsInt();
-            wege.add(getAnalyseWeg(wegID));
-        }
-        return new AnalyseergebnisTag(wege, tag);
-    }
-
-    public AnalyseergebnisWeg getAnalyseWeg(int wegId) {
-        Usermanagement usermanagement = Usermanagement.getInstance();
-        JsonObject weg = usermanagement.getAnalyseErgebnisWeg(this, Integer.toString(wegId));
-        JsonArray fahten = weg.getAsJsonArray("rides");
-        JsonObject wegStart = weg.get("start").getAsJsonObject();
-        JsonObject wegEnd = weg.get("end").getAsJsonObject();
-        ArrayList<AnalyseergebnisFahrt> fahrtenArray = new ArrayList<>();
-        for (int i = 0; i < fahten.size(); i++) {
-
-            JsonObject fahrt = fahten.get(i).getAsJsonObject();
-            JsonObject start = fahrt.getAsJsonObject("start");
-            JsonObject ende = fahrt.getAsJsonObject("end");
-
-            //int distanz = fahrt.get("distance").getAsInt();
-            int distanz = new Random().nextInt(100);
-            String mode = fahrt.get("mode").getAsString();
-            int emissions = fahrt.get("emissions").getAsInt();
-            String ampel = fahrt.get("ampel").getAsString();
-            String startName = start.get("name").getAsString();
-            String endName = ende.get("name").getAsString();
-            Calendar startDate = getCalendarDate(start.get("timestamp").getAsString());
-            Calendar endDate = getCalendarDate(ende.get("timestamp").getAsString());
-            FahrtModi modi;
-            switch (mode) {
-                case "car":
-                    modi = FahrtModi.AUTO;
-                    break;
-                case "opnv":
-                    modi = FahrtModi.OPNV;
-                    break;
-                case "train":
-                    modi = FahrtModi.OPNV;
-                    break;
-                case "bus":
-                    modi = FahrtModi.OPNV;
-                    break;
-                case "walk":
-                    modi = FahrtModi.WALK;
-                    break;
-                case "bike":
-                    modi = FahrtModi.FAHRRAD;
-                    break;
-                default:
-                    modi = FahrtModi.FAHRRAD;
-            }
-            int okoBewertung = 1;
-            switch (ampel) {
-                case "red":
-                    okoBewertung = 1;
-                case "yellow":
-                    okoBewertung = 2;
-                case "green":
-                    okoBewertung = 3;
-            }
-            int dauerStunde = startDate.get(Calendar.HOUR_OF_DAY) - endDate.get(Calendar.HOUR_OF_DAY);
-            int dauerMinute = Math.abs(startDate.get(Calendar.MINUTE) - endDate.get(Calendar.MINUTE));
-            fahrtenArray.add(new AnalyseergebnisFahrt(wegId, modi, FahrtModi.WALK, okoBewertung, emissions, dauerStunde * 60 + dauerMinute, startDate, endDate, startName, endName, distanz, 1));
-        }
-        return new AnalyseergebnisWeg(fahrtenArray, wegId, getCalendarDate(wegStart.get("timestamp").getAsString()), getCalendarDate(wegEnd.get("timestamp").getAsString()), wegStart.get("name").getAsString(), wegEnd.get("name").getAsString());
-    }
 
     public void changeToAnalyseMonatFragment(Calendar monat) {
         int i = -1;
-        for (int j = 0; j < analyseErgebnisse.size(); j++) {
-            if (analyseErgebnisse.get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && analyseErgebnisse.get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)) {
-                i = j;
+        for (int j = 0; j < AnalysisLoader.getInstance().getResults().size(); j++) {
+            if (AnalysisLoader.getInstance().getResults().get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && AnalysisLoader.getInstance().getResults().get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)) {
+                i = j;break;
             }
         }
         if (i != -1) {
-            AnalysisMonatFragment temp = new AnalysisMonatFragment(analyseErgebnisse.get(i));
+            AnalysisMonthFragment temp = new AnalysisMonthFragment(AnalysisLoader.getInstance().getResults().get(i));
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.framelayout, temp);
             ft.addToBackStack(null);
@@ -533,19 +395,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void changeToAnalyseTagFragment(Calendar monat) {
         int i = -1;
         int r = -1;
-        for (int j = 0; j < analyseErgebnisse.size(); j++) {
-            if (analyseErgebnisse.get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && analyseErgebnisse.get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)) {
+        for (int j = 0; j < AnalysisLoader.getInstance().getResults().size(); j++) {
+            if (AnalysisLoader.getInstance().getResults().get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && AnalysisLoader.getInstance().getResults().get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)) {
                 i = j;
-                for (int l = 0; l < analyseErgebnisse.get(i).getTage().size(); l++) {
-                    int tag = analyseErgebnisse.get(i).getTage().get(l).getTag().get(Calendar.DAY_OF_MONTH);
+                for (int l = 0; l < AnalysisLoader.getInstance().getResults().get(i).getDays().size(); l++) {
+                    int tag = AnalysisLoader.getInstance().getResults().get(i).getDays().get(l).getDay().get(Calendar.DAY_OF_MONTH);
                     if (tag == monat.get(Calendar.DAY_OF_MONTH)) {
-                        r = l;
+                        r = l; break;
                     }
                 }
             }
         }
         if (i != -1) {
-            AnalysisTagFragment temp = new AnalysisTagFragment(analyseErgebnisse.get(i).getTage().get(r));
+            AnalysisDayFragment temp = new AnalysisDayFragment(AnalysisLoader.getInstance().getResults().get(i).getDays().get(r));
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.framelayout, temp);
             ft.addToBackStack(null);
@@ -553,20 +415,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void changeToAnalyseFahrtFragment(AnalyseergebnisWeg weg) {
-        AnalysisFahrtFragment temp = new AnalysisFahrtFragment(weg);
+    public void changeToAnalyseFahrtFragment(AnalysisResultPath weg) {
+        AnalysisPathFragment temp = new AnalysisPathFragment(weg);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.framelayout, temp);
         ft.addToBackStack(null);
         ft.commit();
-    }
-
-    public ArrayList<AnalyseergebnisMonat> getErgebnisse() {
-        return analyseErgebnisse;
-    }
-
-    public Calendar getCalendarDate(String date) {
-        return new GregorianCalendar(Integer.parseInt(date.substring(0, 4)), Integer.parseInt(date.substring(5, 7)) - 1, Integer.parseInt(date.substring(8, 10)), Integer.parseInt(date.substring(11, 13)), Integer.parseInt(date.substring(14, 16)));
     }
 
 

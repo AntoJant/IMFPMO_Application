@@ -12,16 +12,16 @@ import com.github.mikephil.charting.charts.BarChart;
 
 import java.util.ArrayList;
 
-public class AnalyseTagGesamtErgebnisPagerAdapter extends PagerAdapter {
+public class AnalysisMonthOverviewPagerAdapter extends PagerAdapter{
     private Context context;
     private LayoutInflater layoutInflater;
-    private ArrayList<AnalyseergebnisTag> tage;
+    private ArrayList<AnalysisResultMonth> months;
 
 
-    public AnalyseTagGesamtErgebnisPagerAdapter(Context context, ArrayList<AnalyseergebnisTag> tage){
+    public AnalysisMonthOverviewPagerAdapter(Context context, ArrayList<AnalysisResultMonth> months){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
-        this.tage = tage;
+        this.months = months;
     }
 
     @NonNull
@@ -29,9 +29,10 @@ public class AnalyseTagGesamtErgebnisPagerAdapter extends PagerAdapter {
         View view = this.layoutInflater.inflate(R.layout.analyse_diagram_bar_chart, container, false);
         BarChart barChart = view.findViewById(R.id.diagramm);
         switch (position){
-            case 0: AnalyseDiagramMaker.makeTagGesamtCO2BarChart(tage, barChart); break;
-            case 1: AnalyseDiagramMaker.makeTagGesamtDistanzBarChart(tage,barChart); break;
-            case 2: AnalyseDiagramMaker.makeTagGesamtZeitBarChart(tage ,barChart);break;
+            case 0: AnalysisDiagramMaker.makeMonthEmissionBarChart(months, barChart,context); break;
+            case 1: AnalysisDiagramMaker.makeMonthDistanceBarChart(months,barChart, context); break;
+            case 2: AnalysisDiagramMaker.makeMonthTimeEffortBarChart(months,barChart,context);break;
+            case 3: AnalysisDiagramMaker.makeMonthTotalRideCountBarChart(months, barChart, context);break;
         }
         container.addView(view);
         return view;
@@ -39,7 +40,7 @@ public class AnalyseTagGesamtErgebnisPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 
     @Override
