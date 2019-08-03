@@ -2,10 +2,7 @@ package com.imfpmo.app;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,7 +23,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.preference.PreferenceManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -40,7 +36,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener, DrawerLocker, SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, OnFragmentInteractionListener, DrawerLocker {
 
     public static String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
@@ -49,9 +45,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Log.w(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .registerOnSharedPreferenceChangeListener(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -94,20 +87,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         //Set Tracking Switch to "On" by default:
         navigationView.getMenu().findItem(R.id.nav_tracking).setActionView(new Switch(this));
         final Intent intent = new Intent(this, LocationUpdatesService.class);
-        final Context context = this;
-        ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(false);
-        ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setOnCheckedChangeListener((button, state) -> {
+        ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(true);
+        ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton button, boolean state) {
                 //If Tracking Switch has state "On"
                 if (state) {
-
-                    LocationUpdatesService.requestLocationUpdates(this);
-
+                    Log.w(TAG, "TRACKING STARTED FROM SWITCH");
+                    startService(intent);
                     //If Tracking Switch has state "Off"
                 } else {
-
-                    LocationUpdatesService.stopLocationUpdates(this);
-
+                    Log.w(TAG, "TRACKING STOPPED FROM SWITCH");
+                    stopService(intent);
                 }
+            }
         });
 
         if (!checkPermissions()) {
@@ -206,15 +200,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_settings) {
             fragment = new SettingsFragment();
         } else if (id == R.id.nav_logoff) {
+            NavigationView navigationView = findViewById(R.id.nav_view);
+            ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(false);
 
-
-            LocationUpdatesService.stopLocationUpdates(this);
-            //failsafe if app crashes. service will be restarted at login
-            Helpers.setRequestingLocationUpdates(this, false);
-            LocationUpdatesService.sendLastDataAndCancelWorker(this);
-
-            Usermanagement.getInstance().logout();
-
+            Usermanagement.getInstance().logout(getApplicationContext());
             Log.w("Token after logout", "Token = " + Usermanagement.getInstance().getSecurityToken());
             Toast.makeText(getApplicationContext(), "Erfolgreich abgemeldet", Toast.LENGTH_SHORT).show();
             getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -305,7 +294,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    //app works only with all-the-time permissions granted
+    //implement onRequestPermissionsResult for clean handling of denied permissions
+    //app works only with all the time permissions granted.
     @TargetApi(29)
     private void requestPermissions() {
 
@@ -318,58 +308,74 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else
             ActivityCompat.requestPermissions(MainActivity.this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSIONS_REQUEST_CODE);
+        /*
+        boolean permissionAccessFineLocationApproved =
+                ActivityCompat.checkSelfPermission(
+                        this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED;
 
+        boolean backgroundLocationPermissionApproved =
+                ActivityCompat.checkSelfPermission(
+                        this, Manifest.permission.ACCESS_BACKGROUND_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED;
+
+        boolean shouldProvideRationale =
+                permissionAccessFineLocationApproved && backgroundLocationPermissionApproved;
+
+        // Provide an additional rationale to the user. This would happen if the user denied the
+        // request previously, but didn't check the "Don't ask again" checkbox.
+        if (shouldProvideRationale) {
+            Log.i(TAG, "Displaying permission rationale to provide additional context.");
+            Snackbar.make(
+                    findViewById(R.id.drawer_layout),
+                    R.string.permission_rationale,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Request permission
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[]{
+                                            Manifest.permission.ACCESS_FINE_LOCATION,
+                                            Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                                    REQUEST_PERMISSIONS_REQUEST_CODE);
+                        }
+                    })
+                    .show();
+        } else {
+            Log.i(TAG, "Requesting permission");
+            // Request permission. It's possible this can be auto answered if device policy
+            // sets the permission in a given state or the user denied the permission
+            // previously and checked "Never ask again".
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{
+                            Manifest.permission.ACCESS_FINE_LOCATION,
+                            Manifest.permission.ACCESS_BACKGROUND_LOCATION},
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+        */
     }
 
-    //method displays message in case of core functionality permissions denied
-    @Override
-    public void onRequestPermissionsResult(int requestCode,@NonNull String[] permissions,@NonNull int[] grantResults) {
-        Log.w(TAG, "in callback");
-        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE)
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                Log.w(TAG, "permissions granted ");
-                // permission was granted
-            } else {
-                // permission denied
-                Log.w(TAG, "permissions denied");
-                Snackbar.make(
-                        findViewById(R.id.drawer_layout),
-                        R.string.permission_denied_explanation,
-                        Snackbar.LENGTH_INDEFINITE).show();
-            }
-
-    }
 
     @Override
     protected void onDestroy() {
         Log.w(TAG, "onDestroy");
+        //stopping here only for testing. in reality only on changeslider or location permissions revoked
+        //stopService(new Intent(this, LocationUpdatesService.class));
         super.onDestroy();
     }
 
     @Override
     protected void onStop() {
         Log.w(TAG, "onStop");
+        //stopService(new Intent(this, LocationUpdatesService.class));
         super.onStop();
     }
 
-    //reloads the true state of the service in case of service being killed.
-    @Override
-    protected void onResume(){
-        super.onResume();
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        Log.w(TAG, "onResume");
-        if(Helpers.requestingLocationUpdates(this))
-            ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(true);
-        else
-            ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(false);
-
-    }
     @Override
     protected void onRestart() {
-        super.onRestart();
-
         Log.w(TAG, "onRestart");
+        super.onRestart();
     }
 
     @Override

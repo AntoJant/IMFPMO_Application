@@ -1,7 +1,6 @@
 package com.imfpmo.app;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -22,22 +21,21 @@ class Usermanagement {
     private String securityToken = "";
     private String userID = "";
 
-    //--API Strings---------------------
+    //--Network Strings---------------------
     private final String API_URI = "https://treibhaus.informatik.rwth-aachen.de/praktikum-ss19/api";
 
     private final String KEY_EMAIL = "email";
     private final String KEY_PASSWORD = "password";
     private final String KEY_AUTHORIZATION = "Authorization";
-    private final String KEY_XCONFPASS = "X-Conf-Pass";
 
-    //--SharedPreferences Strings-------
+    //--
     private final String KEY_TOKEN = "token";
     private final String KEY_USER_ID = "id";
     private final String KEY_SHAREDPREFERENCE = "securityTokenPreference";
     private final String KEY_SHAREDPREFERENCE_SECURITYTOKEN = "securityToken";
     private final String KEY_SHAREDPREFERENCE_USER_ID = "userID";
 
-    //--Returns-------------------------
+    //--
     static final int OPERATION_SUCCESSFUL = 0;
     static final int OPERATION_FAILED = 1;
     static final int NO_INTERNET_CONNECTION = 2;
@@ -60,10 +58,6 @@ class Usermanagement {
         return !getSecurityToken().equals("");
     }
 
-    /**
-     * Creates a new Usermanagement instance. Needs to be called once before getInstance().
-     * @param context The context needs to be the applicationcontext.
-     */
     static void createInstance(Context context) {
         if(instance == null) {
             instance = new Usermanagement(context);
@@ -71,10 +65,8 @@ class Usermanagement {
     }
 
     /**
-     * Returns the instance of Usermanagement. createInstance() needs to be called before first using
-     * this.
-     * @return Singleton instance of the Usermanagement, null if createInstance() was not called
-     * before.
+     *
+     * @return Singleton instance of the Usermanagement
      */
     static Usermanagement getInstance() {
         if(instance == null) Log.w(TAG, "Instance is null");
@@ -83,16 +75,12 @@ class Usermanagement {
 
     /**
      * Returns the security token of the logged in user.
-     * @return Security token used to make secured API requests, "" if no user is logged in.
+     * @return Security token used to make secured API requests.
      */
     String getSecurityToken() {
         return this.securityToken;
     }
 
-    /**
-     * Set a new securityToken and save it in a sharedPreference.
-     * @param token new securityToken
-     */
     private void setSecurityToken( String token) {
         securityToken = token;
         SharedPreferences pref = APPLICATION_CONTEXT.getSharedPreferences(KEY_SHAREDPREFERENCE, 0);
@@ -102,10 +90,6 @@ class Usermanagement {
         Log.w(TAG,"Set Securitytoken to " + token);
     }
 
-    /**
-     * Set a new userID and save it in a sharedPreference.
-     * @param id new UserID
-     */
     private void setUserID( String id) {
         userID = id;
         SharedPreferences pref = APPLICATION_CONTEXT.getSharedPreferences(KEY_SHAREDPREFERENCE, 0);
@@ -117,9 +101,9 @@ class Usermanagement {
 
 
     /**
-     * Fetches the UserID of the currently logged in User from the API and saves it.
-     * @return OPERATION_SUCCESSFUL if successful else 1:operation failed, 2: no internet connection
-     * or 3:could not reach server.
+     *
+     * Fetches the UserID of the currently logged in User and saves it
+     * @return OPERATION_SUCCESSFUL if successful else 1-3
      */
     private int fetchUserID( Context context) {
             if(isLoggedIn()) {
@@ -185,13 +169,10 @@ class Usermanagement {
     }
 
     /**
-     * Requests a new security token for the specified user, which you can get using the
-     * 'getSecurityToken()' function.
+     * Requests a new security token for the specified user, which you can get using the 'getSecurityToken()' function.
      * @param email E-mail addess of the user that should be logged in.
      * @param password Password of the user that should be logged in.
-     * @param context context of the current activity.
-     * @return 0:OPERATION_SUCCESSFUL if successful else 1:operation failed, 2: no internet connection
-     * or 3:could not reach server.
+     * @return true - if the login was successful.
      */
     int login(String email, String password, Context context) {
         JsonObject body = new JsonObject();
@@ -253,21 +234,29 @@ class Usermanagement {
         }
 
     }
-
-    /**
-     * Creates a new user with specified credentials.
-     * @param email Email address of the new user.
-     * @param password Password of the new user.
-     * @param context context of the current activity.
-     * @return 0:OPERATION_SUCCESSFUL if successful else 1:operation failed, 2: no internet connection
-     * or 3:could not reach server.
+        /**
+     *
      */
     int register(String email, String password, Context context) {
         Log.w(TAG,"register started");
         JsonObject body = new JsonObject();
         body.addProperty(KEY_EMAIL, email);
         body.addProperty(KEY_PASSWORD, password);
-
+        /*Future<Response<JsonObject>> future = Ion.with(context)
+                .load(API_URI+"/users")
+                .setLogging("LoginLog", Log.VERBOSE)
+                .setJsonObjectBody(body)
+                .asJsonObject()
+                .withResponse()
+                .setCallback(new FutureCallback<Response<JsonObject>>() {
+                    @Override
+                    public void onCompleted(Exception e, Response<JsonObject> result) {
+                        Log.w(TAG,String.valueOf(result.getHeaders().code()));
+                    }
+                });
+        Log.w(TAG, "register request send to "+API_URI+"/users");
+        while (future.tryGet()==null) {}
+        return future.tryGet().getHeaders().code() == 201;*/
         Response<JsonObject> response = null;
         try {
             response = Ion.with(context)
@@ -318,20 +307,29 @@ class Usermanagement {
     /**
      * Sends a request to the server to reset the password.
      * @param email user email
-     * @return 0:OPERATION_SUCCESSFUL if successful else 1:operation failed, 2: no internet connection
-     * or 3:could not reach server.
+     * @return true if successful
      */
     int resetPassword(String email, Context context) {
         Log.w(TAG,"Reset Password started");
         JsonObject body = new JsonObject();
         body.addProperty(KEY_EMAIL, email);
-
+        /*Future<Response<JsonObject>> future = Ion.with(context)
+                .load(API_URI+"/password-reset")
+                .setJsonObjectBody(body)
+                .asJsonObject()
+                .withResponse()
+                .setCallback(new FutureCallback<Response<JsonObject>>() {
+                    @Override
+                    public void onCompleted(Exception e, Response<JsonObject> result) {
+                        Log.w(TAG,String.valueOf(result.getHeaders().code()));
+                    }
+                });
+        return future.tryGet().getHeaders().code() == 200;*/
         Response<JsonObject> response = null;
         try {
             response = Ion.with(context)
                     .load(API_URI+"/password-reset")
                     .setLogging("ResetPwLog", Log.VERBOSE)
-                    .setHeader(KEY_AUTHORIZATION, "Bearer " + getSecurityToken())
                     .setJsonObjectBody(body)
                     .asJsonObject()
                     .withResponse()
@@ -374,76 +372,11 @@ class Usermanagement {
 
     /**
      * Deletes the saved security token.
+     * @return true if successful
      */
-    void logout() {
-
+    void logout(Context context) {
         setSecurityToken( "");
         setUserID("");
-
-    }
-
-    /**
-     * Deletes the all data of the currently logged in user from the database and returns calls
-     * logout().
-     * @param password password of the currently logged in user
-     * @param context context of the current activity
-     * @return 0:OPERATION_SUCCESSFUL if successful else 1:operation failed, 2: no internet connection,
-     * 3:could not reach server or 10:wrong password.
-     */
-    int deleteUser(String password, Context context){
-        Log.w(TAG,"deleteUser started");
-
-        Response<JsonObject> response = null;
-        try {
-            response = Ion.with(context)
-                    .load("DELETE", API_URI+"/users/" + getUserID())
-                    .setLogging("DeleteUserLog", Log.VERBOSE)
-                    .setHeader(KEY_XCONFPASS, password)
-                    .setHeader(KEY_AUTHORIZATION, "Bearer " + getSecurityToken())
-                    .asJsonObject()
-                    .withResponse()
-                    .setCallback(new FutureCallback<Response<JsonObject>>() {
-                        @Override
-                        public void onCompleted(Exception e, Response<JsonObject> result) {
-                            if(e != null) {
-                                Log.e(TAG,"Error = " + e.toString());
-                            }
-                            if(result != null) {
-                                Log.w(TAG, "Code = " + result.getHeaders().code());
-                            }
-                        }
-                    }).get();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        if(response==null){
-            Log.w(TAG, "Response == null");
-            return NO_INTERNET_CONNECTION;
-        }
-        else if(response.getResult()==null) {
-            Log.w(TAG,"json = null");
-            return COULDNT_REACH_SERVER;
-        }
-        else if(response.getHeaders().code() == 404) {
-            Log.w(TAG, "COULNDT_REACH_SERVER");
-            return COULDNT_REACH_SERVER;
-        }
-        else if(response.getHeaders().code() == 200) {
-            Log.w(TAG,"OPERATION_SUCCESSFUL" );
-            logout();
-            return OPERATION_SUCCESSFUL;
-        }
-        else if(response.getHeaders().code() == 403) {
-            Log.w(TAG, "WRONG_PASSWORD");
-            return 10;
-        }
-        else {
-            Log.w(TAG, "OPERATION_FAILED");
-            return OPERATION_FAILED;
-        }
     }
 
     JsonObject getAnalyseErgebnisse(Context context,int skip,int limit) {
