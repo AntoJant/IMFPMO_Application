@@ -315,6 +315,73 @@ class Usermanagement {
         }
     }
 
+    int makeTestUser(String email, String password, Context context) {
+        Log.w(TAG,"register started");
+        JsonObject body = new JsonObject();
+        body.addProperty(KEY_EMAIL, email);
+        body.addProperty(KEY_PASSWORD, password);
+        /*Future<Response<JsonObject>> future = Ion.with(context)
+                .load(API_URI+"/users")
+                .setLogging("LoginLog", Log.VERBOSE)
+                .setJsonObjectBody(body)
+                .asJsonObject()
+                .withResponse()
+                .setCallback(new FutureCallback<Response<JsonObject>>() {
+                    @Override
+                    public void onCompleted(Exception e, Response<JsonObject> result) {
+                        Log.w(TAG,String.valueOf(result.getHeaders().code()));
+                    }
+                });
+        Log.w(TAG, "register request send to "+API_URI+"/users");
+        while (future.tryGet()==null) {}
+        return future.tryGet().getHeaders().code() == 201;*/
+        Response<JsonObject> response = null;
+        try {
+            response = Ion.with(context)
+                    .load(API_URI+"/test-data-user")
+                    .setLogging("RegisterLog", Log.VERBOSE)
+                    .setJsonObjectBody(body)
+                    .asJsonObject()
+                    .withResponse()
+                    .setCallback(new FutureCallback<Response<JsonObject>>() {
+                        @Override
+                        public void onCompleted(Exception e, Response<JsonObject> result) {
+                            if(e != null) {
+                                Log.e(TAG,"Error = " + e.toString());
+                            }
+                            if(result != null) {
+                                Log.w(TAG, "Code = " + result.getHeaders().code());
+                            }
+                        }
+                    }).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if(response==null){
+            Log.w(TAG, "Response == null");
+            return NO_INTERNET_CONNECTION;
+        }
+        else if(response.getResult()==null) {
+            Log.w(TAG,"json = null");
+            return COULDNT_REACH_SERVER;
+        }
+        else if(response.getHeaders().code() == 404) {
+            Log.w(TAG, "COULNDT_REACH_SERVER");
+            return COULDNT_REACH_SERVER;
+        }
+        else if(response.getHeaders().code() == 201) {
+            Log.w(TAG,"OPERATION_SUCCESSFUL" );
+            return OPERATION_SUCCESSFUL;
+        }
+        else {
+            Log.w(TAG, "OPERATION_FAILED");
+            return OPERATION_FAILED;
+        }
+    }
+
     /**
      * Sends a request to the server to reset the password.
      * @param email user email
@@ -551,5 +618,7 @@ class Usermanagement {
         }
 
     }
+
+
 }
 

@@ -13,13 +13,13 @@ import com.github.mikephil.charting.charts.PieChart;
 public class AnalysisMonthDiagramPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private AnalysisResultMonth monat;
+    private AnalysisResultMonth month;
 
 
-    public AnalysisMonthDiagramPagerAdapter(Context context, AnalysisResultMonth monat){
+    public AnalysisMonthDiagramPagerAdapter(Context context, AnalysisResultMonth month){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
-        this.monat = monat;
+        this.month = month;
     }
 
     @NonNull
@@ -27,9 +27,9 @@ public class AnalysisMonthDiagramPagerAdapter extends PagerAdapter {
         View view = this.layoutInflater.inflate(R.layout.analyse_diagram_pie_chart, container, false);
         PieChart pieChart = view.findViewById(R.id.diagramm);
         switch (position){
-            case 0: AnalysisDiagramMaker.makeGesamtCO2Diagramm(monat.getCO2Auto(), monat.getCO2Opnv(), pieChart,context); break;
-            case 1: AnalysisDiagramMaker.makeGesamtDistanzDiagramm(monat.getAutoDistanz(),monat.getOpnvDistanz(),monat.getFahrradDistanz(),monat.getFussDistanz(),pieChart,context); break;
-            case 2: AnalysisDiagramMaker.makeGesamtZeitDiagramm(monat.getZeitAuto(),monat.getZeitFahrrad(),monat.getZeitOpnv(), monat.getZeitFuss(),pieChart, context);break;
+            case 0: AnalysisDiagramMaker.makeEmissionPieChart(month, pieChart,context); break;
+            case 1: AnalysisDiagramMaker.makeDistancePieChart(month, pieChart,context); break;
+            case 2: AnalysisDiagramMaker.makeTimeEffortPieChart(month, pieChart, context);break;
         }
         container.addView(view);
         return view;

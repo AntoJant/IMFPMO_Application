@@ -5,73 +5,65 @@ import java.util.Calendar;
 public class AnalysisResultRide {
     public String id, mode,ampel;
     public AnalysisTrack start, end;
-    public int distance, emissions, dauer;
-    public FahrtModi modi;
-    public int okoBewertung;
+    public int distance, emissions, timeEffort;
+    public RideMode rideMode;
+    public int okoGrade;
     Calendar startZeit, endZeit;
 
 
     public void generateAtributes(){
         switch(mode){
-            case "walk": modi = FahrtModi.WALK;break;
-            case "bike": modi = FahrtModi.FAHRRAD;break;
-            case "car" : modi = FahrtModi.AUTO;break;
-            default: modi = FahrtModi.OPNV;
+            case "walk": rideMode = RideMode.WALK;break;
+            case "bike": rideMode = RideMode.BIKE;break;
+            case "car" : rideMode = RideMode.CAR;break;
+            default: rideMode = RideMode.OPNV;
         }
 
         switch (ampel){
-            case "red": okoBewertung = 0;break;
-            case "yellow": okoBewertung = 1;break;
-            case "green": okoBewertung = 2;break;
+            case "red": okoGrade = 0;break;
+            case "yellow": okoGrade = 1;break;
+            case "green": okoGrade = 2;break;
         }
 
         startZeit = start.getDate();
         endZeit = end.getDate();
 
-        dauer = (int) ((endZeit.getTimeInMillis()-startZeit.getTimeInMillis()) /60000);
+        timeEffort = (int) ((endZeit.getTimeInMillis()-startZeit.getTimeInMillis()) /60000);
     }
 
-    public FahrtModi getModi() {
-        return  modi;
+    public RideMode getMode() {
+        return rideMode;
     }
 
-    public FahrtModi getAlternativModi() {
-        return FahrtModi.WALK;
+    public RideMode getAlternativeMode() {
+        return RideMode.WALK;
     }
 
-    public int getOkoBewertung() {
-        return okoBewertung;
+    public int getOkoGrade() {
+        return okoGrade;
     }
 
-    public int getcO2Austoss() {
+    public int getCO2Emissions() {
         return emissions;
     }
-
-    public Calendar getStartzeit() {
-        return startZeit;
-    }
-
-    public Calendar getEndzeit() {
-        return endZeit;
-    }
-
-    public String getStartadresse() {
+    
+    public String getStartAddress() {
         return start.name;
     }
 
-    public String getZieladresse() {
+    public String getEndAddress() {
         return end.name;
     }
 
-    public int getDistanz() {
+    public int getDistance() {
         return distance;
     }
 
-    public int getAlternativerZeitaufwand() {
+    public int getAlternativeTimeEffort() {
         return distance -1;
     }
 
-    public int getDauer(){
-        return dauer;
+    public int getTimeEffort(){
+        return timeEffort;
     }
 }

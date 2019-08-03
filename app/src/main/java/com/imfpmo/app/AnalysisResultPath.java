@@ -3,134 +3,168 @@ package com.imfpmo.app;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class AnalysisResultPath {
+public class AnalysisResultPath implements RideContainer {
     public ArrayList<AnalysisResultRide> rides;
     public String id;
     public AnalysisTrack start,end;
-    public int gesamtCO2Austoss, autoCO2Austoss, fahrradCO2Austoss, opnvCO2Austoss, walkCO2Austoss;
-    public int gesamtDistanz, autoDistanz, fahrradDistanz, opnvDistanz, walkDistanz;
-    public int gesamtDauer, autoDauer, fahrradDauer, opnvDauer, walkDauer;
-    public Calendar startZeit,endZeit;
-    public int okoBewertung;
-    public ArrayList<AnalysisResultRide> getFahrten() {
+    public int totalEmissions, carEmissions, bikeEmissions, opnvEmissions, walkEmissions;
+    public int totalDistance, carDistance, bikeDistance, opnvDistance, walkDistance;
+    public int totalTimeEffort, carTimeEffort, bikeTimeEffort, opnvTimeEffort, walkTimeEffort;
+    public int totalRideCount, carRideCount, bikeRideCount, opnvRideCount, walkRideCount;
+    public Calendar startTime, endTime;
+    public int okoGrade;
+    public ArrayList<AnalysisResultRide> getRides() {
         return rides;
     }
 
 
-    public Calendar getStartzeit() {
+    public Calendar getStartDate() {
         return start.getDate();
     }
 
-    public Calendar getEndzeit() {
+    public Calendar getEndDate() {
         return end.getDate();
     }
 
-    public void generateAtributes(){
-        for(AnalysisResultRide fahrt:rides){
-            fahrt.generateAtributes();
+    public void generateAttributes(){
+        walkEmissions = 0;
+        walkTimeEffort = 0;
+        walkDistance = 0;
+        carEmissions = 0;
+        carTimeEffort = 0;
+        carDistance = 0;
+        bikeEmissions = 0;
+        bikeTimeEffort = 0;
+        bikeDistance = 0;
+        opnvTimeEffort = 0;
+        opnvDistance = 0;
+        opnvEmissions = 0;
+        totalEmissions = 0;
+        totalTimeEffort = 0;
+        totalDistance = 0;
+        totalRideCount  =0;
+        carRideCount = 0;
+        bikeRideCount = 0;
+        opnvRideCount = 0;
+        walkRideCount = 0;
+        int ratedRides = 0;
+        for(AnalysisResultRide ride:rides){
+            ride.generateAtributes();
         }
-        for (AnalysisResultRide fahrt:rides){
-            switch (fahrt.getModi()){
+        for (AnalysisResultRide ride:rides){
+            switch (ride.getMode()){
                 case WALK: {
-                    walkCO2Austoss += fahrt.getcO2Austoss();
-                    walkDauer += fahrt.getDauer();
-                    walkDistanz += fahrt.getDistanz();
+                    walkEmissions += ride.getCO2Emissions();
+                    walkTimeEffort += ride.getTimeEffort();
+                    walkDistance += ride.getDistance();
+                    walkRideCount++;
                 }break;
-                case AUTO: {
-                    autoCO2Austoss += fahrt.getcO2Austoss();
-                    autoDauer += fahrt.getDauer();
-                    autoDistanz += fahrt.getDistanz();
+                case CAR: {
+                    carEmissions += ride.getCO2Emissions();
+                    carTimeEffort += ride.getTimeEffort();
+                    carDistance += ride.getDistance();
+                    carRideCount++;
                 }break;
                 case OPNV:{
-                    opnvCO2Austoss += fahrt.getcO2Austoss();
-                    opnvDauer += fahrt.getDauer();
-                    opnvDistanz += fahrt.getDistanz();
+                    opnvEmissions += ride.getCO2Emissions();
+                    opnvTimeEffort += ride.getTimeEffort();
+                    opnvDistance += ride.getDistance();
+                    opnvRideCount ++;
                 }break;
-                case FAHRRAD:{
-                    fahrradCO2Austoss += fahrt.getcO2Austoss();
-                    fahrradDauer += fahrt.getDauer();
-                    fahrradDistanz += fahrt.getDistanz();
+                case BIKE:{
+                    bikeEmissions += ride.getCO2Emissions();
+                    bikeTimeEffort += ride.getTimeEffort();
+                    bikeDistance += ride.getDistance();
+                    bikeRideCount ++;
                 }break;
             }
-            okoBewertung = fahrt.getOkoBewertung();
+            if(ride.getOkoGrade() != 0) {
+                okoGrade += ride.getOkoGrade();
+                ratedRides++;
+            }
+
         }
-        gesamtCO2Austoss = walkCO2Austoss + autoCO2Austoss+ opnvCO2Austoss+ fahrradCO2Austoss;
-        gesamtDauer = walkDauer+autoDauer+opnvDauer+fahrradDauer;
-        gesamtDistanz = walkDistanz + autoDistanz+opnvDistanz+fahrradDistanz;
-        okoBewertung = okoBewertung / rides.size();
-        startZeit = start.getDate();
-        endZeit = end.getDate();
+        totalRideCount = carRideCount + bikeRideCount+ opnvRideCount+walkRideCount;
+        totalEmissions = walkEmissions + carEmissions + opnvEmissions + bikeEmissions;
+        totalTimeEffort = walkTimeEffort + carTimeEffort + opnvTimeEffort + bikeTimeEffort;
+        totalDistance = walkDistance + carDistance + opnvDistance + bikeDistance;
+        if(ratedRides != 0 ){
+            okoGrade = okoGrade / ratedRides;
+        }
+
+        startTime = start.getDate();
+        endTime = end.getDate();
     }
 
-    public int getCO2Austoss(){
-        return gesamtCO2Austoss;
+    public int getTotalEmissions(){
+        return totalEmissions;
     }
 
-    public int getAutoCO2Austoss(){
-        return autoCO2Austoss;
+    public int getCarEmissions(){
+        return carEmissions;
     }
 
-    public int getFahrradCO2Austoss(){
-        return fahrradCO2Austoss;
+    public int getBikeEmissions(){
+        return bikeEmissions;
     }
 
-    public int getOpnvCO2Austoss(){
-        return opnvCO2Austoss;
+    public int getOpnvEmissions(){
+        return opnvEmissions;
     }
 
-    public int getFussCO2Austoss(){
-        return walkCO2Austoss;
+    public int getWalkEmissions(){
+        return walkEmissions;
     }
 
-    public int getDistanz(){
-        return gesamtDistanz;
+    public int getTotalDistance(){
+        return totalDistance;
     }
 
-    public int getAutoDistanz(){
-        return autoDistanz;
+    public int getCarDistance(){
+        return carDistance;
     }
 
-    public int getFahrradDistanz(){
-        return fahrradDistanz;
+    public int getBikeDistance(){
+        return bikeDistance;
     }
 
-    public int getOpnvDistanz(){
-        return opnvDistanz;
+    public int getOpnvDistance(){
+        return opnvDistance;
     }
 
-    public int getFussDistanz(){
-        return walkDistanz;
+    public int getWalkDistance(){
+        return walkDistance;
     }
 
-    public float getDauer(){
-        return gesamtDauer;
+    public int getTotalTimeEffort(){
+        return totalTimeEffort;
     }
 
-    public float getAutoDauer(){
-        return autoDauer;
+    public int getCarTimeEffort(){
+        return carTimeEffort;
     }
 
-    public float getFussDauer(){
-        return walkDauer;
+    public int getWalkTimeEffort(){
+        return walkTimeEffort;
     }
 
-    public float getFahrradDauer(){
-        return fahrradDauer;
+    public int getBikeTimeEffort(){
+        return bikeTimeEffort;
     }
 
-    public float getOpnvDauer(){
-        return opnvDauer;
+    public int getOpnvTimeEffort(){
+        return opnvTimeEffort;
     }
 
-    public double getOkobewertung(){
-        return okoBewertung;
+    public int getOkoGrade(){
+        return okoGrade;
     }
 
-    public String getStartAdresse(){
+    public String getStartAdress(){
         return start.name;
     }
 
-    public String getEndAdresse(){
+    public String getEndAdress(){
         return end.name;
     }
 }
