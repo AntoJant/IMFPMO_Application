@@ -16,6 +16,12 @@ import com.koushikdutta.ion.Response;
 import java.util.List;
 import java.util.Set;
 
+
+/**
+ * Class that sends the data stored in the local database to the backend.
+ * It first checks for duplicates then converts the database location objects to Json objects,
+ * stores them on a JsonArray and sends them.
+ */
 public class LocationDeliveryWorker extends Worker {
 
     private String TAG = LocationDeliveryWorker.class.getSimpleName();
@@ -41,6 +47,7 @@ public class LocationDeliveryWorker extends Worker {
 
         Set<String> tags = getTags();
 
+        // if sending fails depending on worker type retries or lets data be sent at a later time
         if(!sendDataToServer()) {
             Log.w(TAG, "doWork: something happened trying later");
             if(tags.contains(WORKER_TYPE_REGULAR))
@@ -57,11 +64,18 @@ public class LocationDeliveryWorker extends Worker {
         return Result.success();
     }
 
+
+    /**
+     * Queries the data from the local database, performs conversion to JsonObjects
+     * and sends it to the server with Ion. If succesfull, deletes the locations from the database.
+     * @return - returns the status of the Ion HTTP request. If true then data was received by the server.
+     */
     private boolean sendDataToServer(){
         Data inputData = getInputData();
         String userId = inputData.getString(KEY_USER_ID);
         String securityToken = inputData.getString(KEY_SECURITY_TOKEN);
 
+        //Method called as to avoid null pointer exceptions
         if(!Helpers.validateInputUserAuthData(userId, securityToken)) {
             Log.e(TAG, "Data will never be sent as auth data is faulty");
             return false;
@@ -73,6 +87,7 @@ public class LocationDeliveryWorker extends Worker {
         long checkDuplicateTime = 0;
 
         // TODO: 7/22/19 handle duplicates better. maybe do binary search
+        // TODO: 8/10/19 might cause bug where not all locations will be sent
         for(JsonLocation loc : locationsToSend) {
             if(loc.getTimestamp() != checkDuplicateTime) {
                 JsonObject locJson = loc.toJsonObject();

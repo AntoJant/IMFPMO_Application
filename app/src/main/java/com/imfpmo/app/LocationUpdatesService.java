@@ -6,26 +6,15 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.location.LocationProvider;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
-import androidx.room.Room;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 import androidx.work.BackoffPolicy;
 import androidx.work.Constraints;
 import androidx.work.Data;
@@ -52,39 +41,43 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This service handles the background tracking for the whole app.
+ * It initializes the clients needed for requesting location and activity updates. It also schedules a LocationDeliveryWorker
+ * that sends the stored locations to the backend. The storing takes place in the here initialized LocationDeliveryBroadcastReceiver
+ */
 public class LocationUpdatesService extends Service {
 
     private static final String TAG = LocationUpdatesService.class.getSimpleName();
 
     private static final int NOTIFICATION_ID = 223;
-    public static final String CHANNEL_ID = "channel_00"; //private
+    public static final String CHANNEL_ID = "channel_00";
     private static final String KEY_USER_ID = "usermanagement_user_id";
     private static final String KEY_SECURITY_TOKEN = "usermanagement_security_token";
     private static final String WORKER_TYPE_REGULAR = "periodic_worker";
     private static final String WORKER_TYPE_ONCE = "logout_worker";
     private static final String KEY_STOP_SERVICE_FROM_NOTIFICATION = "user_stopped_service_from_notification";
 
+    //how often are locations recognized
     private static final long UPDATE_INTERVAL = 20 * 1000;
 
+    //self-explainatory
     private static final long FASTEST_UPDATE_INTERVAL = UPDATE_INTERVAL;
 
+    //how long should the location delivery updates be batched; 2 hours is not real the client sends at max 5 min wait time
     private static final long MAX_WAIT_TIME = UPDATE_INTERVAL * 3;// * 120 ;
 
     static List<ActivityTransitionEvent> currentTransitions;
 
-    private BroadcastReceiver disableFromGPSButtonReceiver;
-
-    //real values are 30k 28k 5h
-
+    private static LocationRequest mLocationRequest;
 
     private FusedLocationProviderClient fusedLocationClient;
     private ActivityRecognitionClient activityRecognitionClient;
-    private static LocationRequest mLocationRequest;
-    private NotificationManager mNotificationManager;
+
+
     private ActivityTransitionRequest mTransitionRequest;
 
     public LocationUpdatesService() {
@@ -96,6 +89,8 @@ public class LocationUpdatesService extends Service {
     }
 
 
+    //in this method the service is created. here we initialize the location client and the activity-recognition client
+    //also if needed the notification-channel
     @Override
     public void onCreate() {
         Log.w(TAG, "onCreate");
@@ -109,10 +104,7 @@ public class LocationUpdatesService extends Service {
 
         initActivityRecognition();
 
-        //initLocationDisabledListener();
-
-
-        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         // Android O requires a Notification Channel.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -123,7 +115,8 @@ public class LocationUpdatesService extends Service {
                     new NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_DEFAULT);
 
             // Set the Notification Channel for the Notification Manager.
-            mNotificationManager.createNotificationChannel(mChannel);
+            if(mNotificationManager != null)
+                mNotificationManager.createNotificationChannel(mChannel);
         }
 
         if(!Helpers.isSendingWorkerScheduled(this))
@@ -132,6 +125,11 @@ public class LocationUpdatesService extends Service {
 
     }
 
+    /**
+     * Here we handle the startup (by user or OS) and in case of notification click shutdown of the service.
+     * We identify where the service was started from and start the delivery process if that was the intent of the start
+     * Service is started in foreground to get Location updates independent of OS limitations.
+     */
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.w(TAG, "onStartComm");
@@ -162,7 +160,9 @@ public class LocationUpdatesService extends Service {
             }
     }
 
-    // TODO: 7/21/19 take out one or the other
+    /**
+     * Here we shut both clients down. Usually happens at teardown.
+     */
     @Override
     public void onDestroy() {
         //
@@ -171,8 +171,6 @@ public class LocationUpdatesService extends Service {
         activityRecognitionClient
                 .removeActivityTransitionUpdates(pendingIntentCreator("START-RECOGNITION")).addOnSuccessListener(
                         result -> pendingIntentCreator("START-RECOGNITION").cancel());
-
-        //activityRecognitionClient.removeActivityUpdates(pendingIntentCreator("START-RECOGNITION"));
 
         fusedLocationClient.flushLocations().addOnCompleteListener(
                 task -> fusedLocationClient.removeLocationUpdates(pendingIntentCreator("START-UPDATES")));
@@ -183,8 +181,10 @@ public class LocationUpdatesService extends Service {
         super.onDestroy();
 
     }
-    //helpers
 
+    /**
+     * This method initializes the Location request with the values specified by the globals
+     */
     private static void createLocationRequest() {
         Log.w(TAG, "createLocationRequest");
 
@@ -196,6 +196,12 @@ public class LocationUpdatesService extends Service {
 
     }
 
+
+    /**
+     * This function is called inside the Main Activity to check if the Location button is on or off.
+     * In case of the latter prompts a activation dialog box in the provided activity.
+     * @param activity - the activity where the exception is to be solved
+     */
     private static void setCheckAndResolveSettings(Activity activity) {
 
         createLocationRequest();
@@ -205,9 +211,14 @@ public class LocationUpdatesService extends Service {
         SettingsClient client = LocationServices.getSettingsClient(activity);
         Task<LocationSettingsResponse> task = client.checkLocationSettings(builder.build());
 
+        task.addOnSuccessListener(e ->
+            Helpers.setServiceStartedSuccesfully(activity, true)
+        );
+
         task.addOnFailureListener(e -> {
             if (e instanceof ResolvableApiException) {
 
+                Helpers.setServiceStartedSuccesfully(activity, false);
                 try {
                     ResolvableApiException resolvable = (ResolvableApiException) e;
                     resolvable.startResolutionForResult(activity, 0x1);
@@ -219,8 +230,14 @@ public class LocationUpdatesService extends Service {
     }
 
 
+    /**
+     * Initializes the Activity recognition client to recognize movement by car, bicycle or walking
+     */
     private void initActivityRecognition(){
+
         currentTransitions = new ArrayList<>();
+
+        //initializes the transitions used in LocationDeliveryBroadcastReceiver by adding padding
         currentTransitions.add(
                 new ActivityTransitionEvent(
                         DetectedActivity.STILL, ActivityTransition.ACTIVITY_TRANSITION_ENTER, SystemClock.elapsedRealtimeNanos()
@@ -266,7 +283,9 @@ public class LocationUpdatesService extends Service {
 
     }
 
-    // TODO: 7/21/19 take out activityUpdates
+    /**
+     * Starts the Activity recognition client with the provided transition request to receive activity updates
+     */
     private void requestActivityRecognitionUpdates(){
         Task<Void> task = activityRecognitionClient
                 .requestActivityTransitionUpdates(mTransitionRequest, pendingIntentCreator("START-RECOGNITION"));
@@ -274,10 +293,11 @@ public class LocationUpdatesService extends Service {
         task.addOnSuccessListener(result -> Log.w(TAG, "ActivityRecognition initialization succesful"));
         task.addOnFailureListener(e -> Log.w(TAG, "ActivityRecognition initialization failure: " + e));
 
-        //activityRecognitionClient.requestActivityUpdates(10000, pendingIntentCreator("START-RECOGNITION"));
-
     }
 
+    /**
+     * Starts the Fused Location Provider to recieve location updates
+     */
     private void requestLocationUpdates() {
         Log.i(TAG, "requestLocationUpdates");
 
@@ -291,7 +311,10 @@ public class LocationUpdatesService extends Service {
         }
     }
 
-    //furt
+    /**
+     * Creates the notification required by the foreground service enabling it to stop te service if tapped
+     * @return - The created notification
+     */
     private Notification getNotification() {
 
         CharSequence text = "Currently Tracking Location";
@@ -315,6 +338,11 @@ public class LocationUpdatesService extends Service {
     }
 
 
+    /**
+     * Creates a pending intent needed for Location Updates, Activity recognition and Stopping the service
+     * @param motive - the provided reason string as to which pendingintent will be created
+     * @return - the created pendingintent Broadcast Receiver or Service
+     */
     private PendingIntent pendingIntentCreator(String motive) {
         Log.w(TAG, "pendingIntentCreator type:" + motive);
         if(motive.equals("START-UPDATES")) {
@@ -344,6 +372,14 @@ public class LocationUpdatesService extends Service {
 //non testing values: init delay 2 h, repeater 12h(so if fail it sends back in 10h. and !charging
 
 
+    /**
+     * This method schedules a worker that sends the stored locations to the backend server.
+     * There are two types of workers: periodic or one time. The periodic one sends the locations daily
+     * at a fixed interval while connected to WiFi while the second worker only happens when the user logs out
+     * and the remaining data has to be sent.
+     * @param context - the package context
+     * @param type - the type or the worker that will be scheduled
+     */
     private static void scheduleSendingWorker(Context context, String type){
 
         Data userAuthData = new Data.Builder()
@@ -404,6 +440,11 @@ public class LocationUpdatesService extends Service {
         }
     }
 
+
+    /**
+     * Schedules a worker that sends the remaining data.
+     * @param context - the activity where the method was called from. Happens at logout.
+     */
     static void sendLastDataAndCancelWorker(Context context){
         Helpers.setSendingWorkerScheduled(context, false);
 
@@ -413,6 +454,11 @@ public class LocationUpdatesService extends Service {
         scheduleSendingWorker(context, WORKER_TYPE_ONCE);
     }
 
+
+    /**
+     * Outer interface for starting the service while handling the location settings.
+     * @param context - package context
+     */
     static void requestLocationUpdates(Context context){
         if(!Helpers.requestingLocationUpdates(context)) {
             setCheckAndResolveSettings((Activity) context);
@@ -421,6 +467,10 @@ public class LocationUpdatesService extends Service {
     }
 
 
+    /**
+     * Outer interface for stopping the service if rightfully started.
+     * @param context - package context
+     */
     static void stopLocationUpdates(Context context){
         if(Helpers.requestingLocationUpdates(context))
             context.stopService(new Intent(context, LocationUpdatesService.class));

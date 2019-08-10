@@ -18,7 +18,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-
+/**
+ * Broadcast Receiver created through the Fused Location Provider Client pending intent.
+ * It receives the locations in the onReceive method (and checks if the Location button is still on).
+ * Then it handles storing them in the local database while also determining their mode through
+ * the stored Activity updates.
+ */
 public class LocationDeliveryBroadcastReceiver extends BroadcastReceiver {
 
     public static final String TAG = LocationDeliveryBroadcastReceiver.class.getSimpleName();
@@ -45,7 +50,7 @@ public class LocationDeliveryBroadcastReceiver extends BroadcastReceiver {
 
             LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
 
-            if (manager != null)
+            if (manager != null && Helpers.getServiceStartedSuccesfully(context))
                 if(!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     Log.w(TAG, "Service is being stopped");
                     LocationUpdatesService.stopLocationUpdates(context);
@@ -55,6 +60,14 @@ public class LocationDeliveryBroadcastReceiver extends BroadcastReceiver {
     }
 
 
+    /**
+     * Handles the padding so that the received locations can be positioned between activities,
+     * determines the mode, stores them and the mode into the database and clears all activities outside
+     * of the last one.
+     * @param context - The package context delivered in the onReceive method.
+     * @param newlocations - List of Locations that are delivered in the onReceive method from the
+     *                     Fused Location Provider Client
+     */
     void deliverUnsentLocationsToLocalDB(Context context, final List<Location> newlocations){
 
 
@@ -77,11 +90,6 @@ public class LocationDeliveryBroadcastReceiver extends BroadcastReceiver {
         }
 
 
-        // TODO: 7/20/19 rethink checking after seeing what data you get
-        // TODO: 7/22/19 check for duplicates: at first in interation, then see if datapoints contains duplpicates -> logcat falsepositive 
-        // TODO: 7/22/19 else problem could also be in DB reading or writing 
-        // TODO: 7/22/19 you also have full location data at writing in DB time use to check db saving
-        // TODO: 7/22/19 last possibility: you are sending concurrently so data could be sent duplicated THIS!!!!
         Iterator it = transitions.iterator();
         ActivityTransitionEvent activityProbe1 = (ActivityTransitionEvent)it.next();
         int modeToTest1 = activityProbe1.getActivityType();
@@ -97,7 +105,6 @@ public class LocationDeliveryBroadcastReceiver extends BroadcastReceiver {
 
             long currLocationTime = loc.getElapsedRealtimeNanos();
 
-            // TODO: 7/22/19 check if working as intended 
             if(currLocationTime < time1)
                 modeToTest1 = DetectedActivity.STILL;
             else
@@ -140,11 +147,15 @@ public class LocationDeliveryBroadcastReceiver extends BroadcastReceiver {
 
         clearTransitionObjects();
 
-        ToSendDatabase.getInstance(context).jsonLocationDao().insertAll(newLocationsJson);
-
+        ToSendDatabase.getInstance(context.getApplicationContext()).jsonLocationDao().insertAll(newLocationsJson);
+        Log.w(TAG, ToSendDatabase.getInstance(context.getApplicationContext()).jsonLocationDao().isEmpty() + "");
     }
 
-    //returns car for bus and train as api does not support these two
+
+    /**
+     * @param mode - integer received from the Activity Recognition Client
+     * @return - The mode to be stored into the database
+     */
     private String getVehicle(int mode){
 
         switch(mode) {
@@ -177,6 +188,9 @@ public class LocationDeliveryBroadcastReceiver extends BroadcastReceiver {
     }
 
 
+    /**
+     * clears the Activities recognized by the Activity Recognition Client
+     */
     private void clearTransitionObjects(){
         ActivityTransitionEvent lastEvent = LocationUpdatesService.currentTransitions.get(
                 LocationUpdatesService.currentTransitions.size() - 2);

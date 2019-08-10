@@ -2,8 +2,6 @@ package com.imfpmo.app;
 
 import android.Manifest;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -16,6 +14,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -31,8 +30,6 @@ import androidx.preference.PreferenceManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 import java.util.Calendar;
 import java.util.Objects;
@@ -90,8 +87,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
         //Set Tracking Switch to "On" by default:
         navigationView.getMenu().findItem(R.id.nav_tracking).setActionView(new Switch(this));
-        final Intent intent = new Intent(this, LocationUpdatesService.class);
-        final Context context = this;
         ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(false);
         ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setOnCheckedChangeListener((button, state) -> {
                 //If Tracking Switch has state "On"
@@ -283,6 +278,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+    /**
+     * Checks background locations that are required for core functionality for both Android Q and
+     * pre Android Q OS versions.
+     * @return - true if permissions were already granted
+     */
     private boolean checkPermissions() {
         boolean permissionStateFine = ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
@@ -297,7 +297,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    //app works only with all-the-time permissions granted
+    /**
+     * Requests permissions for Fine Location Tracking and for Background Location Tracking (Android Q)
+     */
     @TargetApi(29)
     private void requestPermissions() {
 
@@ -313,14 +315,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    //method displays message in case of core functionality permissions denied
+    /**
+     * Callback from Request Permissions method. Displays message in case of core functionality permissions denied.
+     * If denied then an app restart would ask for them again. If never ask again is checked then only app reinstallation
+     * or changing app-phone setting will solve the issue.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode,@NonNull String[] permissions,@NonNull int[] grantResults) {
         Log.w(TAG, "in callback");
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE)
             if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                Log.w(TAG, "permissions granted ");
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                    && (!(Build.VERSION.SDK_INT >= 29 && !(grantResults[1] == PackageManager.PERMISSION_GRANTED)))) {
+                    Log.w(TAG, "permissions granted ");
                 // permission was granted
             } else {
                 // permission denied
@@ -424,8 +431,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    //method changes tracking button state in case of stopping service from notification while activity is alive
-    //same scenario if OS kills Activity and Service
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 0x1)
+            if(resultCode == RESULT_OK)
+                Helpers.setServiceStartedSuccesfully(this, true);
+            else
+                LocationUpdatesService.stopLocationUpdates(this);
+
+    }
+
+    /**
+     * Method changes tracking button state in case of stopping service from notification while activity is alive.
+     * Same scenario if OS kills Activity and/or Service.
+     */
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
 

@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.google.android.gms.location.ActivityRecognition;
-import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.ActivityTransitionEvent;
 import com.google.android.gms.location.ActivityTransitionResult;
 
@@ -17,13 +15,14 @@ public class ActivityRecognitionBroadcastReceiver extends BroadcastReceiver {
 
     private String TAG = ActivityRecognitionBroadcastReceiver.class.getSimpleName();
 
+    /**
+     * Method updates Activity Transitions array each time a transition is received so that the mode
+     * of the received locations in LocationDeliveryBroadcastReceiver can be determined.
+     * @param context - Received context
+     * @param intent - Received intent
+     */
     @Override
-    // TODO: 7/19/19 see what you get and find maxconf more are delivered at once & test with periodic activity updates
     public void onReceive(Context context, Intent intent) {
-
-        //if(ActivityRecognitionResult.hasResult(intent)){
-        //ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
-        //Log.w(TAG, "received Activity: " + result.getMostProbableActivity().toString());}
 
         if (ActivityTransitionResult.hasResult(intent)) {
             Log.w(TAG, "onReceive hasResult");
