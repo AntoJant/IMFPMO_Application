@@ -148,7 +148,7 @@ public class LocationDeliveryBroadcastReceiver extends BroadcastReceiver {
         clearTransitionObjects();
 
         ToSendDatabase.getInstance(context.getApplicationContext()).jsonLocationDao().insertAll(newLocationsJson);
-        Log.w(TAG, ToSendDatabase.getInstance(context.getApplicationContext()).jsonLocationDao().isEmpty() + "");
+        Log.w(TAG, "DB cardinality: " + ToSendDatabase.getInstance(context.getApplicationContext()).jsonLocationDao().isEmpty());
     }
 
 
