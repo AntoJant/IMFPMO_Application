@@ -13,10 +13,10 @@ import com.github.mikephil.charting.charts.PieChart;
 public class AnalysisDayDiagramPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private AnalysisResultDay day;
+    private Day day;
 
 
-    public AnalysisDayDiagramPagerAdapter(Context context, AnalysisResultDay day){
+    public AnalysisDayDiagramPagerAdapter(Context context, Day day){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
         this.day = day;

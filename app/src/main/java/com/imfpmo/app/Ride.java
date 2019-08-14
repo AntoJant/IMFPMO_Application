@@ -2,11 +2,11 @@ package com.imfpmo.app;
 
 import java.util.Calendar;
 
-public class AnalysisResultRide {
-    public String id, mode,ampel;
+public class Ride {
+    public String id, mode,ampel,altMode;
     public AnalysisTrack start, end;
-    public int distance, emissions, timeEffort;
-    public RideMode rideMode;
+    public int distance, emissions, timeEffort,altDuration;
+    public RideMode rideMode,alternativeMode;
     public int okoGrade;
     Calendar startZeit, endZeit;
 
@@ -18,6 +18,15 @@ public class AnalysisResultRide {
             case "car" : rideMode = RideMode.CAR;break;
             default: rideMode = RideMode.OPNV;
         }
+
+        switch(altMode){
+            case "walk": alternativeMode = RideMode.WALK;break;
+            case "bike": alternativeMode = RideMode.BIKE;break;
+            case "car" : alternativeMode = RideMode.CAR;break;
+            default: alternativeMode = RideMode.OPNV;
+        }
+
+
 
         switch (ampel){
             case "red": okoGrade = 0;break;
@@ -36,7 +45,7 @@ public class AnalysisResultRide {
     }
 
     public RideMode getAlternativeMode() {
-        return RideMode.WALK;
+        return alternativeMode;
     }
 
     public int getOkoGrade() {
@@ -60,7 +69,7 @@ public class AnalysisResultRide {
     }
 
     public int getAlternativeTimeEffort() {
-        return distance -1;
+        return altDuration;
     }
 
     public int getTimeEffort(){

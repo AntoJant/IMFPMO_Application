@@ -11,9 +11,9 @@ import android.widget.TextView;
 import androidx.viewpager.widget.ViewPager;
 
 public class AnalysisPathListAdapter extends BaseAdapter {
-    private AnalysisResultDay day;
+    private Day day;
     private boolean[] isUnfolded;
-    public AnalysisPathListAdapter(AnalysisResultDay day){
+    public AnalysisPathListAdapter(Day day){
         this.day = day;
         isUnfolded = new boolean[day.getRides().size()];
         for (int i = 0; i< isUnfolded.length; i++)
@@ -41,7 +41,7 @@ public class AnalysisPathListAdapter extends BaseAdapter {
         if (view == null) {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_weg_item_layout, viewGroup,false);
         }
-        final AnalysisResultPath ergebnis = (AnalysisResultPath) getItem(i);
+        final Path ergebnis = (Path) getItem(i);
         TextView startTime = view.findViewById(R.id.startZeitTextView);
         TextView endTime = view.findViewById(R.id.endZeitTextView);
         TextView startAddress = view.findViewById(R.id.startAdresseTextView);

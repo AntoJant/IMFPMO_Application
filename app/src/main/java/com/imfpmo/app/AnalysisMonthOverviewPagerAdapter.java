@@ -15,10 +15,10 @@ import java.util.ArrayList;
 public class AnalysisMonthOverviewPagerAdapter extends PagerAdapter{
     private Context context;
     private LayoutInflater layoutInflater;
-    private ArrayList<AnalysisResultMonth> months;
+    private ArrayList<Month> months;
 
 
-    public AnalysisMonthOverviewPagerAdapter(Context context, ArrayList<AnalysisResultMonth> months){
+    public AnalysisMonthOverviewPagerAdapter(Context context, ArrayList<Month> months){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
         this.months = months;

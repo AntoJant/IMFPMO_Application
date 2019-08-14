@@ -11,9 +11,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class AnalysisRideListAdapter extends BaseAdapter {
-    private AnalysisResultPath path;
+    private Path path;
     private boolean[] expandedItems;
-    public AnalysisRideListAdapter(AnalysisResultPath path){
+    public AnalysisRideListAdapter(Path path){
         this.path = path;
         expandedItems = new boolean[path.getRides().size()];
         for (int i = 0; i < expandedItems.length; i++){
@@ -44,7 +44,7 @@ public class AnalysisRideListAdapter extends BaseAdapter {
         }else {
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_fahrt_item_list, viewGroup,false);
         }
-        AnalysisResultRide results = (AnalysisResultRide) getItem(i);
+        Ride results = (Ride) getItem(i);
 
         TextView timeTextView = view.findViewById(R.id.zeitTextView);
         TextView startAddress = view.findViewById(R.id.startPunktTextView);
@@ -70,7 +70,7 @@ public class AnalysisRideListAdapter extends BaseAdapter {
             TextView alternativeTime = view.findViewById(R.id.altZeitdauertextView);
             ImageView altImageView = view.findViewById(R.id.altImageView);
             alternativeTime.setText(" " + results.getAlternativeTimeEffort()+" min");
-            distanceTextView.setText(" " + results.getDistance()+ " km");
+            distanceTextView.setText(" " + results.getDistance()+ " m");
             emissionTextView.setText(" " + results.getCO2Emissions()+" gramm CO2");
             timeEffortTextView.setText(" " + results.getTimeEffort()+" min");
             endAddressTextView.setText("" + results.getEndAddress());

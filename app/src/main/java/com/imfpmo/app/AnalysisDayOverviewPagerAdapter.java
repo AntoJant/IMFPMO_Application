@@ -15,10 +15,10 @@ import java.util.ArrayList;
 public class AnalysisDayOverviewPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private ArrayList<AnalysisResultDay> days;
+    private ArrayList<Day> days;
 
 
-    public AnalysisDayOverviewPagerAdapter(Context context, ArrayList<AnalysisResultDay> days){
+    public AnalysisDayOverviewPagerAdapter(Context context, ArrayList<Day> days){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
         this.days = days;

@@ -15,10 +15,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.Objects;
 
 public class AnalysisPathFragment extends Fragment {
-    private AnalysisResultPath path;
+    private Path path;
     private AnalysisRideListAdapter listAdapter;
     private ListView lv;
-    public AnalysisPathFragment(AnalysisResultPath path) {
+    public AnalysisPathFragment(Path path) {
         this.path = path;
     }
 

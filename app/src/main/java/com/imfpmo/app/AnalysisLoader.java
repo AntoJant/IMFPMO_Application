@@ -14,7 +14,8 @@ public class AnalysisLoader {
     private Context context;
     private Usermanagement usermanagement;
     private static AnalysisLoader instance;
-    private static ArrayList<AnalysisResultMonth> results;
+    private static ArrayList<Month> results;
+    private static ArrayList<Path> paths;
     private static int skip = 0;
     private static int errorMessage = 0;
     private static boolean allLoaded;
@@ -41,7 +42,7 @@ public class AnalysisLoader {
         return instance;
     }
 
-    public ArrayList<AnalysisResultMonth> getResults(){
+    public ArrayList<Month> getResults(){
         return results;
     }
 
@@ -52,10 +53,17 @@ public class AnalysisLoader {
         return 0;
     }
 
+    public int refresh(){
+        Calendar aktMonth  = Calendar.getInstance();
+        JsonObject aktPaths =  usermanagement.getAnalyseWegeMonat(context,7,2019,0);
+
+        return 0;
+    }
+
     public int loadResults(int i){
         JsonObject analysisResult = usermanagement.getAnalyseErgebnisse(context,skip,i);
         if(analysisResult == null){return 2;}
-        AnalysisResultMonth[] newMonths = new Gson().fromJson(analysisResult.get("results").getAsJsonArray(), AnalysisResultMonth[].class);
+        Month[] newMonths = new Gson().fromJson(analysisResult.get("results").getAsJsonArray(), Month[].class);
         skip += i;
         if(newMonths.length != i){
             allLoaded = true;
@@ -64,12 +72,12 @@ public class AnalysisLoader {
         for(int j = 0; j < newMonths.length; j++ ){
             Calendar lastLoadedMonth = getCalendarDate(newMonths[j].timestamp);
             JsonArray object = usermanagement.getAnalyseWegeMonat(context, lastLoadedMonth.get(Calendar.MONTH)+1,lastLoadedMonth.get(Calendar.YEAR),1).get("paths").getAsJsonArray();
-            AnalysisResultPath[] paths = new Gson().fromJson(object, AnalysisResultPath[].class);
-            ArrayList<AnalysisResultDay> days = new ArrayList<>();
+            Path[] paths = new Gson().fromJson(object, Path[].class);
+            ArrayList<Day> days = new ArrayList<>();
             for(int k = 0; k < lastLoadedMonth.getActualMaximum(Calendar.DAY_OF_MONTH); k++){
-                days.add(new AnalysisResultDay(new GregorianCalendar(lastLoadedMonth.get(Calendar.YEAR), lastLoadedMonth.get(Calendar.MONTH), k+1)));
+                days.add(new Day(new GregorianCalendar(lastLoadedMonth.get(Calendar.YEAR), lastLoadedMonth.get(Calendar.MONTH), k+1)));
             }
-            for(AnalysisResultPath path : paths){
+            for(Path path : paths){
                 days.get(Integer.parseInt(path.start.timestamp.substring(8,10))-1).addPath(path);
             }
             newMonths[j].setDays(days);
@@ -84,18 +92,9 @@ public class AnalysisLoader {
         }
     }
 
-    public static int getErrorMessage(){
-        int temp = errorMessage;
-        errorMessage = 0;
-        return temp;
-    }
-
     public Calendar getCalendarDate(String date) {
         return new GregorianCalendar(Integer.parseInt(date.substring(0, 4)), Integer.parseInt(date.substring(5, 7)) - 1, Integer.parseInt(date.substring(8, 10)), Integer.parseInt(date.substring(11, 13)), Integer.parseInt(date.substring(14, 16)));
     }
 
-    public boolean isAllLoaded(){
-        return allLoaded;
-    }
 
 }

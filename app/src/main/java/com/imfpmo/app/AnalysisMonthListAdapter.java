@@ -18,9 +18,9 @@ import java.util.Calendar;
 public class AnalysisMonthListAdapter extends BaseAdapter {
     private Activity context;
     private FragmentManager fragmentManager;
-    private ArrayList<AnalysisResultMonth> results;
+    private ArrayList<Month> results;
     private FragmentManager support;
-    public AnalysisMonthListAdapter(Activity context, ArrayList<AnalysisResultMonth> results, FragmentManager fragmentManager){
+    public AnalysisMonthListAdapter(Activity context, ArrayList<Month> results, FragmentManager fragmentManager){
         this.context = context;
         this.results = results;
         this.fragmentManager = fragmentManager;
@@ -58,7 +58,7 @@ public class AnalysisMonthListAdapter extends BaseAdapter {
             return view;
         }else{
             view = LayoutInflater.from(context).inflate(R.layout.analyse_monat_item_layout, viewGroup,false);
-            final AnalysisResultMonth result = (AnalysisResultMonth) getItem(i);
+            final Month result = (Month) getItem(i);
             TextView month = view.findViewById(R.id.monatLabel);
             switch(result.getDate().get(Calendar.MONTH)){
                 case 0:month.setText("Januar" + " " + result.getDate().get(Calendar.YEAR));break;

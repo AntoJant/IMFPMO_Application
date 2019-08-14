@@ -14,8 +14,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class AnalysisDayListAdapter extends BaseAdapter {
-    private AnalysisResultMonth monthAnalysis;
-    public AnalysisDayListAdapter(AnalysisResultMonth month){
+    private Month monthAnalysis;
+    public AnalysisDayListAdapter(Month month){
         this.monthAnalysis = month;
     }
 
@@ -49,7 +49,7 @@ public class AnalysisDayListAdapter extends BaseAdapter {
             return view;
         }else{
             view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.analyse_tag_item_layout, viewGroup,false);
-            final AnalysisResultDay results = (AnalysisResultDay) getItem(i);
+            final Day results = (Day) getItem(i);
             TextView date = view.findViewById(R.id.monatLabel);
             int day = i;
             int month =  monthAnalysis.getDate().get(Calendar.MONTH) +1 ;

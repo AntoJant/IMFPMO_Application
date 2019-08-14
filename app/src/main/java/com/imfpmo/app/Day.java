@@ -3,8 +3,8 @@ package com.imfpmo.app;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class AnalysisResultDay implements RideContainer{
-    private ArrayList<AnalysisResultPath> paths;
+public class Day implements RideContainer{
+    private ArrayList<Path> paths;
     private Calendar day;
     private int totalEmissions, carEmissions, walkEmissions, bikeEmissions, opnvEmissions;
     private int totalDistance, carDistance, walkDistance, bikeDistance, opnvDistance;
@@ -12,13 +12,13 @@ public class AnalysisResultDay implements RideContainer{
     private int totalRideCount, carRideCount, bikeRideCount, opnvRideCount, walkRideCount;
     private int okoGrade;
 
-    public AnalysisResultDay(Calendar day) {
+    public Day(Calendar day) {
         paths = new ArrayList<>();
         this.day = day;
     }
 
     public void generateAttributes(){
-        for (AnalysisResultPath path : paths){
+        for (Path path : paths){
             path.generateAttributes();
         }
 
@@ -49,7 +49,7 @@ public class AnalysisResultDay implements RideContainer{
 
         okoGrade = 0;
         int ratedRides = 0;
-        for(AnalysisResultPath path : paths) {
+        for(Path path : paths) {
             path.generateAttributes();
             carEmissions += path.carEmissions;
             walkEmissions += path.walkEmissions;
@@ -83,7 +83,7 @@ public class AnalysisResultDay implements RideContainer{
 
     }
 
-    public ArrayList<AnalysisResultPath> getRides() {
+    public ArrayList<Path> getRides() {
         return paths;
     }
 
@@ -91,7 +91,7 @@ public class AnalysisResultDay implements RideContainer{
         return day;
     }
 
-    public void addPath(AnalysisResultPath weg){
+    public void addPath(Path weg){
         paths.add(weg);
     }
 

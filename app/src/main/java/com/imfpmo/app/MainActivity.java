@@ -422,7 +422,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    public void changeToAnalyseFahrtFragment(AnalysisResultPath weg) {
+    public void changeToAnalyseFahrtFragment(Path weg) {
         AnalysisPathFragment temp = new AnalysisPathFragment(weg);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.framelayout, temp);

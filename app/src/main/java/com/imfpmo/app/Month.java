@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class AnalysisResultMonth implements RideContainer{
+public class Month implements RideContainer{
     public int id;
     public String timestamp;
     public int car, bike, foot, opnv;
@@ -28,14 +28,14 @@ public class AnalysisResultMonth implements RideContainer{
     private Calendar date;
     private RideMode alternativeMode;
     private int okoGrade;
-    private ArrayList<AnalysisResultDay> days;
+    private ArrayList<Day> days;
 
     public Calendar getDate() {
         return date;
     }
 
     public void generateAttributes(){
-        for(AnalysisResultDay day : days){
+        for(Day day : days){
             day.generateAttributes();
         }
 
@@ -61,7 +61,7 @@ public class AnalysisResultMonth implements RideContainer{
         walkRideCount = 0;
         opnvRideCount = 0;
 
-        for(AnalysisResultDay day : days){
+        for(Day day : days){
             carEmissions += day.getCarEmissions();
             carDistance += day.getCarDistance();
             carRideCount += day.getCarRideCount();
@@ -128,7 +128,7 @@ public class AnalysisResultMonth implements RideContainer{
         return okoGrade;
     }
 
-    public ArrayList<AnalysisResultDay> getDays() {
+    public ArrayList<Day> getDays() {
         return days;
     }
 
@@ -183,7 +183,7 @@ public class AnalysisResultMonth implements RideContainer{
         return walkRideCount;
     }
 
-    public void setDays(ArrayList<AnalysisResultDay> temp){
+    public void setDays(ArrayList<Day> temp){
         days = temp;
     }
 

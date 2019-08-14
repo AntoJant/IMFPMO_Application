@@ -2,7 +2,12 @@ package com.imfpmo.app;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -16,6 +21,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,7 +36,7 @@ public class AnalysisDiagramMaker {
     private static final int nachkommerstelleCO2 = 100;
 
 
-    public static BarChart makeMonthEmissionBarChart(final ArrayList<AnalysisResultMonth> months, BarChart barChart, Context context) {
+    public static BarChart makeMonthEmissionBarChart(final ArrayList<Month> months, BarChart barChart, Context context) {
         List<BarEntry> entries = new ArrayList<>();
         int lastIndex = months.size() - 1;
 
@@ -73,7 +79,7 @@ public class AnalysisDiagramMaker {
         return barChart;
     }
 
-    public static BarChart makeMonthDistanceBarChart(final ArrayList<AnalysisResultMonth> months, BarChart barChart, Context context) {
+    public static BarChart makeMonthDistanceBarChart(final ArrayList<Month> months, BarChart barChart, Context context) {
         List<BarEntry> entries = new ArrayList<>();
         int lastIndex = months.size() - 1;
 
@@ -114,7 +120,7 @@ public class AnalysisDiagramMaker {
         return barChart;
     }
 
-    public static BarChart makeMonthTimeEffortBarChart(final ArrayList<AnalysisResultMonth> months, BarChart barChart, Context context) {
+    public static BarChart makeMonthTimeEffortBarChart(final ArrayList<Month> months, BarChart barChart, Context context) {
         List<BarEntry> entries = new ArrayList<>();
         int lastIndex = months.size() - 1;
 
@@ -156,7 +162,7 @@ public class AnalysisDiagramMaker {
         return barChart;
     }
 
-    public static BarChart makeMonthTotalRideCountBarChart(final ArrayList<AnalysisResultMonth> months, BarChart barChart, Context context) {
+    public static BarChart makeMonthTotalRideCountBarChart(final ArrayList<Month> months, BarChart barChart, Context context) {
         List<BarEntry> entries = new ArrayList<>();
         int lastIndex = months.size() - 1;
 
@@ -198,7 +204,7 @@ public class AnalysisDiagramMaker {
         return barChart;
     }
 
-    public static BarChart makeDayEmissionBarChart(final ArrayList<AnalysisResultDay> days, BarChart barChart, Context context) {
+    public static BarChart makeDayEmissionBarChart(final ArrayList<Day> days, BarChart barChart, Context context) {
         List<BarEntry> entries = new ArrayList<>();
         for (int i = 0; i < days.size(); i++) {
             entries.add(new BarEntry(i, new float[]{days.get(i).getCarEmissions(), days.get(i).getOpnvEmissions()}));
@@ -238,7 +244,7 @@ public class AnalysisDiagramMaker {
         return barChart;
     }
 
-    public static BarChart makeDayDistanceBarChart(final ArrayList<AnalysisResultDay> days, BarChart barChart, Context context) {
+    public static BarChart makeDayDistanceBarChart(final ArrayList<Day> days, BarChart barChart, Context context) {
         List<BarEntry> entries = new ArrayList<>();
         for (int i = 0; i < days.size(); i++) {
             entries.add(new BarEntry(i, new float[]{days.get(i).getCarDistance(), days.get(i).getOpnvDistance(), days.get(i).getBikeDistance(), days.get(i).getWalkDistance()}));
@@ -277,7 +283,7 @@ public class AnalysisDiagramMaker {
         return barChart;
     }
 
-    public static BarChart makeDayTimeEffortBarChart(final ArrayList<AnalysisResultDay> days, BarChart barChart, Context context) {
+    public static BarChart makeDayTimeEffortBarChart(final ArrayList<Day> days, BarChart barChart, Context context) {
         List<BarEntry> entries = new ArrayList<>();
 
         for (int i = 0; i < days.size(); i++) {
@@ -336,11 +342,19 @@ public class AnalysisDiagramMaker {
             entries.add(new PieEntry(container.getWalkTimeEffort(), walk));
         }
 
-        PieDataSet set = new PieDataSet(entries, "Zeit");
-        set.setDrawValues(false);
-        set.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
-        PieData data = new PieData(set);
+        PieDataSet dataSet = new PieDataSet(entries, "Zeit");
+        dataSet.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
+        dataSet.setSliceSpace(7f);
+        dataSet.setDrawValues(false);
 
+        dataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return getTotalDurationText((int) value);
+            }
+        });
+
+        PieData data = new PieData(dataSet);
         pieChart.setData(data);
         pieChart.setTouchEnabled(false);
         pieChart.setRotationEnabled(false);
@@ -348,7 +362,7 @@ public class AnalysisDiagramMaker {
         desc.setText("");
         pieChart.setDescription(desc);
         int gesamt = container.getTotalTimeEffort();
-        pieChart.setCenterText(getTotalDurationText(gesamt));
+        pieChart.setCenterText(getCenterText("Zeit",getTotalDurationText(gesamt)));
         pieChart.getLegend().setEnabled(false);
 
         return pieChart;
@@ -371,17 +385,25 @@ public class AnalysisDiagramMaker {
         }
 
 
-        PieDataSet set = new PieDataSet(entries, "Distanz");
-        set.setDrawValues(false);
-        set.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
-        PieData data = new PieData(set);
+        PieDataSet dataSet = new PieDataSet(entries, "Distanz");
+        dataSet.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
+        dataSet.setSliceSpace(7f);
+        dataSet.setDrawValues(false);
+        dataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return getTotalDistanceText((int) value);
+            }
+        });
+
+        PieData data = new PieData(dataSet);
 
         pieChart.setData(data);
         pieChart.setClickable(false);
         pieChart.setRotationEnabled(false);
         pieChart.setTouchEnabled(false);
         int gesamt = container.getTotalDistance();
-        pieChart.setCenterText(getTotalDistanceText(gesamt));
+        pieChart.setCenterText(getCenterText( "Distanz",getTotalDistanceText(gesamt)));
         Description desc = new Description();
         desc.setText("");
         pieChart.setDescription(desc);
@@ -396,7 +418,6 @@ public class AnalysisDiagramMaker {
         Drawable opnv = context.getDrawable(R.drawable.ic_directions_bus_black_24dp);
         Drawable walk = context.getDrawable(R.drawable.ic_directions_walk_black_24dp);
         List<PieEntry> entries = new ArrayList<>();
-
         if (container.getCarEmissions() != 0)
             entries.add(new PieEntry(container.getCarEmissions(), auto));
 
@@ -409,10 +430,19 @@ public class AnalysisDiagramMaker {
         if (container.getWalkEmissions() != 0) {
             entries.add(new PieEntry(container.getWalkEmissions(), walk));
         }
-        PieDataSet set = new PieDataSet(entries, "CO2");
-        set.setDrawValues(false);
-        set.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
-        PieData data = new PieData(set);
+        PieDataSet dataSet = new PieDataSet(entries, "CO2");
+        dataSet.setDrawValues(false);
+        dataSet.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
+        dataSet.setSliceSpace(7f);
+              dataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return getTotalCO2Text((int) value);
+            }
+        });
+
+        PieData data = new PieData(dataSet);
+        data.setValueTextSize(11f);
 
         pieChart.setData(data);
         pieChart.setTouchEnabled(false);
@@ -421,7 +451,7 @@ public class AnalysisDiagramMaker {
         desc.setText("");
         pieChart.setDescription(desc);
         int gesamt = container.getTotalEmissions();
-        pieChart.setCenterText(getTotalCO2Text(gesamt));
+        pieChart.setCenterText(getCenterText("Emissionen", getTotalCO2Text(gesamt)));
         pieChart.getLegend().setEnabled(false);
 
         return pieChart;
@@ -430,29 +460,41 @@ public class AnalysisDiagramMaker {
     public static String getTotalCO2Text(int gesamtCO2){
         if(gesamtCO2 >= maxGrammCO2){
             double kilogramm =(double) Math.round((double) gesamtCO2 / 1000 * nachkommerstelleCO2) /nachkommerstelleCO2;
-            return  "Insgesamt: \n  " + kilogramm + " kg CO2";
+            return   kilogramm + " kg CO2";
         }else{
-            return "Insgesamt: \n  " + gesamtCO2 + " gramm CO2";
+            return gesamtCO2 + " gramm CO2";
         }
     }
 
     public static String getTotalDistanceText(int gesamtDistance){
         if(gesamtDistance >= maxMeters){
             double kilometer = (double) Math.round((double) gesamtDistance / 1000 * nachkommerstelleMeters) /nachkommerstelleMeters;
-            return  "Insgesamt: \n  " + kilometer + " km";
+            return  kilometer + " km";
         }else{
-            return "Insgesamt: \n  " + gesamtDistance + " m";
+            return  gesamtDistance + " m";
         }
     }
 
     public static String getTotalDurationText(int totalDuration){
         if(totalDuration >= maxMinutes){
             double hour =(double) Math.round((double) totalDuration / 60 * 100)/ 100;
-            return "Insgesamt: \n  " + hour + " Stunden";
+            return  hour + " Stunden";
         }else{
-            return "Insgesamt: \n  " + totalDuration + " Minuten";
+            return  totalDuration + " Minuten";
         }
     }
+
+    public static SpannableString getCenterText(String title, String value){
+        SpannableString s = new SpannableString(title + "\n \n" + "Insgesamt" + "\n" + value);
+        s.setSpan(new RelativeSizeSpan(1.7f), 0, title.length()+1, 0);
+        s.setSpan(new StyleSpan(Typeface.NORMAL), title.length()+1, s.length() - value.length()-1, 0);
+        s.setSpan(new ForegroundColorSpan(Color.GRAY), title.length()+1, s.length() - value.length(), 0);
+        s.setSpan(new RelativeSizeSpan(1.f), title.length()+1, s.length() - value.length(), 0);
+        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - value.length(), s.length(), 0);
+        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - value.length(), s.length(), 0);
+        return s;
+    }
+
 
 
 }

@@ -15,9 +15,9 @@ import java.util.Calendar;
 import java.util.Objects;
 
 public class AnalysisDayFragment extends Fragment {
-    private AnalysisResultDay dayAnalysis;
+    private Day dayAnalysis;
 
-    public AnalysisDayFragment(AnalysisResultDay day) {
+    public AnalysisDayFragment(Day day) {
         this.dayAnalysis = day;
     }
 

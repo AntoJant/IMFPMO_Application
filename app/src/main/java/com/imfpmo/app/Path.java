@@ -3,8 +3,8 @@ package com.imfpmo.app;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class AnalysisResultPath implements RideContainer {
-    public ArrayList<AnalysisResultRide> rides;
+public class Path implements RideContainer {
+    public ArrayList<Ride> rides;
     public String id;
     public AnalysisTrack start,end;
     public int totalEmissions, carEmissions, bikeEmissions, opnvEmissions, walkEmissions;
@@ -13,7 +13,7 @@ public class AnalysisResultPath implements RideContainer {
     public int totalRideCount, carRideCount, bikeRideCount, opnvRideCount, walkRideCount;
     public Calendar startTime, endTime;
     public int okoGrade;
-    public ArrayList<AnalysisResultRide> getRides() {
+    public ArrayList<Ride> getRides() {
         return rides;
     }
 
@@ -48,10 +48,10 @@ public class AnalysisResultPath implements RideContainer {
         opnvRideCount = 0;
         walkRideCount = 0;
         int ratedRides = 0;
-        for(AnalysisResultRide ride:rides){
+        for(Ride ride:rides){
             ride.generateAtributes();
         }
-        for (AnalysisResultRide ride:rides){
+        for (Ride ride:rides){
             switch (ride.getMode()){
                 case WALK: {
                     walkEmissions += ride.getCO2Emissions();

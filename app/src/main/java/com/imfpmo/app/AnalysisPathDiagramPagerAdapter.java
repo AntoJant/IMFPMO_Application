@@ -13,10 +13,10 @@ import com.github.mikephil.charting.charts.PieChart;
 public class AnalysisPathDiagramPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private AnalysisResultPath path;
+    private Path path;
 
 
-    public AnalysisPathDiagramPagerAdapter(Context context, AnalysisResultPath path){
+    public AnalysisPathDiagramPagerAdapter(Context context, Path path){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
         this.path = path;

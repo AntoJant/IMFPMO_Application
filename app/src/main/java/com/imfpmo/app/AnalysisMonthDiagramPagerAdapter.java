@@ -13,10 +13,10 @@ import com.github.mikephil.charting.charts.PieChart;
 public class AnalysisMonthDiagramPagerAdapter extends PagerAdapter {
     private Context context;
     private LayoutInflater layoutInflater;
-    private AnalysisResultMonth month;
+    private Month month;
 
 
-    public AnalysisMonthDiagramPagerAdapter(Context context, AnalysisResultMonth month){
+    public AnalysisMonthDiagramPagerAdapter(Context context, Month month){
         this.context = context;
         this.layoutInflater = (LayoutInflater)this.context.getSystemService(this.context.LAYOUT_INFLATER_SERVICE);
         this.month = month;

@@ -15,9 +15,9 @@ import java.util.Calendar;
 import java.util.Objects;
 
 public class AnalysisMonthFragment extends Fragment {
-    private AnalysisResultMonth monthAnalysis;
+    private Month monthAnalysis;
 
-    public AnalysisMonthFragment(AnalysisResultMonth month) {
+    public AnalysisMonthFragment(Month month) {
         this.monthAnalysis = month;
     }
 
