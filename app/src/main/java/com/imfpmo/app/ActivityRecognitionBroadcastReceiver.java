@@ -35,7 +35,12 @@ public class ActivityRecognitionBroadcastReceiver extends BroadcastReceiver {
                     Log.w(TAG, event.toString());
                 }
 
-                LocationUpdatesService.currentTransitions.addAll(list);
+                if(LocationUpdatesService.currentTransitions != null)
+                    LocationUpdatesService.currentTransitions.addAll(list);
+                else {
+                    Log.w(TAG, "Service is dead and is being stopped");
+                    LocationUpdatesService.stopLocationUpdates(context);
+                }
             } else
                 Log.w(TAG, "result is null");
 
