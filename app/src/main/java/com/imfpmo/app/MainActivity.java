@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public static String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.w(TAG, "onCreate");
@@ -89,17 +90,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.getMenu().findItem(R.id.nav_tracking).setActionView(new Switch(this));
         ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(false);
         ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setOnCheckedChangeListener((button, state) -> {
-                //If Tracking Switch has state "On"
-                if (state) {
+            //If Tracking Switch has state "On"
+            if (state) {
 
-                    LocationUpdatesService.requestLocationUpdates(this);
+                LocationUpdatesService.requestLocationUpdates(this);
 
-                    //If Tracking Switch has state "Off"
-                } else {
+                //If Tracking Switch has state "Off"
+            } else {
 
-                    LocationUpdatesService.stopLocationUpdates(this);
+                LocationUpdatesService.stopLocationUpdates(this);
 
-                }
+            }
         });
 
         if (!checkPermissions()) {
@@ -117,12 +118,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void setDrawerLocked(boolean enabled) {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (enabled) {
-            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        } else {
-            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        if (drawer != null) {
+            if (enabled) {
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            } else {
+                drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            }
         }
-
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener
@@ -275,12 +277,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             Toast.makeText(getApplicationContext(), "Bitte loggen Sie sich erneut ein", Toast.LENGTH_SHORT).show();
             ft.commit();
         }
+        if (id == 9) {
+            fragment = new LoginFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.framelayout, fragment).addToBackStack("my_fragment");
+            Toast.makeText(getApplicationContext(), "Account erfolgreich gelöscht", Toast.LENGTH_SHORT).show();
+            ft.commit();
+        }
     }
 
 
     /**
      * Checks background locations that are required for core functionality for both Android Q and
      * pre Android Q OS versions.
+     *
      * @return - true if permissions were already granted
      */
     private boolean checkPermissions() {
@@ -321,13 +331,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * or changing app-phone setting will solve the issue.
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode,@NonNull String[] permissions,@NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.w(TAG, "in callback");
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE)
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED
                     && (!(Build.VERSION.SDK_INT >= 29 && !(grantResults[1] == PackageManager.PERMISSION_GRANTED)))) {
-                    Log.w(TAG, "permissions granted ");
+                Log.w(TAG, "permissions granted ");
                 // permission was granted
             } else {
                 // permission denied
@@ -354,16 +364,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     //reloads the true state of the service in case of service being killed.
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         NavigationView navigationView = findViewById(R.id.nav_view);
         Log.w(TAG, "onResume");
-        if(Helpers.requestingLocationUpdates(this))
+        if (Helpers.requestingLocationUpdates(this))
             ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(true);
         else
             ((Switch) navigationView.getMenu().findItem(R.id.nav_tracking).getActionView()).setChecked(false);
 
     }
+
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -381,13 +392,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //Diese methode laedt die AnalyseErgbinsse des Monats
 
 
-
-
     public void changeToAnalyseMonatFragment(Calendar monat) {
         int i = -1;
         for (int j = 0; j < AnalysisLoader.getInstance().getResults().size(); j++) {
             if (AnalysisLoader.getInstance().getResults().get(j).getDate().get(Calendar.MONTH) == monat.get(Calendar.MONTH) && AnalysisLoader.getInstance().getResults().get(j).getDate().get(Calendar.YEAR) == monat.get(Calendar.YEAR)) {
-                i = j;break;
+                i = j;
+                break;
             }
         }
         if (i != -1) {
@@ -408,7 +418,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 for (int l = 0; l < AnalysisLoader.getInstance().getResults().get(i).getDays().size(); l++) {
                     int tag = AnalysisLoader.getInstance().getResults().get(i).getDays().get(l).getDay().get(Calendar.DAY_OF_MONTH);
                     if (tag == monat.get(Calendar.DAY_OF_MONTH)) {
-                        r = l; break;
+                        r = l;
+                        break;
                     }
                 }
             }
@@ -434,8 +445,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 0x1)
-            if(resultCode == RESULT_OK)
+        if (requestCode == 0x1)
+            if (resultCode == RESULT_OK)
                 Helpers.setServiceStartedSuccesfully(this, true);
             else
                 LocationUpdatesService.stopLocationUpdates(this);
@@ -449,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
 
-        if(s.equals(Helpers.KEY_REQUESTING_LOCATION_UPDATES)) {
+        if (s.equals(Helpers.KEY_REQUESTING_LOCATION_UPDATES)) {
             NavigationView navigationView = findViewById(R.id.nav_view);
 
             if (Helpers.requestingLocationUpdates(this))

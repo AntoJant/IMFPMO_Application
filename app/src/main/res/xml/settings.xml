@@ -7,10 +7,7 @@
         app:title="Mobile Daten nutzen" />
 
     <Preference
-        app:key="change_mail"
-        app:title="E-Mail-Adresse ändern" />
-
-    <Preference
-        app:key="change_password"
-        app:title="Passwort ändern" />
+        app:key="delete_account"
+        app:summary="Löscht das Nutzerkonto und alle zugehörigen Daten"
+        app:title="Account löschen" />
 </PreferenceScreen>
