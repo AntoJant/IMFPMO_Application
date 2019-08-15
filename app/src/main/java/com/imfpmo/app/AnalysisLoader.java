@@ -24,6 +24,7 @@ public class AnalysisLoader {
         this.context = context;
         usermanagement = Usermanagement.getInstance();
         results = new ArrayList<>();
+        paths = new ArrayList<>();
     }
 
     public static void createInstance(Context context){
@@ -34,6 +35,7 @@ public class AnalysisLoader {
 
     public static void resetInstance(){
         results = new ArrayList<>();
+        paths = new ArrayList<>();
         skip = 0;
         allLoaded = false;
 
@@ -51,7 +53,6 @@ public class AnalysisLoader {
 
     public int loadFirst(int i){
         if(results.size() == 0){
-            refresh();
             return loadResults(i);
 
         }
@@ -62,12 +63,14 @@ public class AnalysisLoader {
         Calendar aktMonth  = Calendar.getInstance();
         JsonObject temp = usermanagement.getAnalyseWegeMonat(context,aktMonth.get(Calendar.MONTH)+1,aktMonth.get(Calendar.YEAR),0);
         if(temp == null){
-            return 1;
+            return 2;
         }
         JsonArray aktPaths =  temp.get("paths").getAsJsonArray();
         Path[] path= new Gson().fromJson(aktPaths, Path[].class);
         this.paths = new ArrayList<Path>(Arrays.asList(path));
-
+        if(paths.size() == 0){
+            return 1;
+        }
         return 0;
     }
 
@@ -86,7 +89,7 @@ public class AnalysisLoader {
             JsonArray object;
             if(temp == null){
                 skip -=i;
-                return  1;
+                return  2;
             }
             object = temp.get("paths").getAsJsonArray();
             Path[] paths = new Gson().fromJson(object, Path[].class);

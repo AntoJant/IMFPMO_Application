@@ -19,7 +19,7 @@ public class WaysPathListAdapter extends BaseAdapter {
 
 
     public int getCount() {
-        return paths.size()-1;
+        return paths.size();
     }
 
     @Override
