@@ -1,23 +1,18 @@
 package com.imfpmo.app;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-
-import com.google.android.material.navigation.NavigationView;
 
 import java.util.Objects;
 
@@ -112,6 +107,11 @@ public class LoginFragment extends Fragment {
                     }
                     else if(result == Usermanagement.COULDNT_REACH_SERVER){
                         Toast.makeText(getContext(),"Server konnte nicht erreicht werden!", Toast.LENGTH_LONG).show();
+                        mailfield.setText("");
+                        passwordfield.setText("");
+                    }
+                    else if( result == 10) {
+                        Toast.makeText(getContext(),"E-Mail Adresse ist noch nicht verifiziert!", Toast.LENGTH_LONG).show();
                         mailfield.setText("");
                         passwordfield.setText("");
                     }
