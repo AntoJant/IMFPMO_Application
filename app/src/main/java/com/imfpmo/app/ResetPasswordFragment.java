@@ -69,7 +69,7 @@ public class ResetPasswordFragment extends Fragment {
                     }
                 }
                 else if (!isValidEmail(mailfield.getText().toString())) {
-                    mailfield.setError("Geben Sie eine valide E-Mail-Adresse an");
+                    mailfield.setError("Geben Sie eine valide E-Mail-Adresse ein");
                 }
             }
         });

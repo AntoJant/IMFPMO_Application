@@ -20,19 +20,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         addPreferencesFromResource(R.xml.settings);
         Objects.requireNonNull(getActivity()).setTitle("Einstellungen");
-        Preference changeMail = findPreference("change_mail");
-        Preference changePassword = findPreference("change_password");
-
+        Preference mobileData = findPreference("mobile_data");
+        Preference deleteAccount = findPreference("delete_account");
         ((DrawerLocker) getActivity()).setDrawerLocked(false);
         Objects.requireNonNull(((AppCompatActivity) getActivity()).getSupportActionBar()).show();
 
-        changeMail.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            public boolean onPreferenceClick(Preference preference) {
-                mListener.changeFragment(6);
-                return true;
-            }
-        });
-        changePassword.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        deleteAccount.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
                 mListener.changeFragment(7);
                 return true;

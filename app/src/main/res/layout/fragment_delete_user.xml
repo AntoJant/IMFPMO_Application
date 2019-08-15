@@ -5,10 +5,10 @@
     android:id="@+id/frameLayout2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ChangePasswordFragment">
+    tools:context=".DeleteUserFragment">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/change_password_oldpassword_textlayout"
+        android:id="@+id/delete_user_password_textlayout"
         android:layout_width="395dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
@@ -18,17 +18,17 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
-            android:id="@+id/change_password_oldpassword_textfield"
+            android:id="@+id/delete_user_password_textfield"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:maxLines="1"
             android:ems="10"
-            android:hint="@string/changepassword_oldpassword"
+            android:hint="@string/deleteuser_password"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <!--<com.google.android.material.textfield.TextInputLayout
         android:id="@+id/change_password_newpassword_textlayout"
         android:layout_width="395dp"
         android:layout_height="wrap_content"
@@ -68,15 +68,15 @@
             android:ems="10"
             android:hint="@string/changepassword_newpasswordconfirm"
             android:inputType="textPassword" />
-    </com.google.android.material.textfield.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>-->
 
     <Button
-        android:id="@+id/change_password_changepassword_button"
+        android:id="@+id/delete_user_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
-        android:text="@string/changepassword_button"
+        android:text="@string/deleteuser_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/change_password_confirmnewpassword_textlayout" />
+        app:layout_constraintTop_toBottomOf="@+id/delete_user_password_textlayout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

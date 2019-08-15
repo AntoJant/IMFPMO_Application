@@ -70,7 +70,7 @@ public class RegistrationFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (!isValidEmail(mailfield.getText().toString())) {
-                    mailfield.setError("Geben Sie eine valide E-Mail-Adresse an");
+                    mailfield.setError("Geben Sie eine valide E-Mail-Adresse ein");
                 }
                 if (!passwordLength(passwordfield.getText().toString())) {
                     passwordfield.setError("Das Passwort muss mindestens 6 Zeichen lang sein");
