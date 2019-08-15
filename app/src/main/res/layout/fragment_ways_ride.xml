@@ -111,13 +111,13 @@
         android:layout_toEndOf="@+id/textView3" />
 
     <Button
-        android:id="@+id/aendern"
+        android:id="@+id/save_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView3"
         android:layout_alignParentStart="true"
         android:layout_marginStart="148dp"
         android:layout_marginTop="15dp"
-        android:text="Button" />
+        android:text="Speichern" />
 
 </RelativeLayout>

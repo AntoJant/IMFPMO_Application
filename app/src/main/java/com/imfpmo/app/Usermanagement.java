@@ -24,6 +24,7 @@ class Usermanagement {
     private final String API_URI = "https://treibhaus.informatik.rwth-aachen.de/praktikum-ss19/api";
 
     private final String KEY_EMAIL = "email";
+    private final String KEY_MODE = "mode";
     private final String KEY_PASSWORD = "password";
     private final String KEY_AUTHORIZATION = "Authorization";
     private final String KEY_XCONFPASS = "X-Conf-Pass";
@@ -624,6 +625,46 @@ class Usermanagement {
         end.addProperty("name", ride.start.name);
 
         return null;
+    }
+    public void patchRide(Context context, String rideId, String startAddress, String endAddress, String startTimestamp, String mode) {
+        JsonObject body = new JsonObject();
+        JsonObject start = new JsonObject();
+        start.addProperty("name" , startAddress);
+        start.addProperty("timestamp", startTimestamp);
+
+        JsonObject end = new JsonObject();
+        end.addProperty("name", endAddress);
+
+        body.add("start", start);
+        body.add("end", end);
+        body.addProperty("mode", mode);
+
+        Response<JsonObject> response = null;
+        try {
+            response = Ion.with(context)
+                    .load("PATCH",API_URI + "/users/" + userID + "/rides/" + rideId)
+                    .setLogging("RideLog", Log.VERBOSE)
+                    .setHeader(KEY_AUTHORIZATION, "Bearer " + getSecurityToken())
+                    .setHeader("Content-Type", "application/json")
+                    .setJsonObjectBody(body)
+                    .asJsonObject()
+                    .withResponse()
+                    .setCallback(new FutureCallback<Response<JsonObject>>() {
+                        @Override
+                        public void onCompleted(Exception e, Response<JsonObject> result) {
+                            if(e != null) {
+                                Log.e(TAG,"Error = " + e.toString());
+                            }
+                            if(result != null) {
+                                Log.w(TAG, "Code = " + result.getHeaders().code());
+                            }
+                        }
+                    }).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }

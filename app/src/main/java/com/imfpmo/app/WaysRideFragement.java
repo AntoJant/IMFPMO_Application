@@ -5,8 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -48,6 +50,49 @@ public class WaysRideFragement extends Fragment {
         spinner.setAdapter(new RideModeSpinnerAdapter(getActivity(),modes));
         startAdresse.setText(ride.start.name);
         endAdresse.setText(ride.end.name);
+
+        int ride_mode = 0;
+        switch (ride.mode) {
+            case "walk":
+                ride_mode = 0;
+                break;
+            case "bike":
+                ride_mode = 1;
+                break;
+            case "opnv":
+                ride_mode = 2;
+                break;
+            case "car":
+                ride_mode = 3;
+                break;
+        }
+
+        spinner.setSelection(ride_mode);
+
+        Button save_btn = view.findViewById(R.id.save_btn);
+        save_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String ride_mode = "walk";
+                switch (spinner.getSelectedItemPosition()) {
+                    case 0:
+                        ride_mode = "walk";
+                        break;
+                    case 1:
+                        ride_mode = "bike";
+                        break;
+                    case 2:
+                        ride_mode = "opnv";
+                        break;
+                    case 3:
+                        ride_mode = "car";
+                        break;
+                }
+
+                Usermanagement.getInstance().patchRide(WaysRideFragement.this.getActivity(), WaysRideFragement.this.ride.id, startAdresse.getText().toString(), endAdresse.getText().toString(), WaysRideFragement.this.ride.start.timestamp, ride_mode);
+                Toast.makeText(WaysRideFragement.this.getActivity(), "Saved", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return view;
     }
