@@ -12,12 +12,8 @@ import androidx.viewpager.widget.ViewPager;
 
 public class AnalysisPathListAdapter extends BaseAdapter {
     private Day day;
-    private boolean[] isUnfolded;
     public AnalysisPathListAdapter(Day day){
         this.day = day;
-        isUnfolded = new boolean[day.getRides().size()];
-        for (int i = 0; i< isUnfolded.length; i++)
-            isUnfolded[i] = false;
     }
 
 

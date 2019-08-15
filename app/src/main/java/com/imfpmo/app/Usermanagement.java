@@ -620,6 +620,17 @@ class Usermanagement {
 
     }
 
+    public JsonObject changeRide(String analysisId, Ride ride){
+        JsonObject body = new JsonObject();
+        JsonObject start = new JsonObject();
+        start.addProperty("timestamp", ride.start.timestamp);
+        start.addProperty("name" , ride.start.name);
+
+        JsonObject end = new JsonObject();
+        end.addProperty("name", ride.start.name);
+
+        return null;
+    }
 
 }
 

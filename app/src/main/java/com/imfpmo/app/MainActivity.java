@@ -430,6 +430,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ft.commit();
     }
 
+    public void changeToWayPathFragment(Path path){
+        WaysPathFragment temp =new WaysPathFragment(path);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.framelayout, temp);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
+    public void changeToWayPathFragment(Ride ride){
+        WaysRideFragement temp =new WaysRideFragement(ride);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.framelayout, temp);
+        ft.addToBackStack(null);
+        ft.commit();
+    }
+
+
+
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

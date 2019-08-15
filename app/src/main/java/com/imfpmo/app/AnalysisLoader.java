@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -46,16 +47,22 @@ public class AnalysisLoader {
         return results;
     }
 
+    public ArrayList<Path> getPaths(){return  paths;}
+
     public int loadFirst(int i){
         if(results.size() == 0){
+            refresh();
             return loadResults(i);
+
         }
         return 0;
     }
 
     public int refresh(){
         Calendar aktMonth  = Calendar.getInstance();
-        JsonObject aktPaths =  usermanagement.getAnalyseWegeMonat(context,7,2019,0);
+        JsonArray aktPaths =  usermanagement.getAnalyseWegeMonat(context,8,2019,0).get("paths").getAsJsonArray();
+        Path[] path= new Gson().fromJson(aktPaths, Path[].class);
+        this.paths = new ArrayList<Path>(Arrays.asList(path));
 
         return 0;
     }
@@ -71,7 +78,7 @@ public class AnalysisLoader {
 
         for(int j = 0; j < newMonths.length; j++ ){
             Calendar lastLoadedMonth = getCalendarDate(newMonths[j].timestamp);
-            JsonArray object = usermanagement.getAnalyseWegeMonat(context, lastLoadedMonth.get(Calendar.MONTH)+1,lastLoadedMonth.get(Calendar.YEAR),1).get("paths").getAsJsonArray();
+            JsonArray object = usermanagement.getAnalyseWegeMonat(context, lastLoadedMonth.get(Calendar.MONTH)+1,lastLoadedMonth.get(Calendar.YEAR),0).get("paths").getAsJsonArray();
             Path[] paths = new Gson().fromJson(object, Path[].class);
             ArrayList<Day> days = new ArrayList<>();
             for(int k = 0; k < lastLoadedMonth.getActualMaximum(Calendar.DAY_OF_MONTH); k++){
