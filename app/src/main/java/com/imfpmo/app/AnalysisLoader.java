@@ -60,7 +60,11 @@ public class AnalysisLoader {
 
     public int refresh(){
         Calendar aktMonth  = Calendar.getInstance();
-        JsonArray aktPaths =  usermanagement.getAnalyseWegeMonat(context,8,2019,0).get("paths").getAsJsonArray();
+        JsonObject temp = usermanagement.getAnalyseWegeMonat(context,aktMonth.get(Calendar.MONTH)+1,aktMonth.get(Calendar.YEAR),0);
+        if(temp == null){
+            return 1;
+        }
+        JsonArray aktPaths =  temp.get("paths").getAsJsonArray();
         Path[] path= new Gson().fromJson(aktPaths, Path[].class);
         this.paths = new ArrayList<Path>(Arrays.asList(path));
 
@@ -78,7 +82,13 @@ public class AnalysisLoader {
 
         for(int j = 0; j < newMonths.length; j++ ){
             Calendar lastLoadedMonth = getCalendarDate(newMonths[j].timestamp);
-            JsonArray object = usermanagement.getAnalyseWegeMonat(context, lastLoadedMonth.get(Calendar.MONTH)+1,lastLoadedMonth.get(Calendar.YEAR),0).get("paths").getAsJsonArray();
+            JsonObject temp = usermanagement.getAnalyseWegeMonat(context, lastLoadedMonth.get(Calendar.MONTH)+1,lastLoadedMonth.get(Calendar.YEAR),0);
+            JsonArray object;
+            if(temp == null){
+                skip -=i;
+                return  1;
+            }
+            object = temp.get("paths").getAsJsonArray();
             Path[] paths = new Gson().fromJson(object, Path[].class);
             ArrayList<Day> days = new ArrayList<>();
             for(int k = 0; k < lastLoadedMonth.getActualMaximum(Calendar.DAY_OF_MONTH); k++){
