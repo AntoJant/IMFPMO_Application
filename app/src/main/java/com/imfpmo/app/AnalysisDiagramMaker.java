@@ -34,11 +34,12 @@ public class AnalysisDiagramMaker {
     private static final int nachkommerstelleMinutes = 100;
     private static final int nachkommerstelleMeters = 10;
     private static final int nachkommerstelleCO2 = 100;
-
+    private static final int[] colors= new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)};
 
     public static BarChart makeMonthEmissionBarChart(final ArrayList<Month> months, BarChart barChart, Context context) {
         List<BarEntry> entries = new ArrayList<>();
         int lastIndex = months.size() - 1;
+
 
         for (int i = 0; i < months.size(); i++) {
             entries.add(new BarEntry(i, new float[]{months.get(lastIndex - i).getCarEmissions(), months.get(lastIndex - i).getOpnvEmissions()}));
@@ -46,7 +47,7 @@ public class AnalysisDiagramMaker {
         BarDataSet set = new BarDataSet(entries, "Gesamt CO2 Emissionen");
         set.setStackLabels(new String[]{"Auto", "ÖPNV"});
         set.setDrawIcons(false);
-        set.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0)}, 70);
+        set.setColors(new int[]{colors[0], colors[1]}, 70);
         set.setDrawValues(false);
         BarData barData = new BarData(set);
 
@@ -89,7 +90,7 @@ public class AnalysisDiagramMaker {
         BarDataSet set = new BarDataSet(entries, "Gesamt Distanz");
         set.setStackLabels(new String[]{"Auto", "ÖPNV", "Fahrrad", "zu Fuß"});
         set.setDrawIcons(false);
-        set.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
+        set.setColors(colors, 70);
         set.setDrawValues(false);
         BarData barData = new BarData(set);
 
@@ -130,7 +131,7 @@ public class AnalysisDiagramMaker {
         BarDataSet set = new BarDataSet(entries, "Gesamt Zeit");
         set.setStackLabels(new String[]{"Auto", "ÖPNV", "Fahrrad", "zu Fuß"});
         set.setDrawIcons(false);
-        set.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
+        set.setColors(colors, 70);
         set.setDrawValues(false);
         BarData barData = new BarData(set);
 
@@ -172,7 +173,7 @@ public class AnalysisDiagramMaker {
         BarDataSet set = new BarDataSet(entries, "Gesamtzahl Fahrten");
         set.setStackLabels(new String[]{"Auto", "ÖPNV", "Fahrrad", "zu Fuß"});
         set.setDrawIcons(false);
-        set.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
+        set.setColors(colors, 70);
         set.setDrawValues(false);
         BarData barData = new BarData(set);
 
@@ -213,7 +214,7 @@ public class AnalysisDiagramMaker {
         set.setStackLabels(new String[]{"Auto", "ÖPNV"});
 
         set.setDrawIcons(false);
-        set.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0)}, 70);
+        set.setColors(new int[]{colors[0],colors[1]}, 70);
 
         BarData barData = new BarData(set);
 
@@ -252,7 +253,7 @@ public class AnalysisDiagramMaker {
         BarDataSet set = new BarDataSet(entries, "Gesamt Distanz");
         set.setStackLabels(new String[]{"Auto", "ÖPNV", "Fahrrad", "zu Fuß"});
         set.setDrawIcons(false);
-        set.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
+        set.setColors(colors, 70);
 
         BarData barData = new BarData(set);
 
@@ -292,7 +293,7 @@ public class AnalysisDiagramMaker {
         BarDataSet set = new BarDataSet(entries, "Gesamt Zeit");
         set.setStackLabels(new String[]{"Auto", "ÖPNV", "Fahrrad", "zu Fuß"});
         set.setDrawIcons(false);
-        set.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
+        set.setColors(colors, 70);
         BarData barData = new BarData(set);
         set.setDrawValues(false);
         barChart.setData(barData);
@@ -327,23 +328,45 @@ public class AnalysisDiagramMaker {
         Drawable bike = context.getDrawable(R.drawable.ic_directions_bike_black_24dp);
         Drawable opnv = context.getDrawable(R.drawable.ic_directions_bus_black_24dp);
         Drawable walk = context.getDrawable(R.drawable.ic_directions_walk_black_24dp);
+        boolean[] isUsed =new boolean[]{false,false,false,false};
+        int usedColorCount = 0;
         List<PieEntry> entries = new ArrayList<>();
 
-        if (container.getCarTimeEffort() != 0)
+        if (container.getCarTimeEffort() != 0) {
             entries.add(new PieEntry(container.getCarTimeEffort(), auto));
+            isUsed[0] = true;
+            usedColorCount++;
+        }
 
-        if (container.getOpnvTimeEffort() != 0)
+        if (container.getOpnvTimeEffort() != 0) {
             entries.add(new PieEntry(container.getOpnvTimeEffort(), opnv));
+            isUsed[1] = true;
+            usedColorCount++;
+        }
 
-        if (container.getBikeTimeEffort() != 0)
+        if (container.getBikeTimeEffort() != 0) {
             entries.add(new PieEntry(container.getBikeTimeEffort(), bike));
-
+            isUsed[2] = true;
+            usedColorCount++;
+        }
         if (container.getWalkTimeEffort() != 0) {
             entries.add(new PieEntry(container.getWalkTimeEffort(), walk));
+            isUsed[3] = true;
+            usedColorCount++;
+        }
+
+        int[] usedColors = new int[usedColorCount];
+        int j = 0;
+        for(int i = 0; i < 4; i++){
+            if(isUsed[i]){
+                usedColors[j] = colors[i];
+                j++;
+                
+            }
         }
 
         PieDataSet dataSet = new PieDataSet(entries, "Zeit");
-        dataSet.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
+        dataSet.setColors(usedColors, 70);
         dataSet.setSliceSpace(7f);
         dataSet.setDrawValues(false);
 
@@ -373,20 +396,41 @@ public class AnalysisDiagramMaker {
         Drawable bike = context.getDrawable(R.drawable.ic_directions_bike_black_24dp);
         Drawable opnv = context.getDrawable(R.drawable.ic_directions_bus_black_24dp);
         Drawable walk = context.getDrawable(R.drawable.ic_directions_walk_black_24dp);
+        boolean[] isUsed =new boolean[]{false,false,false,false};
+        int usedColorCount = 0;
         List<PieEntry> entries = new ArrayList<>();
-        if (container.getCarDistance() != 0)
+        if (container.getCarDistance() != 0) {
             entries.add(new PieEntry(container.getCarDistance(), auto));
-        if (container.getOpnvDistance() != 0)
+            isUsed[0] = true;
+            usedColorCount++;
+        }
+        if (container.getOpnvDistance() != 0){
             entries.add(new PieEntry(container.getOpnvDistance(), opnv));
-        if (container.getBikeDistance() != 0)
+            isUsed[1] = true;
+            usedColorCount ++;
+        }
+        if (container.getBikeDistance() != 0) {
             entries.add(new PieEntry(container.getBikeDistance(), bike));
+            isUsed[2] = true;
+            usedColorCount++;
+        }
         if (container.getWalkDistance() != 0) {
             entries.add(new PieEntry(container.getWalkDistance(), walk));
+            isUsed[3] = true;
+            usedColorCount ++;
         }
 
+        int[] usedColors = new int[usedColorCount];
+        int j = 0;
+        for(int i = 0; i < 4; i++){
+            if(isUsed[i]){
+                usedColors[j] = colors[i];
+                j++;
+            }
+        }
 
         PieDataSet dataSet = new PieDataSet(entries, "Distanz");
-        dataSet.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
+        dataSet.setColors(usedColors, 70);
         dataSet.setSliceSpace(7f);
         dataSet.setDrawValues(false);
         dataSet.setValueFormatter(new ValueFormatter() {
@@ -417,22 +461,43 @@ public class AnalysisDiagramMaker {
         Drawable bike = context.getDrawable(R.drawable.ic_directions_bike_black_24dp);
         Drawable opnv = context.getDrawable(R.drawable.ic_directions_bus_black_24dp);
         Drawable walk = context.getDrawable(R.drawable.ic_directions_walk_black_24dp);
+        boolean[] isUsed =new boolean[]{false,false,false,false};
+        int usedColorCount = 0;
+
         List<PieEntry> entries = new ArrayList<>();
-        if (container.getCarEmissions() != 0)
+        if (container.getCarEmissions() != 0) {
             entries.add(new PieEntry(container.getCarEmissions(), auto));
-
-        if (container.getOpnvEmissions() != 0)
+            isUsed[0] = true;
+            usedColorCount++;
+        }
+        if (container.getOpnvEmissions() != 0) {
             entries.add(new PieEntry(container.getOpnvEmissions(), opnv));
-
-        if (container.getBikeEmissions() != 0)
+            isUsed[1] = true;
+            usedColorCount++;
+        }
+        if (container.getBikeEmissions() != 0) {
             entries.add(new PieEntry(container.getBikeEmissions(), bike));
-
+            isUsed[2] = true;
+            usedColorCount++;
+        }
         if (container.getWalkEmissions() != 0) {
             entries.add(new PieEntry(container.getWalkEmissions(), walk));
+            isUsed[3] = true;
+            usedColorCount ++;
         }
+
+        int[] usedColors = new int[usedColorCount];
+        int j = 0;
+        for(int i = 0; i < 4; i++){
+            if(isUsed[i]){
+                usedColors[j] = colors[i];
+                j++;
+            }
+        }
+
         PieDataSet dataSet = new PieDataSet(entries, "CO2");
         dataSet.setDrawValues(false);
-        dataSet.setColors(new int[]{Color.rgb(200, 0, 0), Color.rgb(0, 200, 0), Color.rgb(0, 0, 200), Color.rgb(0, 200, 200)}, 70);
+        dataSet.setColors(usedColors, 70);
         dataSet.setSliceSpace(7f);
               dataSet.setValueFormatter(new ValueFormatter() {
             @Override
@@ -445,7 +510,7 @@ public class AnalysisDiagramMaker {
         data.setValueTextSize(11f);
 
         pieChart.setData(data);
-        pieChart.setTouchEnabled(false);
+        //pieChart.setTouchEnabled(false);
         pieChart.setRotationEnabled(false);
         Description desc = new Description();
         desc.setText("");
