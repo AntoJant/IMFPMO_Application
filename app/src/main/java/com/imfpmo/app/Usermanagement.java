@@ -1,7 +1,6 @@
 package com.imfpmo.app;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -10,7 +9,6 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
 
-import java.util.Calendar;
 import java.util.concurrent.ExecutionException;
 
 
@@ -490,10 +488,6 @@ class Usermanagement {
         if(response==null){
             Log.w(TAG, "Response == null");
             return NO_INTERNET_CONNECTION;
-        }
-        else if(response.getResult()==null) {
-            Log.w(TAG,"json = null");
-            return COULDNT_REACH_SERVER;
         }
         else if(response.getHeaders().code() == 404) {
             Log.w(TAG, "COULNDT_REACH_SERVER");

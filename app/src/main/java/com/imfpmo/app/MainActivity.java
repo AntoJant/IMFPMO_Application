@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ft.commit();
         }
         if (id == 7) {
-            fragment = new ChangePasswordFragment();
+            fragment = new DeleteUserFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             setDrawerLocked(false);
             Objects.requireNonNull(getSupportActionBar()).show();

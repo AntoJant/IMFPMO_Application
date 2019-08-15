@@ -27,7 +27,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         deleteAccount.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             public boolean onPreferenceClick(Preference preference) {
-                mListener.changeFragment(9);
+                mListener.changeFragment(7);
                 return true;
             }
         });
