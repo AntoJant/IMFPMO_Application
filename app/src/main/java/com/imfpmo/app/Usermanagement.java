@@ -32,6 +32,7 @@ class Usermanagement {
     //--SharedPreferences Strings-------
     private final String KEY_TOKEN = "token";
     private final String KEY_USER_ID = "id";
+    private final String KEY_USER_ACTIVE = "status";
     private final String KEY_SHAREDPREFERENCE = "securityTokenPreference";
     private final String KEY_SHAREDPREFERENCE_SECURITYTOKEN = "securityToken";
     private final String KEY_SHAREDPREFERENCE_USER_ID = "userID";
@@ -118,7 +119,7 @@ class Usermanagement {
     /**
      * Fetches the UserID of the currently logged in User from the API and saves it.
      * @return OPERATION_SUCCESSFUL if successful else 1:operation failed, 2: no internet connection
-     * or 3:could not reach server.
+     * or 3:could not reach server, 10: E-Mail isn't verified yet.
      */
     private int fetchUserID( Context context) {
             if(isLoggedIn()) {
@@ -159,6 +160,11 @@ class Usermanagement {
                     Log.w(TAG, "COULNDT_REACH_SERVER");
                     return COULDNT_REACH_SERVER;
                 }
+                if(response.getHeaders().code() == 200 && !response.getResult().get(KEY_USER_ACTIVE).getAsString().equals("active")) {
+                    Log.w(TAG, "USER NOT ACTIVE");
+                    Log.w(TAG, "Status = " + response.getResult().get(KEY_USER_ACTIVE).getAsString());
+                    return 10;
+                }
                 if(response.getHeaders().code() == 200 && response.getResult() != null) {
                     Log.w(TAG,"UserID = " + response.getResult().get(KEY_USER_ID).getAsString());
                     setUserID(response.getResult().get(KEY_USER_ID).getAsString());
@@ -190,7 +196,7 @@ class Usermanagement {
      * @param password Password of the user that should be logged in.
      * @param context context of the current activity.
      * @return 0:OPERATION_SUCCESSFUL if successful else 1:operation failed, 2: no internet connection
-     * or 3:could not reach server.
+     * or 3:could not reach server, 10: E-Mail isn't verified yet.
      */
     int login(String email, String password, Context context) {
         JsonObject body = new JsonObject();
