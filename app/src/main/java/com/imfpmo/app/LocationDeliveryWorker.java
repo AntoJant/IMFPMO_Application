@@ -86,8 +86,6 @@ public class LocationDeliveryWorker extends Worker {
 
         long checkDuplicateTime = 0;
 
-        // TODO: 7/22/19 handle duplicates better. maybe do binary search
-        // TODO: 8/10/19 might cause bug where not all locations will be sent
         for(JsonLocation loc : locationsToSend) {
             if(loc.getTimestamp() != checkDuplicateTime) {
                 JsonObject locJson = loc.toJsonObject();
