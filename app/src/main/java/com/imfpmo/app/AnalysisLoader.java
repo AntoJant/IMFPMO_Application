@@ -88,7 +88,7 @@ public class AnalysisLoader {
             JsonObject temp = usermanagement.getAnalyseWegeMonat(context, lastLoadedMonth.get(Calendar.MONTH)+1,lastLoadedMonth.get(Calendar.YEAR),0);
             JsonArray object;
             if(temp == null){
-                skip -=i;
+                skip -=i+j;
                 return  2;
             }
             object = temp.get("paths").getAsJsonArray();

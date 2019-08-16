@@ -27,22 +27,28 @@ public class Path implements RideContainer {
     }
 
     public void generateAttributes(){
+        okoGrade =0;
         walkEmissions = 0;
         walkTimeEffort = 0;
         walkDistance = 0;
+
         carEmissions = 0;
         carTimeEffort = 0;
         carDistance = 0;
+
         bikeEmissions = 0;
         bikeTimeEffort = 0;
         bikeDistance = 0;
+
         opnvTimeEffort = 0;
         opnvDistance = 0;
         opnvEmissions = 0;
+
         totalEmissions = 0;
         totalTimeEffort = 0;
         totalDistance = 0;
         totalRideCount  =0;
+
         carRideCount = 0;
         bikeRideCount = 0;
         opnvRideCount = 0;
