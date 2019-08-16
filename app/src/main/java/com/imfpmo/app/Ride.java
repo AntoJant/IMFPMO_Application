@@ -12,6 +12,7 @@ public class Ride {
 
 
     public void generateAtributes(){
+        okoGrade =0;
         switch(mode){
             case "walk": rideMode = RideMode.WALK;break;
             case "bike": rideMode = RideMode.BIKE;break;
@@ -29,9 +30,9 @@ public class Ride {
 
 
         switch (ampel){
-            case "red": okoGrade = 0;break;
-            case "yellow": okoGrade = 1;break;
-            case "green": okoGrade = 2;break;
+            case "red": okoGrade = 1;break;
+            case "yellow": okoGrade = 2;break;
+            case "green": okoGrade = 3;break;
         }
 
         startZeit = start.getDate();

@@ -58,7 +58,7 @@ public class Day implements RideContainer{
             carDistance += path.carDistance;
             bikeDistance += path.getBikeDistance();
             walkDistance += path.getWalkDistance();
-            bikeDistance += path.getBikeDistance();
+            opnvDistance += path.getOpnvDistance();
             carTimeEffort += path.getCarTimeEffort();
             bikeTimeEffort += path.getBikeTimeEffort();
             opnvTimeEffort += path.getOpnvTimeEffort();
@@ -74,7 +74,7 @@ public class Day implements RideContainer{
         }
         totalDistance = carDistance + bikeDistance + opnvDistance + walkDistance;
         totalTimeEffort = carTimeEffort + bikeTimeEffort + opnvTimeEffort + walkTimeEffort;
-        totalEmissions = carEmissions + bikeEmissions + opnvTimeEffort + walkEmissions;
+        totalEmissions = carEmissions + bikeEmissions + opnvEmissions + walkEmissions;
         totalRideCount = carRideCount + walkRideCount + opnvRideCount+ bikeRideCount;
 
         if(ratedRides != 0){

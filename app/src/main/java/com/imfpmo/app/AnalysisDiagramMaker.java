@@ -8,6 +8,7 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -17,10 +18,13 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
@@ -333,24 +337,24 @@ public class AnalysisDiagramMaker {
         List<PieEntry> entries = new ArrayList<>();
 
         if (container.getCarTimeEffort() != 0) {
-            entries.add(new PieEntry(container.getCarTimeEffort(), auto));
+            entries.add(usedColorCount, new PieEntry(container.getCarTimeEffort(), auto));
             isUsed[0] = true;
             usedColorCount++;
         }
 
         if (container.getOpnvTimeEffort() != 0) {
-            entries.add(new PieEntry(container.getOpnvTimeEffort(), opnv));
+            entries.add(usedColorCount,new PieEntry(container.getOpnvTimeEffort(), opnv));
             isUsed[1] = true;
             usedColorCount++;
         }
 
         if (container.getBikeTimeEffort() != 0) {
-            entries.add(new PieEntry(container.getBikeTimeEffort(), bike));
+            entries.add(usedColorCount,new PieEntry(container.getBikeTimeEffort(), bike));
             isUsed[2] = true;
             usedColorCount++;
         }
         if (container.getWalkTimeEffort() != 0) {
-            entries.add(new PieEntry(container.getWalkTimeEffort(), walk));
+            entries.add(usedColorCount,new PieEntry(container.getWalkTimeEffort(), walk));
             isUsed[3] = true;
             usedColorCount++;
         }
@@ -361,7 +365,6 @@ public class AnalysisDiagramMaker {
             if(isUsed[i]){
                 usedColors[j] = colors[i];
                 j++;
-                
             }
         }
 
@@ -379,7 +382,7 @@ public class AnalysisDiagramMaker {
 
         PieData data = new PieData(dataSet);
         pieChart.setData(data);
-        pieChart.setTouchEnabled(false);
+        //pieChart.setTouchEnabled(false);
         pieChart.setRotationEnabled(false);
         Description desc = new Description();
         desc.setText("");
@@ -387,6 +390,26 @@ public class AnalysisDiagramMaker {
         int gesamt = container.getTotalTimeEffort();
         pieChart.setCenterText(getCenterText("Zeit",getTotalDurationText(gesamt)));
         pieChart.getLegend().setEnabled(false);
+        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                String rm = "";
+                int i = (int) h.getX();
+                switch (i){
+                    case 0: rm = "Auto";break;
+                    case 1: rm = "OPNV";break;
+                    case 2: rm = "Fahrrad";break;
+                    case 3: rm = "zu Fuss";break;
+                }
+                pieChart.setCenterText(getCenterText("Zeit",getTotalDurationText(gesamt),rm, getTotalDurationText((int)e.getY())));
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+                pieChart.setCenterText(getCenterText("Zeit",getTotalDurationText(gesamt)));
+            }
+        });
 
         return pieChart;
     }
@@ -397,25 +420,26 @@ public class AnalysisDiagramMaker {
         Drawable opnv = context.getDrawable(R.drawable.ic_directions_bus_black_24dp);
         Drawable walk = context.getDrawable(R.drawable.ic_directions_walk_black_24dp);
         boolean[] isUsed =new boolean[]{false,false,false,false};
+        String[] nameOfValue = new String[]{"","","",""};
         int usedColorCount = 0;
         List<PieEntry> entries = new ArrayList<>();
         if (container.getCarDistance() != 0) {
-            entries.add(new PieEntry(container.getCarDistance(), auto));
+            entries.add(usedColorCount,new PieEntry(container.getCarDistance(), auto));
             isUsed[0] = true;
             usedColorCount++;
         }
         if (container.getOpnvDistance() != 0){
-            entries.add(new PieEntry(container.getOpnvDistance(), opnv));
+            entries.add(usedColorCount,new PieEntry(container.getOpnvDistance(), opnv));
             isUsed[1] = true;
             usedColorCount ++;
         }
         if (container.getBikeDistance() != 0) {
-            entries.add(new PieEntry(container.getBikeDistance(), bike));
+            entries.add(usedColorCount,new PieEntry(container.getBikeDistance(), bike));
             isUsed[2] = true;
             usedColorCount++;
         }
         if (container.getWalkDistance() != 0) {
-            entries.add(new PieEntry(container.getWalkDistance(), walk));
+            entries.add(usedColorCount,new PieEntry(container.getWalkDistance(), walk));
             isUsed[3] = true;
             usedColorCount ++;
         }
@@ -445,14 +469,34 @@ public class AnalysisDiagramMaker {
         pieChart.setData(data);
         pieChart.setClickable(false);
         pieChart.setRotationEnabled(false);
-        pieChart.setTouchEnabled(false);
+        //pieChart.setTouchEnabled(false);
         int gesamt = container.getTotalDistance();
         pieChart.setCenterText(getCenterText( "Distanz",getTotalDistanceText(gesamt)));
         Description desc = new Description();
         desc.setText("");
         pieChart.setDescription(desc);
         pieChart.getLegend().setEnabled(false);
+        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                String rm = "";
+                int i = (int) h.getX();
+                switch (i){
+                    case 0: rm = "Auto";break;
+                    case 1: rm = "OPNV";break;
+                    case 2: rm = "Fahrrad";break;
+                    case 3: rm = "zu Fuss";break;
+                }
 
+                pieChart.setCenterText(getCenterText("Distanz",getTotalDistanceText(gesamt), rm, getTotalDistanceText((int) e.getY())));
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+                pieChart.setCenterText(getCenterText("Distanz",getTotalDistanceText(gesamt)));
+            }
+        });
         return pieChart;
     }
 
@@ -466,22 +510,22 @@ public class AnalysisDiagramMaker {
 
         List<PieEntry> entries = new ArrayList<>();
         if (container.getCarEmissions() != 0) {
-            entries.add(new PieEntry(container.getCarEmissions(), auto));
+            entries.add(usedColorCount,new PieEntry(container.getCarEmissions(), auto));
             isUsed[0] = true;
             usedColorCount++;
         }
         if (container.getOpnvEmissions() != 0) {
-            entries.add(new PieEntry(container.getOpnvEmissions(), opnv));
+            entries.add(usedColorCount,new PieEntry(container.getOpnvEmissions(), opnv));
             isUsed[1] = true;
             usedColorCount++;
         }
         if (container.getBikeEmissions() != 0) {
-            entries.add(new PieEntry(container.getBikeEmissions(), bike));
+            entries.add(usedColorCount, new PieEntry(container.getBikeEmissions(), bike));
             isUsed[2] = true;
             usedColorCount++;
         }
         if (container.getWalkEmissions() != 0) {
-            entries.add(new PieEntry(container.getWalkEmissions(), walk));
+            entries.add(usedColorCount, new PieEntry(container.getWalkEmissions(), walk));
             isUsed[3] = true;
             usedColorCount ++;
         }
@@ -518,7 +562,26 @@ public class AnalysisDiagramMaker {
         int gesamt = container.getTotalEmissions();
         pieChart.setCenterText(getCenterText("Emissionen", getTotalCO2Text(gesamt)));
         pieChart.getLegend().setEnabled(false);
+        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                String rm = "";
+                int i = (int) h.getX();
+                switch (i){
+                    case 0: rm = "Auto";break;
+                    case 1: rm = "OPNV";break;
+                    case 2: rm = "Fahrrad";break;
+                    case 3: rm = "zu Fuss";break;
+                }
+                pieChart.setCenterText(getCenterText("Emissionen", getTotalCO2Text(gesamt), rm, getTotalCO2Text((int) e.getY())));
+            }
 
+            @Override
+            public void onNothingSelected() {
+
+                pieChart.setCenterText(getCenterText("Emissionen", getTotalCO2Text(gesamt)));
+            }
+        });
         return pieChart;
     }
 
@@ -560,6 +623,22 @@ public class AnalysisDiagramMaker {
         return s;
     }
 
+    public static SpannableString getCenterText(String title, String value, String rideMode, String rideValue){
+        SpannableString s = new SpannableString(title + "\n \n" + "Insgesamt" + "\n" + value +"\n \n" + rideMode + ":\n" + rideValue );
+        s.setSpan(new RelativeSizeSpan(1.7f), 0, title.length()+1, 0);
+        s.setSpan(new StyleSpan(Typeface.NORMAL), title.length()+1, title.length()+12, 0);
+        s.setSpan(new ForegroundColorSpan(Color.GRAY), title.length()+1, title.length()+12, 0);
+        s.setSpan(new RelativeSizeSpan(1.f), title.length()+1, title.length()+12, 0);
+        s.setSpan(new StyleSpan(Typeface.ITALIC), title.length()+12, title.length()+10+value.length()+3, 0);
+        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), title.length()+12, title.length()+10+value.length()+3, 0);
+
+        s.setSpan(new StyleSpan(Typeface.NORMAL), title.length()+10+value.length()+3, title.length()+10+value.length()+3+rideMode.length()+3, 0);
+        s.setSpan(new ForegroundColorSpan(Color.GRAY), title.length()+10+value.length()+3, title.length()+10+value.length()+3+rideMode.length()+3, 0);
+        s.setSpan(new RelativeSizeSpan(1.f), title.length()+10+value.length()+3, title.length()+10+value.length()+3+rideMode.length()+3, 0);
+        s.setSpan(new StyleSpan(Typeface.ITALIC), title.length()+10+value.length()+3+rideMode.length()+3, s.length(), 0);
+        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), title.length()+10+value.length()+3+rideMode.length()+3, s.length(), 0);
+        return s;
+    }
 
 
 }
